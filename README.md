@@ -1,4 +1,4 @@
-# Project Name
+# Azure OpenAI Samples Japan
 
 (short, 1-3 sentenced, description of the project)
 JP Azure Open AI Samples
