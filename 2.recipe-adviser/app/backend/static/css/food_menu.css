@@ -1,0 +1,46 @@
+body {
+  background-color: white;
+}
+
+.stock_table tr:hover td {
+  background-color: LightSkyBlue;
+  cursor: pointer;
+}
+
+.wait {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+}
+
+.floor {
+  max-width: 100%;
+  max-height: 100%;
+  margin: auto;
+  display: block;
+}
+
+/* ブロックのスタイル */
+.block {
+  fill: rgpa(255, 255, 255, 0);
+  stroke: rgb(127, 127, 127);
+  stroke-width: 2;
+  filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.5));
+}
+
+/* ブロックのテキストのスタイル */
+.block-text {
+  font-size: 32px;
+  fill: black;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+/* ハイライトされたブロックのスタイル */
+.highlight {
+  fill: yellow;
+  stroke: red;
+  stroke-width: 4;
+}

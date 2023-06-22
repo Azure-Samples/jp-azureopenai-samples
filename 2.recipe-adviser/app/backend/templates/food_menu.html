@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+{% block main %}
+<main style="background-color: white">
+    <head>
+        <link rel="stylesheet" href="/css/food_menu.css" />
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </head>
+    
+    <!-- Hidden section -->
+    <!-- Demo -->
+    <div class="d-flex flex-column mt-1 container-fluid hide">
+        <!-- Begin Page Content -->
+        <div id="demo-container" class="container-fluid hide">
+            <div class="row">
+                <div class="col-xl-4 col-md-4">
+                    <table id="tableMain" class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td scope="col" class="col-12">家族構成</td>
+                            </tr>
+                            <tr>
+                                <td scope="col">
+                                    <table class="col-12">
+                                        <tbody>
+                                            <tr>
+                                                <td id="family_name_01" scope="col" class="col-3">父</td>
+                                                <td scope="col">
+                                                    <input id="family_profile_01" type="text" class="form-control"
+                                                        value="メタボリックと診断されています">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td id="family_name_02" scope="col">母</td>
+                                                <td scope="col">
+                                                    <input id="family_profile_02" type="text" class="form-control"
+                                                        value="貧血気味です">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td id="family_name_03" scope="col">長男</td>
+                                                <td scope="col">
+                                                    <input id="family_profile_03" type="text" class="form-control"
+                                                        value="サッカー部で毎日クラブ活動です">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td id="family_name_04" scope="col">長女</td>
+                                                <td scope="col">
+                                                    <input id="family_profile_04" type="text" class="form-control"
+                                                        value="蕎麦アレルギーです">
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td scope="col">ご自宅にある食材</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <textarea id="ingredients_have" class="form-control" rows="5"></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td scope="col">リクエスト</td>
+                            </tr>
+                            <tr>
+                                <td scope="col">
+                                    <textarea id="user_menu_request" type="text" class="form-control" rows="3">時短でできる</textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <button id="menu_button" class="btn btn-primary">メニュー作成</button>
+                                    <button id="advisory_button" class="btn btn-primary">栄養アドバイス</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table id="tableAdvisor" class="table table-sm table-bordered hide">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <canvas id="healthChart" width="200" height="200"></canvas>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td id="advisory_label" scope="col" class="col-10">栄養アドバイス</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <textarea id="advisory" class="form-control" rows="5"></textarea>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <table id="ecommerce_table">
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-xl-8 col-md-8">
+                    <table id="tableMenu" class="table table-sm table-bordered hide">
+                        <tbody>
+                            <tr>
+                                <td id="menu_label" scope="col" class="col-10">メニュー (ご自宅の食材をなるべく使っています)</td>
+                            </tr>
+                            <tr>
+                                <td scope="col" class="col-10">
+                                    <textarea id="menu" class="form-control" rows="2"></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td scope="col" class="col-10">
+                                    <img id="menu_image" class="img-fluid">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td id="reason_label" scope="col" class="col-10">コメント</td>
+                            </tr>
+                            <tr>
+                                <td scope="col" class="col-10">
+                                    <textarea id="reason" class="form-control" rows="5"></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td id="ingredients_label" scope="col" class="col-10">食材</td>
+                            </tr>
+                            <tr>
+                                <td scope="col" class="col-10">
+                                    <textarea id="ingredients" class="form-control" rows="3"></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td id="recipe_label" scope="col" class="col-10">レシピ</td>
+                            </tr>
+                            <tr>
+                                <td scope="col" class="col-10">
+                                    <textarea id="recipe" class="form-control" rows="6"></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table class="col-12">
+                                        <tbody>
+                                            <tr>
+                                                <td id="stock_label" scope="col" class="col-5">足りない食材の在庫情報 (お近くの店舗)</td>
+                                                <td id="stock_label" scope="col" class="col-7">フロアマップ</td>
+                                            </tr>
+                                            <tr>
+                                                <td scope="col">
+                                                    <table id="stock_table" class="stock_table col-12"></table>
+                                                </td>
+                                                <td scope="col">
+                                                    <div id="floor_layout"></div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div> <!-- End of Demo -->
+    
+    <!-- Loading SDK -->
+    <div id="warning" class="wait">
+        <div class="container-fluid h-center v-center h-100">
+            <div>
+                <img src="/images/atomic-loading.gif" class="img-fluid logo my-4">
+                <p id="loading_text"></p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/js/app/food_recipe.js"></script>
+</main>
+{% endblock %}

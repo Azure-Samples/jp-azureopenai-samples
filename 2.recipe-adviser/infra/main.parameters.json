@@ -1,0 +1,30 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "resourceGroupName": {
+      "value": "azure-open-ai-recipe-adviser"
+    },
+    "resourceGroupLocation": {
+      "value": "japaneast"
+    },
+    "openAIName": {
+      "value": "cog-azure-open-ai-recipe-adviser"
+    },
+    "openAILocation": {
+      "value": "eastus"
+    },
+    "openAISkuName": {
+      "value": "S0"
+    },
+    "appServicePlanName": {
+      "value": "ase-azure-open-ai-recipe-adviser"
+    },
+    "appServicePlanSkuName": {
+      "value": "B1"
+    },
+    "appServiceName": {
+      "value": "app-azure-open-ai-recipe-adviser"
+    }
+  }
+}

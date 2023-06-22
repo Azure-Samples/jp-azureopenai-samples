@@ -1,0 +1,13 @@
+version: '3'
+services: 
+  web:
+    container_name: backend
+    build: .
+    command: python3 backend/app.py
+    volumes:
+      - ./backend:/backend
+    ports:
+      - 5000:5000
+    env_file:
+      - .env
+    tty: true

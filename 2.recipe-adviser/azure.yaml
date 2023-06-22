@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+
+name: azure-open-ai-recipe-adviser
+resourceGroup: azure-open-ai-recipe-adviser
+metadata:
+  template: app-azure-open-ai-recipe-adviser@0.0.1-beta
+services:
+  backend:
+    resourceName: app-azure-open-ai-recipe-adviser
+    project: ./app/backend
+    language: py
+    host: appservice
