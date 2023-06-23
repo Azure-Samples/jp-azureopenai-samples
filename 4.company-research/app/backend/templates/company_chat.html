@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% block main %}
+<main style="background-color: white">
+    <head>
+        <link rel="stylesheet" href="/css/company.css" />
+    </head>
+    
+    <!-- Loading SDK -->
+    <div id="warning" class="page-loader">
+        <div class="container-fluid h-center v-center h-100">
+            <div>
+                <img src="/images/atomic-loading.gif" class="img-fluid logo my-4">
+                <p>loading ...</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Hidden section -->
+    <div class="container" class="hide">
+        <textarea id="divChatData" class="hide"></textarea>
+    </div>
+    
+    <!-- Demo -->
+    <div class="d-flex flex-column mt-1 container-fluid hide">
+        <!-- Begin Page Content -->
+        <div id="demo-container" class="container-fluid hide">
+            <div class="row">
+                <h4 class="text-center mb-5" id="caption_company_label">企業分析(チャット)</h4>
+            </div>
+            <div class="row mb-1">
+                <div id="chatInputArea" class="col-xl-6 col-md-6 mb-4 hide">
+                    <div class="input-group mb-1">
+                        <input id="sendChatText" type="text" class="form-control" name="chatText" value="" placeholder="">
+                        <button id="sendChatButton" class="btn btn-primary">&gt;</button>
+                    </div>
+                    <div class="input-group mb-1">
+                        <div id="questionButtons"></div>
+                    </div>
+                    <div class="input-group mb-1">
+                        <div id="dataSourceLinks"></div>
+                    </div>
+                    <div class="pe-2 pt-2">
+                        <textarea id="displayChat" class="h5 pb-1 text-gray-800 text-m lh-base fw-light speech-textarea"
+                            style="height:90vh"></textarea>
+                    </div>
+                </div>
+                <div class="input-group col-xl-6 col-lg-6 mb-1">
+                    <div class="table-responsive">
+                        <table id="tableCompany" class="table hide">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="col-2"></th>
+                                    <th id="search_company_label" scope="col" class="col-4"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th id="name_label" scope="col"></th>
+                                    <td id="name_00"></td>
+                                </tr>
+                                <tr>
+                                    <th id="representative_label" scope="row"></th>
+                                    <td id="representative_00"></td>
+                                </tr>
+                                <tr>
+                                    <th id="establishment_date_label" scope="row"></th>
+                                    <td id="establishment_date_00"></td>
+                                </tr>
+                                <tr>
+                                    <th id="capital_label" scope="row"></th>
+                                    <td id="capital_00"></td>
+                                </tr>
+                                <tr>
+                                    <th id="major_shareholders_label" scope="row"></th>
+                                    <td id="major_shareholders_00"></td>
+                                </tr>
+                                <tr>
+                                    <th id="business_description_label" scope="row"></th>
+                                    <td id="business_description_00"></td>
+                                </tr>
+                                <tr>
+                                    <th id="number_of_employees_label" scope="row"></th>
+                                    <td id="number_of_employees_00"></td>
+                                </tr>
+                                <tr>
+                                    <th id="location_label" scope="row"></th>
+                                    <td id="location_00"></td>
+                                </tr>
+                                <tr>
+                                    <th id="revenue_label" scope="row"></th>
+                                    <td id="revenue_00"></td>
+                                </tr>
+                                <tr>
+                                    <th id="operating_profit_label" scope="row"></th>
+                                    <td id="operating_profit_00"></td>
+                                </tr>
+                                <tr>
+                                    <th id="operating_profit_margin_label" scope="row"></th>
+                                    <td id="operating_profit_margin_00"></td>
+                                </tr>
+                                <tr>
+                                    <th id="total_assets_label" scope="row"></th>
+                                    <td id="total_assets_00"></td>
+                                </tr>
+                                <tr>
+                                    <th id="equity_ratio_label" scope="row"></th>
+                                    <td id="equity_ratio_00"></td>
+                                </tr>
+                                <tr>
+                                    <th id="listed_market_label" scope="row"></th>
+                                    <td id="listed_market_00"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- End of Demo -->
+    
+    <script src="/js/app/company_common.js"></script>
+    <script src="/js/app/company_chat.js"></script>
+</main>
+{% endblock %}

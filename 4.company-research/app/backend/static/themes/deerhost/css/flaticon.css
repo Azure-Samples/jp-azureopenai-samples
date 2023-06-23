@@ -1,0 +1,67 @@
+	/*
+  	Flaticon icon font: Flaticon
+  	Creation date: 17/01/2019 08:45
+  	*/
+
+@font-face {
+  font-family: "Flaticon";
+  src: url("../fonts/Flaticon.eot");
+  src: url("../fonts/Flaticon.eot?#iefix") format("embedded-opentype"),
+       url("../fonts/Flaticon.woff") format("woff"),
+       url("../fonts/Flaticon.ttf") format("truetype"),
+       url("../fonts/Flaticon.svg#Flaticon") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: "Flaticon";
+    src: url("../fonts/Flaticon.svg#Flaticon") format("svg");
+  }
+}
+
+[class^="flaticon-"]:before, [class*=" flaticon-"]:before,
+[class^="flaticon-"]:after, [class*=" flaticon-"]:after {   
+  font-family: Flaticon;
+  font-size: 20px;
+  font-style: normal;
+  margin-left: 0;
+}
+
+.flaticon-001-volume:before { content: "\f100"; }
+.flaticon-002-cloud-storage:before { content: "\f101"; }
+.flaticon-003-network:before { content: "\f102"; }
+.flaticon-004-battery:before { content: "\f103"; }
+.flaticon-005-smartphone:before { content: "\f104"; }
+.flaticon-006-camera:before { content: "\f105"; }
+.flaticon-007-processor:before { content: "\f106"; }
+.flaticon-008-cloud-computing:before { content: "\f107"; }
+.flaticon-009-cloud-storage-1:before { content: "\f108"; }
+.flaticon-010-cloud-storage-2:before { content: "\f109"; }
+.flaticon-011-graphic-design:before { content: "\f10a"; }
+.flaticon-012-computer:before { content: "\f10b"; }
+.flaticon-013-server:before { content: "\f10c"; }
+.flaticon-014-headphones:before { content: "\f10d"; }
+.flaticon-015-fingerprint:before { content: "\f10e"; }
+.flaticon-016-flash-drive:before { content: "\f10f"; }
+.flaticon-017-computer-1:before { content: "\f110"; }
+.flaticon-018-hard-drive:before { content: "\f111"; }
+.flaticon-019-ethernet:before { content: "\f112"; }
+.flaticon-020-memory-card:before { content: "\f113"; }
+.flaticon-021-ui:before { content: "\f114"; }
+.flaticon-022-microphone:before { content: "\f115"; }
+.flaticon-023-smartphone-1:before { content: "\f116"; }
+.flaticon-024-mouse:before { content: "\f117"; }
+.flaticon-025-network-1:before { content: "\f118"; }
+.flaticon-026-cloud-storage-3:before { content: "\f119"; }
+.flaticon-027-computer-2:before { content: "\f11a"; }
+.flaticon-028-location:before { content: "\f11b"; }
+.flaticon-029-plug:before { content: "\f11c"; }
+.flaticon-030-server-1:before { content: "\f11d"; }
+.flaticon-031-computer-3:before { content: "\f11e"; }
+.flaticon-032-smartphone-2:before { content: "\f11f"; }
+.flaticon-033-smartphone-3:before { content: "\f120"; }
+.flaticon-034-speaker:before { content: "\f121"; }
+.flaticon-035-wifi:before { content: "\f122"; }
+.flaticon-036-programming:before { content: "\f123"; }
