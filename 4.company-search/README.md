@@ -113,7 +113,7 @@ How to Evaluate & Examples:
 
 |  サービス名  |  SKU  | Note |
 | ---- | ---- | ---- |
-| Azure App Service  |  Basic  | Python 3.10 |
+| Azure App Service  |  S1  | Python 3.10 |
 | Azure OpenAI Service |  Standard  | gpt-35-turbo, text-davinci-003, text-embedding-ada-002 |
 | Azure Cache for Redis | Enterprise | |
 
