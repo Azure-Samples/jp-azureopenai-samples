@@ -1,0 +1,7 @@
+azure-identity==1.13.0
+python-dotenv==1.0.0
+redis==4.5.5
+openai==0.27.8
+tiktoken==0.4.0
+numpy==1.25.0
+pandas==2.0.2
