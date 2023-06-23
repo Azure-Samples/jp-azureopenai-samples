@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
+
 export type Step = {
     step_num: number;
     content: string;

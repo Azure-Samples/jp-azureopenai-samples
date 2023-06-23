@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
 # coding: utf-8
 """
     Speech to Text API v3.0

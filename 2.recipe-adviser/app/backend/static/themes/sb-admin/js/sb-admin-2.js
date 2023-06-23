@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
+
 (function($) {
   "use strict"; // Start of use strict
 

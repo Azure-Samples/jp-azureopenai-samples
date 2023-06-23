@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
 
 # Get the company description
 # this function is important to generatig GPT embedding for company search. It is also used teaching knowledge to ChatGPT for "Prompt Learning".

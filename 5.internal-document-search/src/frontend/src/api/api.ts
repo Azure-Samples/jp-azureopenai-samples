@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
+
 import { AskRequest, AskResponse, GptChatRequest, ChatRequest, ChatResponse } from "./models";
 
 export async function askApi(options: AskRequest): Promise<AskResponse> {

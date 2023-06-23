@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
+
 import { useRef, useState, useEffect } from "react";
 import { Checkbox, Panel, DefaultButton, TextField, SpinButton, COACHMARK_ATTRIBUTE_NAME, TextFieldBase } from "@fluentui/react";
 import { SparkleFilled } from "@fluentui/react-icons";

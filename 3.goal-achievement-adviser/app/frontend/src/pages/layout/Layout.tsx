@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
+
 import { Outlet, NavLink, Link } from "react-router-dom";
 import { useState, useMemo } from "react";
 import { AccessToken, Claim } from "../../api";

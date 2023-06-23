@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
+
 import { Text } from "@fluentui/react";
 import { Delete24Regular } from "@fluentui/react-icons";
 

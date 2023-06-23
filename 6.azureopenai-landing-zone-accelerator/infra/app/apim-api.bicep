@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 param name string
 
 @description('Resource name to uniquely identify this API within the API Management service instance')

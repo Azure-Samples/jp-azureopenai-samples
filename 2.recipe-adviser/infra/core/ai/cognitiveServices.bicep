@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 // create azure cognitive service & use open ai service
 param name string
 param tags object = {}

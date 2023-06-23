@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
+
 type ParsedSupportingContentItem = {
     title: string;
     content: string;

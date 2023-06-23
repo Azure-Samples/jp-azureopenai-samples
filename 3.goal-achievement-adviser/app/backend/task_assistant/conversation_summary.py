@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
 prompt_system = """
 あなたはHTMLで文章を作成するアシスタントです。
 """

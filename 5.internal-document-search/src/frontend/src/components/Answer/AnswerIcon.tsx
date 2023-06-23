@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
+
 import { Sparkle28Filled } from "@fluentui/react-icons";
 
 export const AnswerIcon = () => {

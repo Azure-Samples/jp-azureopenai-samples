@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
+
 import { Stack } from "@fluentui/react";
 import { animated, useSpring } from "@react-spring/web";
 

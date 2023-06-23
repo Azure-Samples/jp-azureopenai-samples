@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
 prompt_system = """
 このコンテンツではGPTのプロンプトを作成していきます。日本語で回答してください。ただし変数名は英語にしてください。
 

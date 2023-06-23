@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
 import openai
 from approaches.approach import Approach
 from approaches.chatlogging import write_chatlog, ApproachType

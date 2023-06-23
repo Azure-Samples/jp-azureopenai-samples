@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
+
 import { ChatRequest } from "./models";
 
 export async function chatApi(options: ChatRequest): Promise<string> {
