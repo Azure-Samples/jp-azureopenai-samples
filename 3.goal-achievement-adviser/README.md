@@ -26,7 +26,7 @@
 
 | サービス名 | SKU | Note |
 | --- | --- | --- |
-| Azure App Service | B1 |  |
+| Azure App Service | S1 |  |
 | Azure OpenAI Service | S0 | text-davinci-003, text-embedding-ada-002, gpt-35-turbo |
 | Azure Cache for Redis Enterprise | E10 |  |
 | Storage account | Standard_LRS |  |
@@ -44,7 +44,7 @@
 
 | サービス名 | SKU | Note |
 | --- | --- | --- |
-| Azure App Service | B1 |  |
+| Azure App Service | S1 |  |
 | Azure OpenAI Service | S0 | text-davinci-003, text-embedding-ada-002, gpt-35-turbo |
 | Azure Cache for Redis Enterprise | E10 |  |
 | Storage account | Standard_LRS |  |
@@ -58,9 +58,6 @@
 以下はターミナルでの実行例です。Azure CLI がインストールされていることを前提とします。
 
 ```bash
-git clone https://github.com/customer-success-microsoft/goal-achievement-adviser.git
-
-cd goal-achievement-adviser
 cd infra
 
 az deployment sub create \
@@ -130,6 +127,9 @@ cd scripts
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+
+# .env.template ファイルをベースにご自身の環境に合った環境変数を .env に設定します
+cp .env.template .env
 
 # データを Redis に登録します
 python gpt_manage_embedding.py
