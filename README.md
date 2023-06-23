@@ -7,9 +7,9 @@ Azure OpenAIを活用したアプリのサンプルを無償提供していま�
 | 1. コールセンター向け AI アシスタント  | 近日公開予定  |
 | 2. 料理メニューの提案  | [Link](https://github.com/Azure-Samples/jp-azureopenai-samples/tree/feature/README/2.recipe-adviser)  |
 | 3. 目標達成アシスタント  | [Link](https://github.com/Azure-Samples/jp-azureopenai-samples/tree/feature/README/3.goal-achievement-adviser)  |
-| 4. 企業分析  | 準備中  |
+| 4. 企業分析  | 近日公開予定  |
 | 5. 企業内向けChatと社内文書検索  | 近日公開予定  |
-| 6. 共通ガイド  | 近日公開予定  |
+| 6. 共通ガイド  | [Link](https://github.com/Azure-Samples/jp-azureopenai-samples/tree/main/6.azureopenai-landing-zone-accelerator)  |
 
 ## Getting Started
 日本語: 各サンプルのREADMEをご参照ください。
