@@ -1,0 +1,29 @@
+name: 3.goal-achievement-adviser_infra
+
+on:
+  push:
+    paths:
+      - 3.goal-achievement-adviser/infra/**
+  workflow_dispatch:
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        platform: [ubuntu-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Azure CLI script file
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            cd 3.goal-achievement-adviser/infra/
+            az bicep build --file ./main.bicep --outfile azuredeploy.json
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: azuredeploy
+          path: ./3.goal-achievement-adviser/infra/azuredeploy.json
+          retention-days: 5
