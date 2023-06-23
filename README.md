@@ -15,21 +15,17 @@ Azure OpenAIを活用したアプリのサンプルを無償提供していま�
 日本語: 各サンプルのREADMEをご参照ください。
 English: Please refer to the README for each of the samples.
 
-### Prerequisites
-日本語: 各サンプルのREADMEをご参照ください。
-English: Please refer to the README for each of the samples.
-
-### Installation
-日本語: 各サンプルのREADMEをご参照ください。
-English: Please refer to the README for each of the samples.
-
-### Quickstart
-日本語: 各サンプルのREADMEをご参照ください。
-English: Please refer to the README for each of the samples.
-
-## Demo
-日本語: 各サンプルのREADMEをご参照ください。
-English: Please refer to the README for each of the samples.
+## 制限事項
+本書の使用においては、次の制限、制約をご理解の上、活用ください。
++ 目的外利用の禁止  
+本書は Microsoft Azure 上において、システムやソリューションの円滑かつ安全な構築に資することを目的に作成されています。この目的に反する利用はお断りいたします。
++ フィードバック  
+本書の記載内容へのコメントやフィードバックをいただけます場合は、担当の日本マイクロソフト社員にご連絡ください。なお、個別質問への回答やフィードバックへの対応はお約束できないことを、ご了承いただけますようお願い申し上げます。
++ 公式情報の確認  
+本書は日本マイクロソフトの有志のエンジニアによって、現場での経験を加えて執筆されたものです。そのため、この記載内容は Microsoft として公式に表明されたものではなく、日本マイクロソフトおよび米国 Microsoft Corporation は一切の責任を負いません。また、本書の記載内容について Azure サポートへお問い合わせいただいても、回答することはできません。  
+Microsoft Azure の公式情報については、Azure のドキュメントをご確認ください。
++ 免責  
+本書の記載内容によって発生したいかなる損害についても、日本マイクロソフトおよび米国 Microsoft Corporation は一切の責任を負いません。
 
 ## Resources
 - [What is Azure OpenAI?](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/overview)
