@@ -1,8 +1,8 @@
 '''
 Component:  Contact Center AI Demo 
 Purpose:    This is a demo solution showcasing AI applied in contact center solutions with the power of GPT
-Author:     Jixin Jia (Gin)
-Author:     Yuichi Ikeda
+Copyright (c) Microsoft Corporation
+Licensed under the MIT license.
 '''
 import os
 import json
