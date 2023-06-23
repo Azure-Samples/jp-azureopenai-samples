@@ -1,0 +1,207 @@
+{% extends "template.html" %}
+{% block main %}
+
+<head>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Preload Microsoft Speech SDK -->
+    <script
+        src="https://cdn.jsdelivr.net/npm/microsoft-cognitiveservices-speech-sdk@latest/distrib/browser/microsoft.cognitiveservices.speech.sdk.bundle-min.js"></script>
+</head>
+
+<!-- Laoding SDK -->
+<div id="now-loading" class="page-loader">
+    <div class="container-fluid h-center v-center h-100">
+        <div>
+            <img src="../static/images/atomic-loading.gif" class="img-fluid logo my-4">
+            <p id="loading-message">loading ...</p>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden section -->
+<div class="container" class="hide">
+    <textarea id="divRecognized" class="hide"></textarea>
+    <textarea id="divTranslated" class="hide"></textarea>
+</div>
+
+<!-- Setup sidebar -->
+<div class="offcanvas offcanvas-start bg-gradient-sidebar" tabindex="-1" id="offcanvas" data-bs-keyboard="true"
+    data-bs-backdrop="true">
+    <div class="offcanvas-header px-5 mt-3">
+        <h2 class="offcanvas-title d-none d-sm-block">Setup</h2>
+        <button type="button" class="btn text-4xl pe-0" data-bs-dismiss="offcanvas" aria-label="Close"><i
+                class="bi bi-x"></i></button>
+    </div>
+        <div class="offcanvas-body px-5">
+            <div class="mb-3">
+                <label for="speechLang" class="form-label">Speech Language</label>
+                <div class="input-group mb-3">
+                    <select id="speechLang" class="form-select" name="speechLang">
+                        <option value="ja-JP" selected>日本語 (Japanese)</option>
+                        <option value="en-US">English</option>
+                        <option value="zh-CN">中文普通话 (Chinese Mandarin)</option>
+                        <option value="zh-TW">中文国语 (Taiwanese Mandarin)</option>
+                        <option value="fr-FR">Deutsch (German)</option>
+                        <option value="de-DE">Française (French)</option>
+                        <option value="es-ES">Española (Spanish)</option>
+                        <option value="ko-KR">한국어 (Korean)</option>
+                        <option value="hi-IN">हिन्दी (Hindi)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="translateLang" class="form-label">Translate To</label>
+                <div class="input-group mb-3">
+                    <select id="translateLang" class="form-select" name="translateLang">
+                        <option value="ja">日本語 (Japanese)</option>
+                        <option value="en" selected>English</option>
+                        <option value="zh-Hans">简体中文 (Simplified Chinese)</option>
+                        <option value="zh-Hant">繁體中文 (Traditional Chinese)</option>
+                        <option value="fr">Deutsch (German)</option>
+                        <option value="de">Française (French)</option>
+                        <option value="es">Española (Spanish)</option>
+                        <option value="ko">한국어 (Korean)</option>
+                        <option value="hi">हिन्दी (Hindi)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Demo -->
+<div class="d-flex flex-column container-fluid hide">
+    <!-- Begin Page Content -->
+    <div id="demo-container" class="container-fluid hide">
+        <!-- Page Heading -->
+        <div class="d-flex align-items-center justify-content-between" >
+            <h3 class="my-3">コールセンター向け AI アシスタント</h3>
+        </div>
+        <!-- Content Row -->
+        <div class="row">
+            <!-- Left: Info Panel -->
+            <div class="col-xl-3 col-lg-6">
+                <div class="card border-left-warning shadow mb-4">
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">ガイド</h6>
+                    </div>
+                    <div class="card-body instruction-body-card">
+                        <img class="img-fluid mb-4 demo-thumbnail h-center" src="../static/images/anime-working.gif">
+                        <div class="px-2">
+                            <!--h4 class="my-2">シナリオ概要</h4-->
+                            <p class="lh-base">AI エージェントが顧客との会話をリアルタイムで文字に起こし、同時翻訳をします。 対話の感情分析もリアルタイムに可視化しています。</p>
+                            <p class="lh-base">会話が終了すると会話全体の内容を OpenAI サービスにより要約し、センチメントスコアやキーフレーズの抽出を行います。</p>
+                            <h4 class="mt-4 mb-2">使用方法</h4>
+                            <ol class="lh-lg">
+                                <!--li>Click <i class="bi bi-gear-fill"></i> on top right to expand menu</li>
+                                <li>Provide required <code>Azure AI Services</code> detail</li-->
+                                <li>右下のマイク <span class="btn-primary rounded-circle p-0 px-1 py-1"><i
+                                            class="bi bi-mic"></i></span> ボタンを押して会話を開始してください。</li>
+                                <li>ブラウザがマイクへのアクセスを求めてきたら許可してください。</li>
+                                <li>会話が終了したら、最後にまた <span class="btn-danger rounded-circle p-0 px-1 py-1"><i
+                                    class="bi bi-mic-fill"></i></span> ボタンを押して会話を終了してください。</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Right: Demo -->
+            <div class="col-xl-9 col-lg-6">
+                <!-- Content Row: Transcribe & Translate -->
+                <div class="row">
+                    <!-- Speech Recognized -->
+                    <div class="col-xl-6 col-md-6 mb-4">
+                        <div class="card border-left-primary shadow h-100">
+                            <div class="card-body">
+                                <div class="row no-gutters">
+                                    <div class="col mr-2">
+                                        <div class="font-weight-bold text-primary text-uppercase mb-1">
+                                            会話の文字起こし
+                                        </div>
+                                        <div class="pe-2 pt-2">
+                                            <textarea id="displaySpeech"
+                                                class="h5 pb-1 text-gray-800 text-m lh-base fw-light speech-textarea"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="bi bi-whatsapp text-gray-300 text-4xl"
+                                            style="vertical-align: top;"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Speech Translated -->
+                    <div class="col-xl-6 col-md-6 mb-4">
+                        <div class="card border-left-success shadow h-100">
+                            <div class="card-body">
+                                <div class="row no-gutters">
+                                    <div class="col mr-2">
+                                        <div class="font-weight-bold text-success text-uppercase mb-1">
+                                            同時翻訳
+                                        </div>
+                                        <div class="pe-2 pt-2">
+                                            <textarea id="displayTranslation"
+                                                class="h5 pb-1 text-gray-800 text-m lh-base fw-light speech-textarea"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="bi bi-translate text-gray-300 text-4xl"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Row: Sentiment -->
+                <div class="row">
+                    <!-- Sentiment Graph -->
+                    <div class="col-xl-8 col-lg-7">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                <h6 class="m-0 font-weight-bold text-primary text-uppercase">会話の感情分析</h6>
+                            </div>
+                            <div class="card-body callcenter-body-card">
+                                <div class="chart-area">
+                                    <canvas id="myChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- OpenAI -->
+                    <div class="col-xl-4 col-lg-5">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                <h6 class="m-0 font-weight-bold text-primary text-uppercase">会話の要約</h6>
+                                <div class="d-flex"><img src="../static/images/openai.png" class="img-fluid pe-2"
+                                        style="max-height: 21px;"></div>
+                            </div>
+                            <div id="divOpenAICard" class="card-body callcenter-body-card h-center v-center">
+                                <div id="divOpenAI">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- setup button -->
+        <div class="mic">
+            <button id="startAsyncButton" class="btn btn-primary rounded-circle p-0 micon"><i
+                    class="bi bi-mic text-4xl"></i></button>
+            <button id="stopAsyncButton" class="btn btn-danger rounded-circle p-0 micoff hide"><i
+                    class="bi bi-mic-fill text-4xl"></i></button>
+        </div>
+    </div> <!-- End of Main Content -->
+</div> <!-- End of Demo -->
+
+<!-- Call Center AI scripts -->
+<script src="../static/js/call_center_ai_cts.js"></script>
+
+{% endblock %}
