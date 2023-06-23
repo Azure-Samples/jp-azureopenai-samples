@@ -1,4 +1,7 @@
 
+// Copyright (c) Microsoft Corporation
+// Licensed under the MIT license.
+
 var gpt_loading_spinner = '<div id="openai_spinner" class="h-center"><div class="spinner-border text-success mb-2 loading-icon" role="status"></div><p class="mute text-s">Summarizing...</p></div>'
 
 // Speech Recognition & Translation with Speech SDK

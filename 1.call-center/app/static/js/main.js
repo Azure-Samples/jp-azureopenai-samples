@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation
+// Licensed under the MIT license.
+
 // Popover
 var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
 var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
