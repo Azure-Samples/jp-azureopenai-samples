@@ -178,7 +178,7 @@ VSCode の左側ペインより Azure アイコンを選択し、該当する [A
 
 ![Landingzone](assets/landing_zone.jpg)
 
-ランディングゾーンで利用する SKU の参考例となります。App Service に関しては SLA の観点で最低2つのインスタンスが必要となります。
+ランディングゾーンで利用する SKU の参考例となります。ASE を利用しない Basic プラン以上の App Service でも [VNET 統合](https://learn.microsoft.com/ja-jp/azure/app-service/overview-vnet-integration)と[プライベートエンドポイント](https://learn.microsoft.com/ja-jp/azure/app-service/networking/private-endpoint)を利用する事で閉域構成が可能です。App Service に関しては SLA の観点で最低2つのインスタンスが必要となります。
 
 |  サービス名  |  SKU  | Note |
 | ---- | ---- | ---- |
