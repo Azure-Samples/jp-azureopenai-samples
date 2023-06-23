@@ -1,5 +1,5 @@
 # Azure OpenAI Samples Japan
-Azure OpenAIを活用したアプリのサンプルを無償提供しています。 本サンプルは、日本マイクロソフトの社員有志により作成・公開しています（This repository contains sample applications that leverage Azure OpenAI with a focus on use cases for the Japan market）
+Azure OpenAIを活用したアプリケーション実装のリファレンスを目的として、アプリのサンプル（リファレンスアーキテクチャ、サンプルコードとデプロイ手順）を無償提供しています。 本サンプルは、日本マイクロソフトの社員有志により作成・公開しています（This repository contains sample applications that leverage Azure OpenAI with a focus on use cases for the Japan market）
 
 ## 公開サンプル一覧 (Samples included)
 | タイトル      | README      |
