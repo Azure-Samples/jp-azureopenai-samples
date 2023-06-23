@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Microsoft AI Solutions</title>
+    
+    <!-- Flask script root -->
+    <script type=text/javascript>
+      $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    </script>
+
+    <!-- Bootstrap 5.0.2 local host -->
+    <link rel="stylesheet" href="../static/bootstrap5.0.2/css/bootstrap.min.css">
+
+    <!-- Bootstrap icons (https://icons.getbootstrap.com/) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    
+    <!-- jQuery and Popper (Microsoft CDN)-->
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    
+    <!-- Theme: sb-admin styles-->
+    <link href="../static/themes/sb-admin/css/sb-admin-2.min.css" rel="stylesheet">
+
+    <!-- Application CSS -->
+    <link rel="stylesheet" href="../static/css/main.css">
+  </head>
+
+  <body>
+
+    <!-- Body Begins -->
+    <main>
+      {% block main %}
+      {% endblock %}
+    </main>
+    <!-- Body Ends -->
+
+  </body>
+</html>
