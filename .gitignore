@@ -163,3 +163,7 @@ cython_debug/
 # azd environemnt
 .azure
 */.azure
+
+# parameterfile
+*/*.local
+*/*/*.local
