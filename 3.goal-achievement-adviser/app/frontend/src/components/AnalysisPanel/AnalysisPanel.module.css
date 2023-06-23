@@ -1,0 +1,56 @@
+.thoughtProcess {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+    word-wrap: break-word;
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+.stepTable {
+    border-collapse: collapse;
+    border: 1px solid #d3d3d3;
+    box-shadow: 2px 2px 3px #d3d3d3;
+}
+
+.stepTableHeaderCell {
+    padding: 8px;
+    text-align: center;
+    border-bottom: 1px solid #d3d3d3;
+}
+
+.stepTableColumnNo {
+    width: 5%;
+    text-align: center;
+    background-color: #cccccc;
+    border-top: 1px solid #d3d3d3;
+    border-right: 1px solid #d3d3d3;
+}
+
+.stepTableColumnStep {
+    width: 40%;
+    background-color: #cccccc;
+    border-top: 1px solid #d3d3d3;
+    border-right: 1px solid #d3d3d3;
+}
+
+.stepTableColumnDetail {
+    width: 55%;
+    background-color: #cccccc;
+    border-top: 1px solid #d3d3d3;
+    border-right: 1px solid #d3d3d3;
+}
+
+.stepTableCellNo {
+    text-align: center;
+    border: 1px solid #cccccc;
+    padding: 5px;
+}
+
+.stepTableCellStep {
+    border: 1px solid #cccccc;
+    padding: 5px;
+}
+
+.stepTableCellDetail {
+    border: 1px solid #cccccc;
+    padding: 5px;
+}
