@@ -1,0 +1,26 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+    
+        {
+            "name": "Python: Flask",
+            "type": "python",
+            "request": "launch",
+            "module": "flask",
+            "env": {
+                "FLASK_APP": "${workspaceFolder}/app.py",
+                "FLASK_DEBUG": "1",
+                "STT_REGION": "<Your Service Region>",
+                "STT_RESOURCE_ID": "/subscriptions/<Your Subscription GUID>/resourceGroups/<Your ResourceGroup Name>/providers/Microsoft.CognitiveServices/accounts/<Your Service Name>",
+                "TEXT_ANALYTICS_ENDPOINT": "https://<Your Service Name>.cognitiveservices.azure.com",
+                "AOAI_ENDPOINT": "https://<Your Service Name>.openai.azure.com",
+                "AOAI_MODEL": "<<Your Model Name>>"
+            },
+            "args": [
+                "run"
+            ],
+            "jinja": true,
+            "justMyCode": true
+        }
+    ]
+}

@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% block main %}
+<main style="background-color: white">
+    <head>
+        <link rel="stylesheet" href="/css/company.css" />
+    </head>
+    
+    <!-- Loading SDK -->
+    <div id="warning" class="page-loader">
+        <div class="container-fluid h-center v-center h-100">
+            <div>
+                <img src="/images/atomic-loading.gif" class="img-fluid logo my-4">
+                <p>loading ...</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Hidden section -->
+    <div class="container" class="hide">
+        <textarea id="divChatData" class="hide"></textarea>
+    </div>
+    
+    <!-- Demo -->
+    <div class="d-flex flex-column mt-1 container-fluid hide">
+        <!-- Begin Page Content -->
+        <div id="demo-container" class="container-fluid hide">
+            <div class="row">
+                <h4 class="text-center mb-5" id="caption_proposal_label">企業分析(レポート)</h4>
+            </div>
+            <div class="row">
+                <div class="col-xl-12 col-md-12 ">
+                    <table id="tableMain" class="table table-bordered hide">
+                        <tbody>
+                            <tr>
+                                <th id="name_label" scope="col" class="col-3"></th>
+                                <td id="name" scope="col" class="col-9"></th>
+                            </tr>
+                            <tr>
+                                <th id="business_description_report_label">事業内容</th>
+                                <td id="business_description_report"></td>
+                            </tr>
+                            <tr>
+                                <th id="proprietor_report_label">経営者</th>
+                                <td id="proprietor_report"></td>
+                            </tr>
+                            <tr>
+                                <th id="mid_term_management_plan_label" scope="col" class="col-2">中期経営計画</td>
+                                <td id="mid_term_management_plan" scope="col" class="col-10">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th id="recent_news_label" scope="col" class="col-2">最近のニュース</td>
+                                <td id="recent_news" scope="col" class="col-10">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th id="finance_analyze_label">財務分析</td>
+                                <td id="finance_analyze"></td>
+                            </tr>
+                            <tr>
+                                <th></td>
+                                <td>
+                                <div class="input-group mb-1">
+                                    <input id="finance_analyze_feedback_text" type="text" class="form-control" value="">
+                                    <button id="finance_analyze_feedback_button" class="btn btn-primary">&gt;</button>
+                                </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th id="market_trend_label"></td>
+                                <td id="market_trend">業界トレンド</td>
+                            </tr>
+                            <tr>
+                                <th></td>
+                                <td>
+                                <div class="input-group mb-1">
+                                    <input id="market_trend_feedback_text" type="text" class="form-control" value="">
+                                    <button id="market_trend_feedback_button" class="btn btn-primary">&gt;</button>
+                                </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div> <!-- End of Demo -->
+    
+    <script src="/js/app/company_common.js"></script>
+    <script src="/js/app/company_report.js"></script>
+</main>
+{% endblock %}
