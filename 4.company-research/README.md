@@ -17,7 +17,8 @@ Azure OpenAIを活用したアプリケーションは、法人営業がお客�
 
 ### アプリケーション画面
 
-![Chat screen](docs/demo.png)
+![Chat screen](docs/demo-chat.png)
+![Report screen](docs/demo-report.png)
 
 ## セットアップガイド
 
@@ -98,9 +99,9 @@ Running on http://127.0.0.1:5000
 ## Azure へのデプロイ
 ## Azureリソースのプロビジョニング
 ```
-git clone https://github.com/customer-success-microsoft/company-research
+git clone https://github.com/Azure-Samples/jp-azureopenai-samples
 
-cd company-research
+cd jp-azureopenai-samples\4.company-research
 cd infra
 
 $PRINCIPAL_ID=YOUR-PRINCIPAL-ID
