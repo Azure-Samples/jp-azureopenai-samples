@@ -20,6 +20,7 @@ class CompanyResearch():
 
     # query company cache to RediSearch
     def search_embedded_company(self, redis_index_name, q, n):
+        print(f"I'm in function: {inspect.currentframe().f_code.co_name}")
         # query caches with cosine similarity
         base_query = f'*=>[KNN {n} @embeddings $vec_param AS vector_score]'
 
@@ -58,6 +59,7 @@ company information: {company_info}, {company_topics}
 企業情報: {company_info}, {company_topics}
 """
     def get_chat_system_prompt(self, locale, company_name, company_info, company_topics_text):
+        print(f"I'm in function: {inspect.currentframe().f_code.co_name}")
         if locale == "en-us":
             prompt_template = self.system_prompt_en_us
         else:
@@ -167,11 +169,6 @@ company information: {company_info}, {company_topics}
 
         print(f"I'm in function: {inspect.currentframe().f_code.co_name}")
 
-        # TODO: delete
-        print("engine(before)="+str(self.completion_deployment))
-        self.completion_deployment="davinci" 
-        print("engine(after)="+str(self.completion_deployment))
-
         return openai.Completion.create(
             engine=self.completion_deployment, 
             prompt=prompt, 
@@ -180,7 +177,9 @@ company information: {company_info}, {company_topics}
             n=1)
 
     def get_company_topics_text(self, company_name, question, n, data_source=None):
+        print(f"I'm in function: {inspect.currentframe().f_code.co_name}")
         q = company_name + ":" + question
+        print(f"self.redis_index_name_topics={self.redis_index_name_topics}")
         df = self.search_embedded_company(self.redis_index_name_topics, q, n)
 
         company_topics_text = ""
@@ -193,6 +192,6 @@ company information: {company_info}, {company_topics}
                     "label": json_data["label"],
                     "source": json_data["source"]
                 })
-
+        print(f"company_topics_text={company_topics_text}")
         return company_topics_text
 
