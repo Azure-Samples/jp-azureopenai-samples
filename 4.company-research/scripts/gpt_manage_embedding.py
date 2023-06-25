@@ -1,3 +1,5 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
 import json
 import uuid
 import numpy as np
@@ -235,19 +237,19 @@ def main():
     print()
 
     # Topics
-    # clear_cache(REDIS_CATEGORY_TOPICS)
-    # register_cache_index(REDIS_CATEGORY_TOPICS)
+    clear_cache(REDIS_CATEGORY_TOPICS)
+    register_cache_index(REDIS_CATEGORY_TOPICS)
 
-    # register_company_topics(REDIS_CATEGORY_TOPICS, "company_topics_ja.jsonl")
-    # register_company_topics(REDIS_CATEGORY_TOPICS, "company_topics_en.jsonl")
+    register_company_topics(REDIS_CATEGORY_TOPICS, "company_topics_ja.jsonl")
+    register_company_topics(REDIS_CATEGORY_TOPICS, "company_topics_en.jsonl")
 
-    # df = query_all_cache(REDIS_CATEGORY_TOPICS)
-    # print(df)
-    # print()
+    df = query_all_cache(REDIS_CATEGORY_TOPICS)
+    print(df)
+    print()
 
-    # df = query_cache(REDIS_CATEGORY_TOPICS, "Microsoft: Domestic competitor", n=3)
-    # print(df)
-    # print()
+    df = query_cache(REDIS_CATEGORY_TOPICS, "Microsoft: Domestic competitor", n=3)
+    print(df)
+    print()
 
 if __name__ == '__main__':
     main()

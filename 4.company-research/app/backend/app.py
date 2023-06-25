@@ -1,5 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
 import os
-import sys
 import time
 import json
 import jwt
@@ -8,21 +9,13 @@ from flask import Flask, request, jsonify, render_template
 from azure.identity import DefaultAzureCredential
 from redis import StrictRedis
 import inspect
-
-# TODO: delete. this was added by ruka to debug
-# from os.path import join, dirname
-# from dotenv import load_dotenv
+import traceback
 
 # Company
 from company_research.company import CompanyResearch
 
-# TODO: delete. this was added by ruka to debug
-# dotenv_path = join(dirname(__file__), '.env')
-# load_dotenv(dotenv_path)
-
 # Davinci, ChatGPT
 AZURE_OPENAI_SERVICE = os.environ.get("AZURE_OPENAI_SERVICE")
-print(AZURE_OPENAI_SERVICE) # TODO: delete
 AZURE_OPENAI_API_VERSION = os.environ.get("AZURE_OPENAI_API_VERSION")
 AZURE_OPENAI_COMPLETION_DEPLOYMENT = os.environ.get("AZURE_OPENAI_COMPLETION_DEPLOYMENT")
 AZURE_OPENAI_CHAT_DEPLOYMENT = os.environ.get("AZURE_OPENAI_CHAT_DEPLOYMENT")
@@ -35,8 +28,6 @@ REDIS_KEY  = os.environ.get("REDIS_KEY")
 
 REDIS_INDEX_NAME = os.environ.get("REDIS_INDEX_NAME")
 REDIS_CATEGORY_COMMON = os.environ.get("REDIS_CATEGORY_COMMON")
-print("REDIS_CATEGORY_COMMON") # TODO: delete
-print(REDIS_CATEGORY_COMMON) # TODO: delete
 REDIS_CATEGORY_TOPICS = os.environ.get("REDIS_CATEGORY_TOPICS")
 
 redis_client = StrictRedis(host=REDIS_NAME, port=10000, password=REDIS_KEY, ssl=True, ssl_cert_reqs=None, decode_responses=True)
@@ -60,7 +51,7 @@ openai.api_key = openai_token.token
 # Redis Index Name
 def get_redis_index_name(category):
     print(f"I'm in function: {inspect.currentframe().f_code.co_name}")
-    return category + "_" + REDIS_INDEX_NAME
+    return str(category) + "_" + REDIS_INDEX_NAME
 
 company_research = CompanyResearch(
     AZURE_OPENAI_EMBEDDING_DEPLOYMENT, 
@@ -82,7 +73,8 @@ def get_user_name(req: request):
         user_name = claim["preferred_username"]
         user_name = user_name.split("@")[0]
     except Exception as e:
-        print(e)
+        print(f"An error occurred in {inspect.currentframe().f_code.co_name}: {e}")
+        traceback.print_exc()
         user_name = ""
 
     return user_name
@@ -140,7 +132,8 @@ def company_chat():
 
         return jsonify(response)
     except Exception as e:
-        print(e)
+        print(f"An error occurred in {inspect.currentframe().f_code.co_name}: {e}")
+        traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
 @app.route("/company_completion", methods=["POST"])
@@ -158,7 +151,8 @@ def company_completion():
 
         return response.choices[0].text.replace("\n", "")
     except Exception as e:
-        print(e)
+        print(f"An error occurred in {inspect.currentframe().f_code.co_name}: {e}")
+        traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
 @app.route("/analysis_feedback", methods=["POST"])
@@ -178,7 +172,8 @@ def analysis_feedback():
 
         return response.choices[0].text
     except Exception as e:
-        print(e)
+        print(f"An error occurred in {inspect.currentframe().f_code.co_name}: {e}")
+        traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
 @app.route("/<path:path>")

@@ -5,11 +5,12 @@
 
 ## Python ライブラリのインストール
 ### Condaを使う手法
-本アプリケーションの開発では [Miniconda 3](https://docs.conda.io/en/latest/miniconda.html) で Python 3.9 の仮想環境を作りました。
+本アプリケーションの開発では [Miniconda 3](https://docs.conda.io/en/latest/miniconda.html) で Python 3.10 の仮想環境を作りました。
 
 Anaconda/Miniconda の仮想環境の作成例です。
-```
-conda create -n gpt-console python=3.9
+```bash
+cd scripts
+conda create -n gpt-console python=3.10
 conda activate gpt-console
 pip install -r requirements.txt
 ```
@@ -23,33 +24,36 @@ pip install -r requirements.txt
 
 ## .env の変更
 [.env.template](.env.template) を .env に変更します。
-```
+```bash
 cp .env.template .env
 ```
 
 そして以下の項目を設定します。
 | Key | Value |
 |------|------|
-| OPENAI_API_TYPE | azure |
-| OPENAI_API_BASE | Your endpoint for Azure Open AI 例: `https://youropenai.openai.azure.com/` |
-| OPENAI_API_KEY | Your API KEY for Azure Open AI |
-| OPENAI_API_VERSION | 2022-12-01 |
-| OPENAI_API_MODEL_ID | Your deployed text-embedding-ada-002 based model name |
+| AZURE_OPENAI_API_TYPE | azure |
+| AZURE_OPENAI_SERVICE | Your endpoint for Azure Open AI 例: `https://youropenai.openai.azure.com/` |
+| AZURE_OPENAI_API_KEY | Your API KEY for Azure Open AI |
+| AZURE_OPENAI_VERSION | 2023-05-15 |
+| AZURE_OPENAI_EMBEDDING_DEPLOYMENT | Your deployed text-embedding-ada-002 based model name |
 | REDIS_NAME | Your endpoint for Redis Enterprise e.g. yourredis.southcentralus.redisenterprise.cache.azure.net |
 | REDIS_KEY | Your KEY for Redis Enterprise |
 | REDIS_INDEX_CATEGORY | company |
 | REDIS_INDEX_NAME | embedding_index |
+| REDIS_CATEGORY_COMMON | company_common |
+| REDIS_CATEGORY_TOPICS | company_topics |
 
 RediSearch のインデックス名は [REDIS_INDEX_CATEGORY]_[REDIS_INDEX_NAME] になります。
-
 例: company_embedding_index
 
-本アプリケーションの銀行業務以外のアプリケーションもデプロイする場合、
-REDIS_INDEX_CATEGORYの値を変更してナレッジストアに登録してください (例: 工場業務の場合 factory)
+## データソースの確認
+### サンプルデータ
+本レポジトリには以下のサンプルデータが含まれており、こちらがナレッジベースに登録されます
+- [企業の基本情報](company_common.json)
+- [トピック別追加情報（日本語）](company_topics_ja.jsonl)
+- [トピック別追加情報（英語）](company_topics_en.jsonl)
 
-## 企業情報 (company_data.json)
-ナレッジベースに登録する 企業データの [サンプル](company_data.json) です (米国企業として Tesla と GM, 日本企業として Freee と マネーフォワードが登録されています)
-
+### データソース追加（任意）
 取り込みたい企業情報を各種データソースから収集して JSON ファイルに追加してください。
 
 企業情報が載っているデータソースは DBMS, HTML, PDF, 音声 など多様であり、この JSON のように整形されているとは限りませんので、DBMS, OCR, Speech  といった様々な技術を組み合わせてデータを収集する必要があります。
@@ -66,11 +70,14 @@ REDIS_INDEX_CATEGORYの値を変更してナレッジストアに登録してく
 |competitors|競合企業。この情報を元に競合企業を検索します|
 |data_source(必須)|label: 画面表示時のラベル, url: 参照元|
 
-## 企業情報テキストの確認
+## 企業情報テキストの確認（任意）
 [gpt_locale.py](gpt_locale.py) の get_company_description 関数は対象企業の情報を日本語や英語の文章に整形して返します。この文章はナレッジストアに保存され、ChatGPT との会話前に知識として渡されます。そのため ChatGPT に認識させたい情報がある場合は、この関数を編集してください。この関数が返した文章は Redis Cache の内部に "text" という要素で保存されます。
 
 ## アプリケーションの実行
 .env と企業データ(company_data.json)の変更後, gpt_manage_embedding.py を実行すると、ナレッジベース(RediSearch)に企業データと検索用の Embedding が登録されます。
+
+スクリプト作成者のAzure OpenAI Serviceには、最大1分に1回の呼出し制限がかかっているため、`time.sleep(60)`を入れており、6社+169トピックの情報を登録するのに約175分(約3時間)の時間がかかります。
+
 gpt_manage_embedding.py は以下の機能を提供します。
 
 | 関数 | 役割 |

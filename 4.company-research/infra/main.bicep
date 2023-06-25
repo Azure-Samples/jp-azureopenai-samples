@@ -1,3 +1,5 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
 targetScope = 'subscription'
 
 @minLength(1)
