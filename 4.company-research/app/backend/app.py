@@ -1,5 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
 import os
-import sys
 import time
 import json
 import jwt

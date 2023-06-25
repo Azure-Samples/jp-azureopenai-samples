@@ -1,7 +1,5 @@
-/*
-Copyright (C) Haruo Shibuya 2023/3/25
-Created for Microsoft Open AI Solutions Demo
-*/
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
 
 // Global variables
 let g_locale = "";
