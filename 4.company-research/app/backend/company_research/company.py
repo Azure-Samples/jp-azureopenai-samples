@@ -68,6 +68,7 @@ company information: {company_info}, {company_topics}
         return { "role": "system", "content" : system_prompt }
 
     def get_company_chat(self,  locale, company_name, company_info, messages, n):
+        print(f"I'm in function: {inspect.currentframe().f_code.co_name}")
         q = company_name + ":" + messages[-1]["content"]
         data_source = []
         company_topics_text = self.get_company_topics_text(company_name, q, n, data_source)

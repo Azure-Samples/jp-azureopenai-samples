@@ -66,22 +66,29 @@ az deployment sub create --parameter environmentName=company-research --paramete
 ```
 YOUR-PRINCIPAL-IDの取得方法例: Azure Portal > Azure AD > Users > 自分の名前で検索 > Object IDをコピー
 
-### 2. App Service 構成 - 環境変数の設定
+#### デバッグ
+##### RedisEnterprise
+このレポジトリにあるIaCでRedis Enterpriseのデプロイ成功しない場合があることが現状確認されています。具体的には、リソースの作成はされ、Azure Portal等で確認することができるものの、アクセスキーが表示できないという事象が起きることが確認されています。
 
-Azure ポータルで App Service の [構成] メニューを選択し、開発環境の .env/launch.json に定義してある環境変数を設定します。
+その場合、IaCで作成されたRedis Enterpriseを削除し、Azure Portal上から作り直してください。リソース作成には約5分かかります。
+
+### 2. App Service 構成 - 環境変数の設定
+App Serviceが使う環境変数については、一部IaCで自動設定しているものもありますが、Redisのアクセスキー等は手動で設定する必要があります。
+設定が必要な環境変数については、app/backed/.env.templateをご参照ください。
+Azure ポータルで App Service の [構成] メニューを選択し、環境変数を設定します。
 
 ![App Service 構成](doc/appservice_configuration.jpg)
 
-
 ### 3. アクセス制御 (IAM) の構成
 
-Azure ポータルで、各バックエンドサービスの [アクセス制御 (IAM)] メニューを開き App Service の Managed ID に該当する以下の権限（ロール）を割り当てます。 
-
-|  サービス名  |  ロール  | 
-| ---- | ---- |
-| Azure OpenAI Service |  Cognitive Services OpenAI User  | 
+Azure ポータルで、Azure OpenAI Serviceの [アクセス制御 (IAM)] メニューを開き、`Cognitive Services OpenAI User`権限（ロール）をApp Serviceの Managed IDにを割り当てます。 
 
 ### 4. WEB アプリケーションを App Service へデプロイ
+以下のようにVS Codeを開きます
+```bash
+cd jp-azureopenai-samples/4.company-research/app/backend
+code .
+```
 
 VSCode の左側ペインより Azure アイコンを選択し、該当する [App Service] に対して [Deploy to Web App...] にてアプリケーションを展開します。
 
@@ -89,10 +96,18 @@ VSCode の左側ペインより Azure アイコンを選択し、該当する [A
 
 ![Deploy](docs/deploy.jpg)
 
+### 5. Browse Website
+Web AppのURLにアクセスします。
+
+「企業分析(チャット)」という文字列や検索ボックスが表示されますが、まだRedisにデータを入れていないため、企業情報の検索等はできない状態です。
+
+#### デバッグ
+Web AppのAdvanced Toolsにアクセスし、Log streamを表示するとアプリケーションログなどを見ることができます。
+
 # ナレッジベースに企業の最新情報を登録
 [ナレッジベースに企業の最新情報を登録](scripts/README.md)
 
-### 開発環境のセットアップ
+### ローカルデバッグ環境のセットアップ
 
 #### 1. アクセス制御 (IAM) の構成
 
@@ -107,7 +122,7 @@ Azure ポータルで各バックエンドサービスの [アクセス制御 (I
 #### 2. ローカルデバッグ用の環境変数設定
 
 ##### Option 1: .env
-```
+```bash
 cd app\backend
 cp .env.template .env
 ```

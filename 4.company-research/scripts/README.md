@@ -5,11 +5,12 @@
 
 ## Python ライブラリのインストール
 ### Condaを使う手法
-本アプリケーションの開発では [Miniconda 3](https://docs.conda.io/en/latest/miniconda.html) で Python 3.9 の仮想環境を作りました。
+本アプリケーションの開発では [Miniconda 3](https://docs.conda.io/en/latest/miniconda.html) で Python 3.10 の仮想環境を作りました。
 
 Anaconda/Miniconda の仮想環境の作成例です。
-```
-conda create -n gpt-console python=3.9
+```bash
+cd scripts
+conda create -n gpt-console python=3.10
 conda activate gpt-console
 pip install -r requirements.txt
 ```
@@ -23,7 +24,7 @@ pip install -r requirements.txt
 
 ## .env の変更
 [.env.template](.env.template) を .env に変更します。
-```
+```bash
 cp .env.template .env
 ```
 
@@ -39,12 +40,13 @@ cp .env.template .env
 | REDIS_KEY | Your KEY for Redis Enterprise |
 | REDIS_INDEX_CATEGORY | company |
 | REDIS_INDEX_NAME | embedding_index |
+| REDIS_CATEGORY_COMMON | company_common |
 
 RediSearch のインデックス名は [REDIS_INDEX_CATEGORY]_[REDIS_INDEX_NAME] になります。
 
 例: company_embedding_index
 
-本アプリケーションの銀行業務以外のアプリケーションもデプロイする場合、
+本アプリケーションのXX業務以外のアプリケーションもデプロイする場合、
 REDIS_INDEX_CATEGORYの値を変更してナレッジストアに登録してください (例: 工場業務の場合 factory)
 
 ## 企業情報 (company_data.json)
@@ -71,6 +73,9 @@ REDIS_INDEX_CATEGORYの値を変更してナレッジストアに登録してく
 
 ## アプリケーションの実行
 .env と企業データ(company_data.json)の変更後, gpt_manage_embedding.py を実行すると、ナレッジベース(RediSearch)に企業データと検索用の Embedding が登録されます。
+
+実行は約XXX分かかります。
+
 gpt_manage_embedding.py は以下の機能を提供します。
 
 | 関数 | 役割 |
