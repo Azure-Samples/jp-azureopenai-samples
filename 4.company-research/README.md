@@ -12,99 +12,55 @@ Azure OpenAIを活用したアプリケーションは、法人営業がお客�
 ### 主な機能
 
 1. 企業情報名での企業情報の検索ができます
-2. チャット形式で、より詳細な企業情報のの分析ができます
-3. レポート形式で、より詳細な企業情報のの分析ができます
+1. チャット形式で、より詳細な企業情報のの分析ができます
+1. レポート形式で、より詳細な企業情報のの分析ができます
 
 ### アプリケーション画面
 
 ![Chat screen](docs/demo-chat.png)
 ![Report screen](docs/demo-report.png)
 
-## セットアップガイド
-
-WEB アプリケーションを Azure App Service でホストしたソリューション・ダイアグラムとなります。
+### コンポーネントとデータフロー
+WEB アプリケーションを Azure App Service でホストしたコンポーネントとデータフローの図となります。
 
 ![Solution](docs/diagram.png)
 
-### クラウド実行環境
+## セットアップガイド
 
-以下は "検証用途の最小構成" を示しています。運用環境として構成する場合には後半で示されている "ランディングゾーン構成" をご検討ください。
+本セットアップガイドは、以下の順番で記載しています
+1. [ローカル作業環境のセットアップ](#ローカル作業環境のセットアップ)
+1. [クラウド実行環境のセットアップ](#クラウド実行環境のセットアップ)
+1. [ローカルデバッグ環境のセットアップ](#ローカルデバッグ環境のセットアップ)
 
-|  サービス名  |  SKU  | Note |
-| ---- | ---- | ---- |
-| Azure App Service  |  S1  | Python 3.10 |
-| Azure OpenAI Service |  Standard  | gpt-35-turbo, text-davinci-003, text-embedding-ada-002 |
-| Azure Cache for Redis | Enterprise | |
-
-### ローカル開発環境
-
+### ローカル作業環境のセットアップ
+以下がインストールされている環境をご準備ください
+- bash
+- git
+- Azure CLI
 - Visual Studio Code
     - Azure App Service 拡張機能 
     - Python 拡張機能
 - Python 3.10
 
-クラウドに下記サービスがデプロイされている必要があります。
+筆者はWindows 11上のWSL2環境を中心に検証をしていますが、上記がインストールされている環境であればセットアップはできる想定でガイドを書いています。
+
+### クラウド実行環境のセットアップ
+以下は "検証用途の最小構成" を示しています。
 
 |  サービス名  |  SKU  | Note |
 | ---- | ---- | ---- |
-| Azure OpenAI Service |  Standard  | gpt-35-turbo, text-davinci-003, text-embedding-ada-002 |
-| Azure Cache for Redis | Enterprise | |
+| Azure App Service  |  Standard (S1)  | Python 3.10 |
+| Azure OpenAI Service |  Standard (S0)  | gpt-35-turbo, text-davinci-003, text-embedding-ada-002 |
+| Azure Cache for Redis | Enterprise (E10) | RediSearch |
 
-## 開発環境の準備
-
-### 1. アクセス制御 (IAM) の構成
-
-VSCode の Azure 拡張機能で Azure へサインインする事で、デバッグ実行の際にサインインユーザーの Credential が DefaultAzureCredential となります。 
-
-Azure ポータルで各バックエンドサービスの [アクセス制御 (IAM)] メニューを開き、サインインユーザーに該当する以下の権限（ロール）を割り当てます。 
-
-|  サービス名  |  ロール  | 
-| ---- | ---- |
-| Azure OpenAI Service |  Cognitive Services OpenAI User  | 
-
-### 2. ローカルデバッグ用の環境変数設定
-
-#### Option 1: .env
-```
-cd app\backend
-cp .env.template .env
-```
-.envファイルの値を環境に合わせて設定します。
-
-#### Option 2: WIP
-`.vscode/launch.json` ファイルで <Your ...> の値を環境に合わせて設定します。
-
-```json
-"env": {
-    "FLASK_APP": "${workspaceFolder}/app.py",
-    "FLASK_DEBUG": "1",
-    "AZURE_OPENAI_API_TYPE": "azure",
-    ...
-}
-```
-
-### 3. モジュールのインストール
-
+### Azureリソースのプロビジョニング
 ```bash
-pip install -r requirements.txt
-```
-
-### 4. デバッグ実行
-
-VSCode からデバッグ実行を開始します。
-
-Running on http://127.0.0.1:5000
-
-
-## Azure へのデプロイ
-## Azureリソースのプロビジョニング
-```
 git clone https://github.com/Azure-Samples/jp-azureopenai-samples
 
-cd jp-azureopenai-samples\4.company-research
+cd jp-azureopenai-samples/4.company-research
 cd infra
 
-$PRINCIPAL_ID=YOUR-PRINCIPAL-ID
+PRINCIPAL_ID=YOUR-PRINCIPAL-ID
 
 az deployment sub create --parameter environmentName=company-research --parameter location=japaneast --parameter openAiResourceGroupLocation=eastus --parameter principalId=$PRINCIPAL_ID --location japaneast --template-file ./main.bicep
 ```
@@ -135,3 +91,56 @@ VSCode の左側ペインより Azure アイコンを選択し、該当する [A
 
 # ナレッジベースに企業の最新情報を登録
 [ナレッジベースに企業の最新情報を登録](scripts/README.md)
+
+### 開発環境のセットアップ
+
+#### 1. アクセス制御 (IAM) の構成
+
+VSCode の Azure 拡張機能で Azure へサインインする事で、デバッグ実行の際にサインインユーザーの Credential が DefaultAzureCredential となります。 
+
+Azure ポータルで各バックエンドサービスの [アクセス制御 (IAM)] メニューを開き、サインインユーザーに該当する以下の権限（ロール）を割り当てます。 
+
+|  サービス名  |  ロール  | 
+| ---- | ---- |
+| Azure OpenAI Service |  Cognitive Services OpenAI User  | 
+
+#### 2. ローカルデバッグ用の環境変数設定
+
+##### Option 1: .env
+```
+cd app\backend
+cp .env.template .env
+```
+.envファイルの値を環境に合わせて設定します。
+
+##### Option 2: WIP
+`.vscode/launch.json` ファイルで <Your ...> の値を環境に合わせて設定します。
+
+```json
+"env": {
+    "FLASK_APP": "${workspaceFolder}/app.py",
+    "FLASK_DEBUG": "1",
+    "AZURE_OPENAI_API_TYPE": "azure",
+    ...
+}
+```
+
+#### 3. モジュールのインストール
+
+```bash
+pip install -r requirements.txt
+```
+
+#### 4. デバッグ実行
+
+VSCode からデバッグ実行を開始します。
+
+Running on http://127.0.0.1:5000
+
+#### 動作確認
+クラウドに下記サービスがデプロイされている必要があります。
+
+|  サービス名  |  SKU  | Note |
+| ---- | ---- | ---- |
+| Azure OpenAI Service |  Standard  | gpt-35-turbo, text-davinci-003, text-embedding-ada-002 |
+| Azure Cache for Redis | Enterprise | |
