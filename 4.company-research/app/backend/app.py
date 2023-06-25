@@ -16,7 +16,6 @@ from company_research.company import CompanyResearch
 
 # Davinci, ChatGPT
 AZURE_OPENAI_SERVICE = os.environ.get("AZURE_OPENAI_SERVICE")
-print(AZURE_OPENAI_SERVICE) # TODO: delete
 AZURE_OPENAI_API_VERSION = os.environ.get("AZURE_OPENAI_API_VERSION")
 AZURE_OPENAI_COMPLETION_DEPLOYMENT = os.environ.get("AZURE_OPENAI_COMPLETION_DEPLOYMENT")
 AZURE_OPENAI_CHAT_DEPLOYMENT = os.environ.get("AZURE_OPENAI_CHAT_DEPLOYMENT")
@@ -29,8 +28,6 @@ REDIS_KEY  = os.environ.get("REDIS_KEY")
 
 REDIS_INDEX_NAME = os.environ.get("REDIS_INDEX_NAME")
 REDIS_CATEGORY_COMMON = os.environ.get("REDIS_CATEGORY_COMMON")
-print("REDIS_CATEGORY_COMMON") # TODO: delete
-print(REDIS_CATEGORY_COMMON) # TODO: delete
 REDIS_CATEGORY_TOPICS = os.environ.get("REDIS_CATEGORY_TOPICS")
 
 redis_client = StrictRedis(host=REDIS_NAME, port=10000, password=REDIS_KEY, ssl=True, ssl_cert_reqs=None, decode_responses=True)

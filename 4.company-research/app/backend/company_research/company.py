@@ -80,11 +80,6 @@ company information: {company_info}, {company_topics}
 
         print(f"I'm in function: {inspect.currentframe().f_code.co_name}, before calling ChatCompletion.create()")
 
-        # TODO: delete
-        print("engine(before)="+str(self.chat_deployment))
-        self.chat_deployment="chat"
-        print("engine(after)="+str(self.chat_deployment))
-
         result = openai.ChatCompletion.create(
             engine=self.chat_deployment,
             messages=messages,
@@ -127,11 +122,6 @@ company information: {company_info}, {company_topics}
         prompt = prompt_template_report.format(company_name=company_name, company_info=company_info, question=question, company_topics=company_topics_text)
 
         print(f"I'm in function: {inspect.currentframe().f_code.co_name}")
-
-        # TODO: delete
-        print("engine(before)="+str(self.completion_deployment))
-        self.completion_deployment="davinci" 
-        print("engine(after)="+str(self.completion_deployment))
 
         return openai.Completion.create(
             engine=self.completion_deployment, 
