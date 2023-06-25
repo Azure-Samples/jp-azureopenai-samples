@@ -30,7 +30,8 @@ WEB アプリケーションを Azure App Service でホストしたコンポー
 本セットアップガイドは、以下の順番で記載しています
 1. [ローカル作業環境のセットアップ](#ローカル作業環境のセットアップ)
 1. [クラウド実行環境のセットアップ](#クラウド実行環境のセットアップ)
-1. [ローカルデバッグ環境のセットアップ](#ローカルデバッグ環境のセットアップ)
+1. [ナレッジベースへの企業情報の登録](#ナレッジベースへの企業情報の登録)
+1. [ローカルデバッグ環境のセットアップ](#ローカルデバッグ環境のセットアップ) (任意)
 
 ### ローカル作業環境のセットアップ
 以下がインストールされている環境をご準備ください
@@ -77,8 +78,6 @@ App Serviceが使う環境変数については、一部IaCで自動設定して
 設定が必要な環境変数については、app/backed/.env.templateをご参照ください。
 Azure ポータルで App Service の [構成] メニューを選択し、環境変数を設定します。
 
-![App Service 構成](doc/appservice_configuration.jpg)
-
 ### 3. アクセス制御 (IAM) の構成
 
 Azure ポータルで、Azure OpenAI Serviceの [アクセス制御 (IAM)] メニューを開き、`Cognitive Services OpenAI User`権限（ロール）をApp Serviceの Managed IDにを割り当てます。 
@@ -94,8 +93,6 @@ VSCode の左側ペインより Azure アイコンを選択し、該当する [A
 
 約4分かかります。
 
-![Deploy](docs/deploy.jpg)
-
 ### 5. Browse Website
 Web AppのURLにアクセスします。
 
@@ -104,12 +101,24 @@ Web AppのURLにアクセスします。
 #### デバッグ
 Web AppのAdvanced Toolsにアクセスし、Log streamを表示するとアプリケーションログなどを見ることができます。
 
-# ナレッジベースに企業の最新情報を登録
+### ナレッジベースへの企業情報の登録
 [ナレッジベースに企業の最新情報を登録](scripts/README.md)
 
 ### ローカルデバッグ環境のセットアップ
+ロカールでコードのデバッグをしたい場合のセットアップ手順例を紹介します。
+
+Azure Web Appで動く想定のPythonアプリケーションをローカル環境で実行することにより、VS Codeのデバッグ機能等を活用することができます。
+
+##### ローカル実行時も必要なクラウドサービス
+クラウドに下記サービスがデプロイされている必要があります。
+
+|  サービス名  |  SKU  | Note |
+| ---- | ---- | ---- |
+| Azure OpenAI Service |  Standard (S0)  | gpt-35-turbo, text-davinci-003, text-embedding-ada-002 |
+| Azure Cache for Redis | Enterprise (E10) | RediSearch |
 
 #### 1. アクセス制御 (IAM) の構成
+Azureで動かす場合はApp ServiceのManaged IDにCognitive Services OpenAI User権限を追加しましたが、ローカルで実行する場合は別の方法でAzure OpenAIに対して認証認可する必要があります。
 
 VSCode の Azure 拡張機能で Azure へサインインする事で、デバッグ実行の際にサインインユーザーの Credential が DefaultAzureCredential となります。 
 
@@ -120,25 +129,11 @@ Azure ポータルで各バックエンドサービスの [アクセス制御 (I
 | Azure OpenAI Service |  Cognitive Services OpenAI User  | 
 
 #### 2. ローカルデバッグ用の環境変数設定
-
-##### Option 1: .env
 ```bash
-cd app\backend
+cd app/backend
 cp .env.template .env
 ```
 .envファイルの値を環境に合わせて設定します。
-
-##### Option 2: WIP
-`.vscode/launch.json` ファイルで <Your ...> の値を環境に合わせて設定します。
-
-```json
-"env": {
-    "FLASK_APP": "${workspaceFolder}/app.py",
-    "FLASK_DEBUG": "1",
-    "AZURE_OPENAI_API_TYPE": "azure",
-    ...
-}
-```
 
 #### 3. モジュールのインストール
 
@@ -152,10 +147,4 @@ VSCode からデバッグ実行を開始します。
 
 Running on http://127.0.0.1:5000
 
-#### 動作確認
-クラウドに下記サービスがデプロイされている必要があります。
 
-|  サービス名  |  SKU  | Note |
-| ---- | ---- | ---- |
-| Azure OpenAI Service |  Standard  | gpt-35-turbo, text-davinci-003, text-embedding-ada-002 |
-| Azure Cache for Redis | Enterprise | |
