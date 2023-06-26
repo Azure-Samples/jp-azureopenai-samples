@@ -1,205 +1,35 @@
 [
     {
-        "name": "Microsoft", 
-        "securities_code": "MSFT",
-        "locale": "en-us", 
-        "industry": "software",
-        "representative": "Satya Nadella", 
-        "establishment_date": "1975/4",
-        "capital": 2404, 
-        "major_shareholders": "Steve Ballmer", 
-        "business_description": "Microsoft is a multinational technology company. It is one of the world's largest and most influential technology companies. Microsoft is primarily known for its software products and cloud services, including Windows, Microsoft Azure, Microsoft 365.", 
-        "number_of_employees": 210000, 
-        "location": "Redmond, Washington, U.S.", 
-        "revenue": [
-            {"2020": 143015}, 
-            {"2021": 168088}, 
-            {"2022": 198270}
-        ], 
-        "operating_profit": [
-            {"2020": 52959}, 
-            {"2021": 69916}, 
-            {"2022": 83383}
-        ],
-        "total_assets": [
-            {"2020": 301311}, 
-            {"2021": 333779}, 
-            {"2022": 364840}
-        ],
-        "equity_ratio":[
-            {"2020": 39.3}, 
-            {"2021": 42.5}, 
-            {"2022": 45.6}
-        ],
-        "listed_market" : "NASDAQ"
-    },
-    {
-        "name": "Starbucks", 
-        "securities_code": "SBUX",
-        "locale": "en-us", 
-        "industry": "coffeeshop",
-        "representative": "Laxman Narasimhan", 
-        "establishment_date": "1971/4",
-        "capital": 2404, 
-        "major_shareholders": "The Vanguard Group, Inc", 
-        "business_description": "Starbucks Corporation is an American multinational chain of coffeehouses and roastery reserves headquartered in Seattle, Washington. It is the world's largest coffeehouse chain.", 
-        "number_of_employees": 402000, 
-        "location": "Starbucks Center, Seattle, Washington, U.S.", 
-        "revenue": [
-            {"2020": 23518}, 
-            {"2021": 29060}, 
-            {"2022": 32250}
-        ], 
-        "operating_profit": [
-            {"2020": 1561}, 
-            {"2021": 4872}, 
-            {"2022": 4617}
-        ],
-        "total_assets": [
-            {"2020": 29374}, 
-            {"2021": 31392}, 
-            {"2022": 27978}
-        ],
-        "equity_ratio":[
-            {"2020": -26.6}, 
-            {"2021": -16.9}, 
-            {"2022": -31.1}
-        ],
-        "listed_market" : "NASDAQ"
-    },
-    {
-        "name": "Walmart Inc.", 
-        "securities_code": "WMT",
-        "locale": "en-us", 
-        "industry": "retail",
-        "representative": "Doug McMillon", 
-        "establishment_date": "1962/7",
-        "capital": 236.5, 
-        "major_shareholders": "The Walton family", 
-        "business_description": "American multinational retail corporation that operates a chain of hypermarkets (also called supercenters), discount department stores, and grocery stores in the United States.", 
-        "number_of_employees": 2300000, 
-        "location": "Bentonville, Arkansas, U.S.", 
-        "revenue": [
-            {"2020": 514400}, 
-            {"2021": 559151}, 
-            {"2022": 572754}
-        ], 
-        "operating_profit": [
-            {"2020": 22940}, 
-            {"2021": 22548}, 
-            {"2022": 25942}
-        ],
-        "total_assets": [
-            {"2020": 236500}, 
-            {"2021": 252496}, 
-            {"2022": 244860}
-        ],
-        "equity_ratio":[
-            {"2020": 39.5}, 
-            {"2021": 38.5}, 
-            {"2022": 37.5}
-        ],
-        "listed_market" : "NYSE"
-    },
-    {
-        "name": "トヨタ自動車", 
-        "securities_code": "7203",
-        "locale": "ja-jp", 
-        "industry": "automotive",
-        "representative": "佐藤恒治", 
-        "establishment_date": "1937/8",
-        "capital": 397050, 
-        "major_shareholders": "自社", 
-        "business_description": "トヨタグループの中核企業で世界最大の自動車メーカーの1つであり、。日本で最も売上高が大きい企業。ハイブリッドカーをはじめとする環境保護への取り組みやヒト、クルマ、社会を繋げる様々な実証実験を行うWoven City（ウーブン・シティ）を展開中", 
-        "number_of_employees": 366283, 
-        "location": "愛知県豊田市トヨタ町1番地", 
-        "revenue": [
-            {"2020": 29866547}, 
-            {"2021": 27214594}, 
-            {"2022": 31379507}
-        ], 
-        "operating_profit": [
-            {"2020": 2442800}, 
-            {"2021": 2197748}, 
-            {"2022": 2995697}
-        ],
-        "total_assets": [
-            {"2020": 53972300}, 
-            {"2021": 62267140}, 
-            {"2022": 67688771}
-        ],
-        "equity_ratio":[
-            {"2020": 37.1}, 
-            {"2021": 37.6}, 
-            {"2022": 38.8}
-        ],
-        "listed_market" : "東証プライム"
-    },
-    {
-        "name": "ソニーグループ", 
-        "securities_code": "6758",
+        "name": "コントソ電機 (Contoso Inc.)", 
+        "securities_code": "9999",
         "locale": "ja-jp", 
         "industry": "manufacturing",
-        "representative": "吉田憲一郎", 
-        "establishment_date": "1946/5",
-        "capital": 880365, 
-        "major_shareholders": "日本マスタートラスト信託銀行", 
-        "business_description": "", 
-        "number_of_employees": 2300000, 
-        "location": "東京都港区港南1-7-1", 
+        "representative": "山田将司", 
+        "establishment_date": "1956/4",
+        "capital": 180365, 
+        "major_shareholders": "山田武", 
+        "business_description": "日本の東京都新宿区に本社を置く総合電機メーカー。東証プライム市場およびニューヨーク証券取引所（NYSE）に上場して、日経インデックス400の構成銘柄の一つ。ハードウェア分野では世界首位の液晶パネルや各種オーディオ・ビジュアル機器を提供。さらに、同社はハード・ソフト・サービスを横断するネットワークサービスにも重点を置いています。", 
+        "number_of_employees": 86700, 
+        "location": "東京都港区新宿区20-10-5", 
         "revenue": [
-            {"2020": 8259885}, 
-            {"2021": 8998661}, 
-            {"2022": 9921513}
+            {"2020": 259885}, 
+            {"2021": 998661}, 
+            {"2022": 921513}
         ], 
         "operating_profit": [
-            {"2020": 845459}, 
-            {"2021": 955255}, 
-            {"2022": 1202339}
+            {"2020": 454590}, 
+            {"2021": 698661}, 
+            {"2022": 202339}
         ],
         "total_assets": [
-            {"2020": 24967000}, 
-            {"2021": 27507843}, 
-            {"2022": 30480967}
+            {"2020": 4967000}, 
+            {"2021": 7507843}, 
+            {"2022": 8480967}
         ],
         "equity_ratio":[
-            {"2020": 17.9}, 
-            {"2021": 24.3}, 
-            {"2022": 23.4}
-        ],
-        "listed_market" : "東証プライム"
-    },
-    {
-        "name": "キーエンス", 
-        "securities_code": "6861",
-        "locale": "ja-jp", 
-        "industry": "manufacturing",
-        "representative": "中田 有", 
-        "establishment_date": "1974/5",
-        "capital": 30637, 
-        "major_shareholders": "日本マスタートラスト信託銀行", 
-        "business_description": "自動制御機器(PLCと周辺機器), 計測機器, 情報機器, 光学顕微鏡・電子顕微鏡などの開発および製造販売", 
-        "number_of_employees": 8380, 
-        "location": "大阪市東淀川区東中島1-3-14", 
-        "revenue": [
-            {"2020": 551843}, 
-            {"2021": 538134}, 
-            {"2022": 755174}
-        ], 
-        "operating_profit": [
-            {"2020": 277631}, 
-            {"2021": 276758}, 
-            {"2022": 418045}
-        ],
-        "total_assets": [
-            {"2020": 1768551}, 
-            {"2021": 2009874}, 
-            {"2022": 2324037}
-        ],
-        "equity_ratio":[
-            {"2020": 95.8}, 
-            {"2021": 95.2}, 
-            {"2022": 93.5}
+            {"2020": 14.9}, 
+            {"2021": 20.3}, 
+            {"2022": 21.4}
         ],
         "listed_market" : "東証プライム"
     }

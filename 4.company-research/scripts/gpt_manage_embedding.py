@@ -232,7 +232,7 @@ def main():
     print(df)
     print()
 
-    df = query_cache(REDIS_CATEGORY_COMMON, "トヨタ", n=2)
+    df = query_cache(REDIS_CATEGORY_COMMON, "コントソ", n=1)
     print(df)
     print()
 
@@ -241,13 +241,13 @@ def main():
     register_cache_index(REDIS_CATEGORY_TOPICS)
 
     register_company_topics(REDIS_CATEGORY_TOPICS, "company_topics_ja.jsonl")
-    register_company_topics(REDIS_CATEGORY_TOPICS, "company_topics_en.jsonl")
+    # register_company_topics(REDIS_CATEGORY_TOPICS, "company_topics_en.jsonl")
 
     df = query_all_cache(REDIS_CATEGORY_TOPICS)
     print(df)
     print()
 
-    df = query_cache(REDIS_CATEGORY_TOPICS, "Microsoft: Domestic competitor", n=3)
+    df = query_cache(REDIS_CATEGORY_TOPICS, "コントソ 経営者", n=3)
     print(df)
     print()
 
