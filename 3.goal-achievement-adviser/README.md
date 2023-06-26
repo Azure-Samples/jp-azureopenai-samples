@@ -27,7 +27,7 @@
 | サービス名 | SKU | Note |
 | --- | --- | --- |
 | Azure App Service | S1 |  |
-| Azure OpenAI Service | S0 | text-davinci-003, text-embedding-ada-002, gpt-35-turbo |
+| Azure OpenAI Service | S0 | text-davinci-003, text-embedding-ada-002, gpt-4 |
 | Azure Cache for Redis Enterprise | E10 |  |
 | Storage account | Standard_LRS |  |
 
@@ -45,7 +45,7 @@
 | サービス名 | SKU | Note |
 | --- | --- | --- |
 | Azure App Service | S1 |  |
-| Azure OpenAI Service | S0 | text-davinci-003, text-embedding-ada-002, gpt-35-turbo |
+| Azure OpenAI Service | S0 | text-davinci-003, text-embedding-ada-002, gpt-4 |
 | Azure Cache for Redis Enterprise | E10 |  |
 | Storage account | Standard_LRS |  |
 
@@ -79,6 +79,10 @@ YOUR-PRINCIPAL-IDの取得方法例: `Azure Portal > Azure AD > Users > 自分�
 1. Resource group, DNS Name に適当な値、Location を `South Central US`, Cache type を `Enterprise E10` とし、利用規約にチェックを付けて Next をクリック
 1. Advanced のタブで Module に `RediSearch` を選択し、Clustering Policy を Enterprise に設定し Next をクリック
 1. リソースを生成
+
+##### GPT-4 のモデルをデプロイする
+
+本アプリケーションは GPT-4 で動作します。[クイック スタート: Azure OpenAI Service で ChatGPT と GPT-4 の使用を開始する](https://learn.microsoft.com/ja-jp/azure/cognitive-services/openai/chatgpt-quickstart?tabs=command-line&pivots=rest-api) を参考に申請いただき、`gpt-4` モデルをデプロイしてください。
 
 ###### App Service にアプリケーションをデプロイする
 
