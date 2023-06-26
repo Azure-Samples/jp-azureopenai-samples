@@ -29,7 +29,7 @@ param gptModelName string = 'text-davinci-003'
 param embeddingDeploymentName string = 'embedding'
 param embeddingModelName string = 'text-embedding-ada-002'
 param chatGptDeploymentName string = 'chat'
-param chatGptModelName string = 'gpt-35-turbo'
+param chatGptModelName string = 'gpt-4'
 
 // param redisEnterpriseName string = ''
 param redisEnterpriseResourceGroupName string = ''
