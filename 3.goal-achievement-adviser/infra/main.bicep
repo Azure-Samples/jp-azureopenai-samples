@@ -31,9 +31,9 @@ param embeddingModelName string = 'text-embedding-ada-002'
 param chatGptDeploymentName string = 'chat'
 param chatGptModelName string = 'gpt-4'
 
-// param redisEnterpriseName string = ''
+param redisEnterpriseName string = ''
 param redisEnterpriseResourceGroupName string = ''
-// param redisEnterpriseResourceGroupLocation string = 'South Central US'
+param redisEnterpriseResourceGroupLocation string = 'South Central US'
 
 @description('Id of the user or app to assign application roles')
 param principalId string = ''
@@ -225,16 +225,15 @@ module storageRoleBackend 'core/security/role.bicep' = {
   }
 }
 
-// FIXME: currently this is not working
-// module redisEnterprise 'core/redis/enterprise.bicep' = {
-//   scope: redisEnterpriseResourceGroup
-//   name: 'redis-enterprise'
-//   params: {
-//     name: !empty(redisEnterpriseName) ? redisEnterpriseName : '${abbrs.redisEnterprise}${resourceToken}'
-//     location: redisEnterpriseResourceGroupLocation
-//     tags: tags
-//   }
-// }
+module redisEnterprise 'core/redis/enterprise.bicep' = {
+  scope: redisEnterpriseResourceGroup
+  name: 'redis-enterprise'
+  params: {
+    name: !empty(redisEnterpriseName) ? redisEnterpriseName : '${abbrs.redisEnterprise}${resourceToken}'
+    location: redisEnterpriseResourceGroupLocation
+    tags: tags
+  }
+}
 
 output AZURE_LOCATION string = location
 output AZURE_TENANT_ID string = tenant().tenantId
