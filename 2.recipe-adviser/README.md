@@ -19,7 +19,7 @@ AIを活用して食事プランニングを効率化し、ユーザーに料理
 
 | サービス名 | SKU | Note |
 | --- | --- | --- |
-| Azure App Service | B1 |  |
+| Azure App Service | S1 |  |
 | Azure OpenAI Service | S0 | text-davinci-003, DALL-E |
 
 ### ローカル開発環境
@@ -32,7 +32,7 @@ AIを活用して食事プランニングを効率化し、ユーザーに料理
 
 | サービス名 | SKU | Note |
 | --- | --- | --- |
-| Azure App Service | B1 |  |
+| Azure App Service | S1 |  |
 | Azure OpenAI Service | S0 | text-davinci-003, DALL-E |
 
 ## Azure へのデプロイ

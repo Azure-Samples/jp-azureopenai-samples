@@ -21,7 +21,7 @@
       "value": "ase-azure-open-ai-recipe-adviser"
     },
     "appServicePlanSkuName": {
-      "value": "B1"
+      "value": "S1"
     },
     "appServiceName": {
       "value": "app-azure-open-ai-recipe-adviser"
