@@ -21,7 +21,6 @@ WEB アプリケーションを Azure App Service でホストしたソリュー
 
 ![Solution](assets/diagram.jpg)
 
-こちらは "検証用途の構成" を示しています。運用環境として構成する場合には後半で示されている "ランディングゾーン構成" をご検討ください。
 
 |  サービス名  |  SKU  | Note |
 | ---- | ---- | ---- |
@@ -171,23 +170,6 @@ Azure ポータルで、各バックエンドサービスの [アクセス制御
 VSCode の左側ペインより Azure アイコンを選択し、該当する [App Service] に対して [Deploy to Web App...] にてアプリケーションを展開します。
 
 ![Deploy](assets/deploy.jpg)
-
-## ランディングゾーン
-
-完全な閉域構成で利用するためのランディングゾーンとなります。インターネットを経由した外部通信が一切発生しない内部通信のみで利用できる構成となります。
-
-![Landingzone](assets/landing_zone.jpg)
-
-ランディングゾーンで利用する SKU の参考例となります。ASE を利用しない Basic プラン以上の App Service でも [VNET 統合](https://learn.microsoft.com/ja-jp/azure/app-service/overview-vnet-integration)と[プライベートエンドポイント](https://learn.microsoft.com/ja-jp/azure/app-service/networking/private-endpoint)を利用する事で閉域構成が可能です。App Service に関しては SLA の観点で最低2つのインスタンスが必要となります。
-
-|  サービス名  |  SKU  | Note |
-| ---- | ---- | ---- |
-| Azure App Service  |  I1v2  | Python 3.11 |
-| Azure OpenAI Service |  Standard  | text-davinci-003 |
-| Speech Services |  Standard  | |
-| Language Services |  Standard  | |
-
-参考資料：[ハブアンドスポーク ネットワーク内の Azure Private Link](https://learn.microsoft.com/ja-jp/azure/architecture/guide/networking/private-link-hub-spoke-network)
 
 ## Credit
 
