@@ -24,12 +24,12 @@
 ### クラウド実行環境
 以下は "検証用途の最小構成" を示しています。
 
-| サービス名 | SKU | Note |
-| --- | --- | --- |
-| Azure App Service | S1 |  |
-| Azure OpenAI Service | S0 | text-davinci-003, text-embedding-ada-002, gpt-4 |
-| Azure Cache for Redis Enterprise | E10 |  |
-| Storage account | Standard_LRS |  |
+| サービス名                       | SKU          | Note                                            |
+| -------------------------------- | ------------ | ----------------------------------------------- |
+| Azure App Service                | S1           |                                                 |
+| Azure OpenAI Service             | S0           | text-davinci-003, text-embedding-ada-002, gpt-4 |
+| Azure Cache for Redis Enterprise | E10          |                                                 |
+| Storage account                  | Standard_LRS |                                                 |
 
 ### ローカル開発環境
 - Ubuntu on WSL2 (bash ターミナル)
@@ -42,12 +42,12 @@
 クラウドに下記サービスがデプロイされている必要があります。
 リソースをデプロイする方法については [Azure へのデプロイ](#azure-へのデプロイ) を参照してください。
 
-| サービス名 | SKU | Note |
-| --- | --- | --- |
-| Azure App Service | S1 |  |
-| Azure OpenAI Service | S0 | text-davinci-003, text-embedding-ada-002, gpt-4 |
-| Azure Cache for Redis Enterprise | E10 |  |
-| Storage account | Standard_LRS |  |
+| サービス名                       | SKU          | Note                                            |
+| -------------------------------- | ------------ | ----------------------------------------------- |
+| Azure App Service                | S1           |                                                 |
+| Azure OpenAI Service             | S0           | text-davinci-003, text-embedding-ada-002, gpt-4 |
+| Azure Cache for Redis Enterprise | E10          |                                                 |
+| Storage account                  | Standard_LRS |                                                 |
 
 ### Azure へのデプロイ
 
@@ -72,13 +72,6 @@ az deployment sub create \
 YOUR-PRINCIPAL-IDの取得方法例: `Azure Portal > Azure AD > Users > 自分の名前で検索 > Object ID` をコピーしてください。
 
 #### 手動でのプロビジョニング・設定
-
-##### Redis Enterprise をプロビジョニングする
-
-1. Azure Portal から `Azure Cache for Redis` を選択し、`Create Redis Cache` をクリックします
-1. Resource group, DNS Name に適当な値、Location を `South Central US`, Cache type を `Enterprise E10` とし、利用規約にチェックを付けて Next をクリック
-1. Advanced のタブで Module に `RediSearch` を選択し、Clustering Policy を Enterprise に設定し Next をクリック
-1. リソースを生成
 
 ##### GPT-4 のモデルをデプロイする
 
