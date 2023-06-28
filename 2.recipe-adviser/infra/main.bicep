@@ -30,12 +30,6 @@ param appServiceRuntimeVersion string = '3.10'
 param AZURE_OPENAI_API_VERSION string = '2022-12-01'
 param AZURE_OPENAI_DALLE_API_VERSION string = '2023-06-01-preview'
 
-// key vault params
-// @minLength(3)
-// @maxLength(24)
-// param keyVaultName string
-// param keyVaultObjectId string
-
 // ===================== deployment =====================
 
 // deploy resource group
@@ -91,15 +85,3 @@ module backend 'core/host/appService.bicep' = {
     AZURE_OPENAI_DALLE_API_VERSION: AZURE_OPENAI_DALLE_API_VERSION
   }
 }
-
-// key vault for cognitive services
-// module keyVault 'core/security/keyVault.bicep' = {
-//   name: keyVaultName
-//   scope: resourceGroup
-//   params: {
-//     name: keyVaultName
-//     location: resourceGroupLocation
-//     tenantId: subscription().tenantId
-//     objectId: keyVaultObjectId
-//   }
-// }
