@@ -103,36 +103,41 @@ azd up
 
 ## 認証・リクエストの確認
 
-### Azure App Serviceの簡単認証 (Easy Auth) を用いた認証
+### アプリからの接続/認証/リクエスト
 
-App ServiceのEasy Authを使って認証を行う場合には ``X-MS-TOKEN-AAD-ACCESS-TOKEN`` Authorization ヘッダに付けて投げるようにしてください。
-詳細は以下のリンクを参照してください。
-https://learn.microsoft.com/ja-jp/azure/app-service/configure-authentication-oauth-tokens
-
-### その他のアプリでの認証/リクエスト
-
-* ご利用されるアプリで登録したスコープ(上記例ではapi://アプリID/chat)を対象としてOAuth2(OIDC)認証認可を行いJWTを取得してください
-
-* 取得したJWTを``Authorization: Bearer (JST)``という
-という形式でヘッダに付与し、APIリクエストを行ってください。リクエスト先のURL例は以下のようになります
+* APIリクエストのエンドポイントを以下のように設定してください。リクエスト先のURL例は以下のようになります
 
 ```bash
 https://YOURAPIMDOMAIN.azure-api.net/api/deployments/OPEN_AI_MODEL_NAME/chat/completions?api-version=APIVERSION
 ```
 
-* 本リポジトリと連携可能なSPAのサンプルを以下のURLで公開しております。（ただし自己責任でご使用ください）https://github.com/mizti/azure-openai-react-sample-via-apim
+* ご利用されるアプリで登録したスコープ(上記例では ``api://アプリID/chat`` )を対象としてOAuth2(OIDC)認証認可を行いJWTを取得し、``Authorization: Bearer (JWT)``という
+という形式でヘッダに付与し、APIリクエストを行ってください。
+  * App ServiceのEasy Authを使って認証を行う場合にはフロントエンドで  ``.auth/me`` にアクセスして取得できる ``X-MS-TOKEN-AAD-ACCESS-TOKEN`` がこのJWTに相当します）詳細は以下のリンクを参照してください。
+https://learn.microsoft.com/ja-jp/azure/app-service/configure-authentication-oauth-tokens
 
+
+* また、既定ではAPI Managementのサブスクリプションキーの検証も有効になっているため、API Managment の「サブスクリプション」メニューで確認できるサブスクリプションキーを'Ocp-Apim-Subscription-Key' ヘッダに指定してください。
 
 ## ログ出力の確認
 
 リクエストしたログはLog Analytics Workspace / Storage Accountの両方に保存されています
 
 * Log Analytics Workspaceの確認: API Managementインスタンスの詳細画面 > ログ から確認可能です。例えば以下のようなKQLを発行することで直近3日間のログを取得できます。リクエストBody、レスポンスBody、（BackendRequestHeader内に)ユーザーIDなどが含まれていることをご確認ください
-```
-ApiManagementGatewayLogs | where TimeGenerated > ago(2d)
-```
+    ```
+    ApiManagementGatewayLogs | where TimeGenerated > ago(2d)
+    ```
 * Storage Accountの確認: リソースグループ内のストレージアカウントの``insights-logs-gatewaylogs``コンテナにログが保存されます
 
+# 第1~5章アプリとの接続
+
+第1~5章のアプリと接続を行う場合以下の3点の設定変更（もしくはアプリの改修）を行ってください。
+
+1. エンドポイントをAzure OpenAIからAPI Managementに変更する
+1. リクエストヘッダにAPI Managementのサブスクリプションキーを付与する
+1. リクエストヘッダにOAuth 2.0 JWTを付与する
+
+それぞれの方法の詳細は前章の「アプリからの接続/認証/リクエスト」を参照してください。
 
 # その他のTips
 
