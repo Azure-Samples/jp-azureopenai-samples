@@ -10,14 +10,13 @@
 
 ### 解決方法
 解決方法としては、以下が考えられます
-1. Delete（削除）されているリソースのPurge（消去）
+1. Quotaを圧迫している既存リソースのPurge（消去）
 2. Quota要求量を減らす
 3. 別のリージョンに作成する
 4. 既存のリソースのQuotaを下げる
-5. 申請してQuota上限を上げてもらう
 
-#### 1. Delete（削除）されてリソースのPurge（消去）
-Azure OpenAI Serviceのリソースを削除してから48時間以内の場合、論理削除状態でありQuotaも使われている状態である可能性があります。その場合、[リソースのPurge（消去）](https://learn.microsoft.com/ja-jp/azure/cognitive-services/manage-resources?tabs=azure-portal#purge-a-deleted-resource)することにより使用しているQuotaを下げることができます。
+#### 1. Quotaを圧迫している既存リソースのPurge（消去）
+同サブスクリプション・リージョン内の同じ種類のモデルのリソースを削除することでQuotaを開放することができます。ただし、Azure OpenAI Serviceのリソースを削除してから48時間以内の場合、論理削除状態でありQuotaも使われている状態である可能性があります。その場合、[リソースのPurge（消去）](https://learn.microsoft.com/ja-jp/azure/cognitive-services/manage-resources?tabs=azure-portal#purge-a-deleted-resource)することにより使用しているQuotaを下げることができます。
 
 #### 2. Quota要求量を減らす
 Bicepの場合は以下のように、`sku`の`capacity`を指定することでQuota要求量を減らすことができます。
@@ -66,4 +65,14 @@ resource deployment 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01
 ```
 ※accounts/deploymentsは必ず@2023-05-01を使うようにしてください
 
+#### 3. 別のリージョンに作成する
+Quotaはサブスクリプション内のリージョン毎に設定されているため、他のリージョンに作成することで既存リソースに割り当てたQuotaの影響を受けずにデプロイすることが可能です。
 
+#### 4. 既存のリソースのQuotaを下げる
+既存リソースのQuotaを以下のような手順で下げることが可能です。
+1. Azure OpenAIアカウントを開く
+2. 「モデルとデプロイ」を選択（Azure OpenAI Studio画面が開きます）
+3. 「管理」＞「クォータ」を選択
+4. デプロイされたモデルのリストからQuotaを変えたいモデルを選択
+5. 「デプロイの編集」＞「詳細設定オプション」からQuotaを変更
+6. 「保存して終了」を選択
