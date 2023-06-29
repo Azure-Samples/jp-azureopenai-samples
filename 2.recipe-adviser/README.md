@@ -75,7 +75,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-### 2. 依存関係のインストール、デバッグ実行
+### 3. 依存関係のインストール、デバッグ実行
 ```bash
 cd ./app/backend
 pip install -r requirements.txt
