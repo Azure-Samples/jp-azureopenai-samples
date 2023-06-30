@@ -78,6 +78,10 @@ az cognitiveservices account create --name $OEPNAI_NAME --resource-group $RESOUR
  --kind OpenAI --sku S0 --location $REGION_OPENAI --yes
 ```
 
+上記コマンドの実行後、[Azure Open AI Studio](https://oai.azure.com/)を使用して、[text-davinci-003モデルをデプロイ](https://learn.microsoft.com/ja-jp/azure/cognitive-services/openai/how-to/create-resource?pivots=web-portal#deploy-a-model)してください。デプロイしたモデル名は、後の手順で環境変数の値として利用するので、手元に控えておいてください。
+
+> Azure Text Analyticsを一度もご利用戴いたことがない場合、上記の`az cognitive...`コマンドのうち、**LANGUAGE_SERVICE**の実行が失敗します。その場合は、Text AnalyticsのリソースをAzure Portal上から作成してください。
+
 ### 1. アクセス制御 (IAM) の構成
 
 VSCode の Azure 拡張機能で Azure へサインインする事で、サインインしているユーザーがデバッグ実行の際の DefaultAzureCredential となります。 
