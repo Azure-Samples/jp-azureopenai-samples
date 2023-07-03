@@ -6,6 +6,7 @@ import jwt
 import openai
 from flask import Flask, request, jsonify, render_template, send_from_directory
 from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
+from dotenv import load_dotenv
 
 # Food Menu
 from food_menu.food_receipe import get_food_receipe
@@ -21,6 +22,8 @@ AZURE_OPENAI_API_KEY = os.environ.get("AZURE_OPENAI_API_KEY")
 # DALL-E
 AZURE_OPENAI_DALLE_API_VERSION = os.environ.get("AZURE_OPENAI_DALLE_API_VERSION")
 
+# load .env file if exists
+load_dotenv()
 
 # Use the current user identity to authenticate with Azure OpenAI, Cognitive Search and Blob Storage (no secrets needed, 
 # just use 'az login' locally, and managed identity when deployed on Azure). If you need to use keys, use separate AzureKeyCredential instances with the 

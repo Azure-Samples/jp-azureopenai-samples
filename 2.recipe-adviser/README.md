@@ -69,14 +69,20 @@ cp ./app/.env.example ./app/.env
 
 ![App Service](./assets/app-service-2.png)
 
-### 2. 依存関係のインストール、デバッグ実行
+### 2. venv を用いた仮想環境の構築
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+### 3. 依存関係のインストール、デバッグ実行
 ```bash
 cd ./app/backend
 pip install -r requirements.txt
 ```
 
 ```bash
-python app.py
+python3 app.py
 ```
 
 - Docker をご利用の場合は以下から開発環境を構築することができます。
