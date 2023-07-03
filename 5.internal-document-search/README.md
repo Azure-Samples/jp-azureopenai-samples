@@ -34,6 +34,7 @@
 このデモをデプロイするためには、ローカルに以下の開発環境が必要です。
 > **重要** このサンプルは Windows もしくは Linux 環境で動作します。ただし、WSL2 の環境では正常に動作しません。
 - [Azure Developer CLI](https://aka.ms/azure-dev/install)
+- [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli)
 - [Python 3+](https://www.python.org/downloads/)
     - **重要**: Windows 環境では、python および pip を Path 環境変数に含める必要があります。
     - **重要**: `python --version` で現在インストールされている Python のバージョンを確認することができます。 Ubuntu を使用している場合、`sudo apt install python-is-python3` で `python` と `python3` をリンクさせることができます。    
@@ -57,7 +58,7 @@
 
 新規に環境をデプロイする場合は、以下のコマンドを実行してください。
 
-1. `az ad user show --id your_account@your_tenant -o tsv --query id` を実行して、操作をするユーザの AAD アカウントのオブジェクトID を取得します。
+1. `az login`と`az account set -s YOUR_SUBSCRIPTION_ID`後に、`az ad user show --id your_account@your_tenant -o tsv --query id` を実行して、操作をするユーザの AAD アカウントのオブジェクトID を取得します。
 1. 取得したオブジェクトID を環境変数`AZURE_PRINCIPAL_ID`にセットします。
     - Windows 環境で実行している場合は、`$Env:AZURE_PRINCIPAL_ID="Your Object ID"`を実行します。
     - Linux 環境で実行している場合は、`export AZURE_PRINCIPAL_ID="Your Object ID"`を実行します。
