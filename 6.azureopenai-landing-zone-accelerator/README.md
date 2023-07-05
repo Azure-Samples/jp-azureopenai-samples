@@ -72,13 +72,13 @@ azd auth login
 ブラウザのない環境の場合、
 
 ```bash
-auth auth login --use-device-code
+azd auth login --use-device-code
 ```
 
 テナントを明示的に指定したい場合には
 
 ```bash
-auth auth login --tenant-id
+azd auth login --tenant-id
 ```
 を指定してください。
 
