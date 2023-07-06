@@ -33,7 +33,7 @@ def get_user_name(req: request):
 
     try:
         token = req.headers["X-MS-TOKEN-AAD-ID-TOKEN"]
-        claim = jwt.decode(jwt=token, key=os.environ.get("MICROSOFT_PROVIDER_AUTHENTICATION_SECRET"), algorithms=["HS256"], options={"verify_signature": False})
+        claim = jwt.decode(jwt=token, algorithms=["HS256"], options={"verify_signature": False})
         user_name = claim["preferred_username"]
         write_chatlog(ApproachType.Chat, user_name, 0, "claim", json.dumps(claim))
     except Exception as e:
