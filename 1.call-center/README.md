@@ -57,7 +57,7 @@ WEB アプリケーションを Azure App Service でホストしたソリュー
 export RESOURCE_GROUP=<Your resource group>
 export SPEECHSERVICE_NAME=<Your speech service name>
 export LANGUAGE_SERVICE=<Your language service name>
-export OEPNAI_NAME=<Your OpenAI service name>
+export OPENAI_NAME=<Your OpenAI service name>
 
 export REGION="japaneast"
 export REGION_OPENAI="eastus"
@@ -67,15 +67,15 @@ az group create --location $REGION --resource-group $RESOURCE_GROUP
 
 # SPEECH SERVICE
 az cognitiveservices account create --name $SPEECHSERVICE_NAME --resource-group $RESOURCE_GROUP \
- --kind SpeechServices --sku S0 --location $REGION --yes
+ --kind SpeechServices --sku S0 --location $REGION --custom-domain $SPEECHSERVICE_NAME --yes
 
 # LANGUAGE_SERVICE
 az cognitiveservices account create --name $LANGUAGE_SERVICE --resource-group $RESOURCE_GROUP \
- --kind TextAnalytics --sku S --location $REGION --yes
+ --kind TextAnalytics --sku S --location $REGION --custom-domain $LANGUAGE_SERVICE --yes
 
 # OPENAI
-az cognitiveservices account create --name $OEPNAI_NAME --resource-group $RESOURCE_GROUP \
- --kind OpenAI --sku S0 --location $REGION_OPENAI --yes
+az cognitiveservices account create --name $OPENAI_NAME --resource-group $RESOURCE_GROUP \
+ --kind OpenAI --sku S0 --location $REGION_OPENAI --custom-domain $OPENAI_NAME --yes
 ```
 
 上記コマンドの実行後、[Azure Open AI Studio](https://oai.azure.com/)を使用して、[text-davinci-003モデルをデプロイ](https://learn.microsoft.com/ja-jp/azure/cognitive-services/openai/how-to/create-resource?pivots=web-portal#deploy-a-model)してください。デプロイしたモデル名は、後の手順で環境変数の値として利用するので、手元に控えておいてください。
