@@ -4,12 +4,12 @@ Azure OpenAIを活用したアプリケーション実装のリファレンス�
 ## 公開サンプル一覧 (Samples included)
 | タイトル      | README      |
 | ------------- | ------------- |
-| 1. コールセンター向け AI アシスタント  | [Link](./1.call-center/)  |
-| 2. 料理メニューの提案  | [Link](https://github.com/Azure-Samples/jp-azureopenai-samples/tree/feature/README/2.recipe-adviser)  |
-| 3. 目標達成アシスタント  | [Link](https://github.com/Azure-Samples/jp-azureopenai-samples/tree/feature/README/3.goal-achievement-adviser)  |
-| 4. 企業分析  | [Link](https://github.com/Azure-Samples/jp-azureopenai-samples/tree/feature/README/4.company-research)  |
-| 5. 企業内向けChatと社内文書検索  | [Link](https://github.com/Azure-Samples/jp-azureopenai-samples/tree/main/5.internal-document-search)  |
-| 6. 共通ガイド  | [Link](https://github.com/Azure-Samples/jp-azureopenai-samples/tree/main/6.azureopenai-landing-zone-accelerator)  |
+| 1. コールセンター向け AI アシスタント  | [Link](https://github.com/Azure-Samples/jp-azureopenai-samples/tree/main/1.call-center/README.md)  |
+| 2. 料理メニューの提案  | [Link](https://github.com/Azure-Samples/jp-azureopenai-samples/tree/main/2.recipe-adviser/README.md)  |
+| 3. 目標達成アシスタント  | [Link](https://github.com/Azure-Samples/jp-azureopenai-samples/tree/main/3.goal-achievement-adviser/README.md)  |
+| 4. 企業分析  | [Link](https://github.com/Azure-Samples/jp-azureopenai-samples/tree/main/4.company-research/README.md)  |
+| 5. 企業内向けChatと社内文書検索  | [Link](https://github.com/Azure-Samples/jp-azureopenai-samples/tree/main/5.internal-document-search/README.md)  |
+| 6. 共通ガイド  | [Link](https://github.com/Azure-Samples/jp-azureopenai-samples/tree/main/6.azureopenai-landing-zone-accelerator/README.md)  |
 
 ## Getting Started
 日本語: 各サンプルのREADMEをご参照ください。
