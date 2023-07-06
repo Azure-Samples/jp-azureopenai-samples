@@ -67,11 +67,11 @@ az group create --location $REGION --resource-group $RESOURCE_GROUP
 
 # SPEECH SERVICE
 az cognitiveservices account create --name $SPEECHSERVICE_NAME --resource-group $RESOURCE_GROUP \
- --kind SpeechServices --sku S0 --location $REGION --yes
+ --kind SpeechServices --sku S0 --location $REGION --custom-domain $SPEECHSERVICE_NAME --yes
 
 # LANGUAGE_SERVICE
 az cognitiveservices account create --name $LANGUAGE_SERVICE --resource-group $RESOURCE_GROUP \
- --kind TextAnalytics --sku S --location $REGION --yes
+ --kind TextAnalytics --sku S --location $REGION --custom-domain $LANGUAGE_SERVICE --yes
 
 # OPENAI
 az cognitiveservices account create --name $OPENAI_NAME --resource-group $RESOURCE_GROUP \
