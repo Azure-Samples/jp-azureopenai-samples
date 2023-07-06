@@ -51,7 +51,7 @@ def get_user_name(req: request):
 
     try:
         token = req.headers["X-MS-TOKEN-AAD-ID-TOKEN"]
-        claim = jwt.decode(jwt=token, algorithms=["HS256"], options={"verify_signature": False})
+        claim = jwt.decode(jwt=token, options={"verify_signature": False})
         user_name = claim["preferred_username"]
         user_name = user_name.split("@")[0]
     except Exception as e:
