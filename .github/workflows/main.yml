@@ -19,4 +19,4 @@ jobs:
         env:
           First_Name: Mona
       - name: "Check azd version"
-        run: azd --version
+        run: azd version
