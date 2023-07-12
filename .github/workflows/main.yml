@@ -26,13 +26,12 @@ jobs:
         run: azd version
       - name: "Check variables"
         run: echo "TEST_VAR is $TEST_VAR"
-      - name: OIDC Login to Azure Public Cloud with AzPowershell (enableAzPSSession true)
+      - name: "Az CLI login"
         uses: azure/login@v1
         with:
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }} 
-          enable-AzPSSession: true
       - name: 'Run Azure CLI commands'
         run: |
           az account show
