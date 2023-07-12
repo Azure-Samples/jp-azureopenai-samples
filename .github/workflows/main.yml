@@ -1,7 +1,10 @@
 name: Greeting on variable day
 
 on:
-  workflow_dispatch
+  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 env:
   DAY_OF_WEEK: Monday
@@ -13,6 +16,11 @@ jobs:
       image: mcr.microsoft.com/azure-dev-cli-apps:latest
     env:
       Greeting: Hello
+      AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+      TEST_VAR: ${{ vars.TEST_VAR }}
     steps:
       - name: "Say Hello Mona it's Monday"
         run: echo "$Greeting $First_Name. Today is $DAY_OF_WEEK!"
@@ -20,3 +28,5 @@ jobs:
           First_Name: Mona
       - name: "Check azd version"
         run: azd version
+      - name: "Check variables"
+        run: echo "TEST_VAR is $TEST_VAR"
