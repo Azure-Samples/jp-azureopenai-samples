@@ -24,7 +24,7 @@
 | サービス名 | SKU | Note |
 | --- | --- | --- |
 |Azure App Service|S1||
-|Azure OpenAI Service|S0|text-davinchi-003,gpt-3.5-turbo|
+|Azure OpenAI Service|S0|gpt-3.5-turbo|
 |Azure Cognitive Search|S1||
 |Azure Cosmos DB|プロビジョニング済みスループット||
 |Azure Form Recgonizer|S0||
