@@ -9,6 +9,8 @@ env:
 jobs:
   greeting_job:
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/azure-dev-cli-apps:latest
     env:
       Greeting: Hello
     steps:
@@ -16,3 +18,5 @@ jobs:
         run: echo "$Greeting $First_Name. Today is $DAY_OF_WEEK!"
         env:
           First_Name: Mona
+      - name: "Check azd version"
+        run: azd --version
