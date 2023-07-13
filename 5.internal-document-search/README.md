@@ -33,17 +33,18 @@
 #### ローカル開発環境
 このデモをデプロイするためには、ローカルに以下の開発環境が必要です。
 > **重要** このサンプルは Windows もしくは Linux 環境で動作します。ただし、WSL2 の環境では正常に動作しません。
-- [Azure Developer CLI](https://aka.ms/azure-dev/install)
-- [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli)
-- [Python 3+](https://www.python.org/downloads/)
+- [Azure Developer CLI](https://aka.ms/azure-dev/install) （version 1.0.2以降推奨）
+- [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) （version 2.50.0以降推奨）
+- [Python 3+](https://www.python.org/downloads/)（version 3.11以降推奨）
     - **重要**: Windows 環境では、python および pip を Path 環境変数に含める必要があります。
     - **重要**: `python --version` で現在インストールされている Python のバージョンを確認することができます。 Ubuntu を使用している場合、`sudo apt install python-is-python3` で `python` と `python3` をリンクさせることができます。    
-- [Node.js](https://nodejs.org/en/download/)
+- [Node.js](https://nodejs.org/en/download/)（version 14.18以降推奨）
 - [Git](https://git-scm.com/downloads)
 - [Powershell 7+ (pwsh)](https://github.com/powershell/powershell) - Windows で実行する場合のみ
    - **重要**: `pwsh.exe` が PowerShell コマンドとして実行できることを確認して下さい。
 
 >注意: 実行するユーザの AAD アカウントは、`Microsoft.Authorization/roleAssignments/write` 権限を持っている必要があります。この権限は [ユーザーアクセス管理者](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#user-access-administrator) もしくは [所有者](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#owner)が保持しています。  
+`az role assignment list --assignee <your-Azure-email-address> --subscription <subscription-id> --output table`
 
 ### インストール
 
