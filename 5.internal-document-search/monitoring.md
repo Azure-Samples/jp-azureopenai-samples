@@ -23,7 +23,7 @@ az monitor log-analytics workspace get-shared-keys --resource-group $RG --worksp
 ```
 
 # Step 2: Create an Application Insights resource
-
+## From the Portal
 In the Azure portal, click on "Create a resource" and search for "Application Insights".
 Click on "Application Insights" from the search results.
 Click on "Create" to start creating a new Application Insights resource.
@@ -31,6 +31,11 @@ Provide the required details such as subscription, resource group, instance name
 Configure other optional settings as per your requirements.
 In the "Instrumentation Key" section, select "Create new" and choose the Log Analytics workspace you created in Step 1.
 Click on "Review + Create" and then click on "Create" to create the Application Insights resource.
+## With the Azure CLI
+### Create an Application Insights resource
+`az monitor app-insights component create --app $APPI --resource-group $RG --location $LOC`
+### Retrieve the instrumentation key
+`az monitor app-insights component show --app $APPI --resource-group $RG --query 'instrumentationKey' --output tsv`
 
 # Step 3: Install the necessary packages:
 
