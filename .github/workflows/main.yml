@@ -42,5 +42,8 @@ jobs:
       - name: 'Run Azure Developer CLI commands'
         run: |
           azd version
+          cd 5.internal-document-search/src
+          azd init
+          export AZURE_PRINCIPAL_ID=${{ secrets.AZURE_PRINCIPAL_ID }}
           azd deploy
           pwd 
