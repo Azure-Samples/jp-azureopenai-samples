@@ -44,9 +44,11 @@ jobs:
           azd version
           pwd
           ls
+          git clone https://github.com/rukasakurai/jp-azureopenai-samples
           ls
+          cd 5.internal-document-search/stc
           pwd
-          cd "5.internal-document-search"
+          ls
           azd init
           export AZURE_PRINCIPAL_ID=${{ secrets.AZURE_PRINCIPAL_ID }}
           azd deploy
