@@ -46,7 +46,7 @@ jobs:
           ls
           git clone https://github.com/rukasakurai/jp-azureopenai-samples
           ls
-          cd 5.internal-document-search/stc
+          cd jp-azureopenai-samples/5.internal-document-search/stc
           pwd
           ls
           azd init
