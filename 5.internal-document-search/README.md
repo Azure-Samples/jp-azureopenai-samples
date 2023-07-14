@@ -84,6 +84,10 @@
 2. `code .`でVS Codeを開く
 3. Run>Start Debugging または F5
 
+#### FrontendのJavaScriptのデバッグ
+1. src/frontend/vite.config.tsのbuildに`minify: false`を追加
+2. ブラウザのDeveloper tools > Sourceでブレイクポイントを設定して実行
+
 ### GPT-4モデルの利用
 2023年6月現在、GPT-4 モデルは申請することで利用可能な状態です。このサンプルは GPT-4 モデルのデプロイに対応していますが、GPT-4 モデルを利用する場合には、[こちら](https://learn.microsoft.com/ja-jp/azure/cognitive-services/openai/how-to/create-resource?pivots=web-portal#deploy-a-model)を参考に、GPT-4 モデルをデプロイしてください。また、GPT-4 モデルの利用申請は[こちらのフォーム](https://aka.ms/oai/get-gpt4)から可能です。
 
