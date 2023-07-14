@@ -44,7 +44,9 @@ jobs:
           azd version
           pwd
           ls
-          cd 5.internal-document-search/src
+          ls
+          pwd
+          cd "5.internal-document-search"
           azd init
           export AZURE_PRINCIPAL_ID=${{ secrets.AZURE_PRINCIPAL_ID }}
           azd deploy
