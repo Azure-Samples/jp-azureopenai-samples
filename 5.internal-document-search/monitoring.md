@@ -1,13 +1,5 @@
-# Step 1: Create an Azure Log Analytics workspace
-## From Portal
-Go to the Azure portal (https://portal.azure.com) and sign in to your Azure account.
-In the Azure portal, click on "Create a resource" and search for "Log Analytics workspace".
-Click on "Log Analytics workspace" from the search results.
-Click on "Create" to start creating a new Log Analytics workspace.
-Provide the required details such as subscription, resource group, workspace name, and region.
-Configure other optional settings as per your requirements.
-Click on "Review + Create" and then click on "Create" to create the Log Analytics workspace.
-## With CLI
+# Log Analytics
+## Step 1: Create an Azure Log Analytics workspace
 ### Create a resource group (if needed)
 ```
 az group create --name $RG --location $LOC
@@ -19,10 +11,20 @@ az monitor log-analytics workspace create --resource-group $RG --workspace-name 
 ### Retrieve the workspace ID and key
 ```
 az monitor log-analytics workspace get-shared-keys --resource-group $RG --workspace-name $WSNAME
+```
+## Step 2: Enable Diagnostics Logging on App Service
+https://learn.microsoft.com/en-us/azure/app-service/troubleshoot-diagnostic-logs
 
+## Step 3: Check logs in Log Analytics
+```
+AppServiceConsoleLogs
+```
+```
+AppServiceHTTPLogs
 ```
 
-# Step 2: Create an Application Insights resource
+# Application Insights (Untested very rough draft)
+# Step 1: Create an Application Insights resource
 ## From the Portal
 In the Azure portal, click on "Create a resource" and search for "Application Insights".
 Click on "Application Insights" from the search results.
@@ -37,48 +39,49 @@ Click on "Review + Create" and then click on "Create" to create the Application 
 ### Retrieve the instrumentation key
 `az monitor app-insights component show --app $APPI --resource-group $RG --query 'instrumentationKey' --output tsv`
 
-# Step 3: Install the necessary packages:
-
+# Step 2: Install the necessary packages:
 Open a terminal or command prompt.
 Navigate to your Flask application directory.
 Run the following command to install the applicationinsights package:
-Copy code
+```
 pip install applicationinsights
+```
+WARNINING: The OpenTelemetry library might be preferrable
 
-# Step 4: Instrument your Flask application with Application Insights:
-
+# Step 3: Instrument your Flask application with Application Insights:
 Import the necessary modules in your Flask application file (app.py or similar):
-python
-Copy code
+```python
 from applicationinsights import TelemetryClient
 from applicationinsights.flask.ext import AppInsights
 Initialize the Application Insights instrumentation by adding the following code before creating your Flask app instance:
-python
-Copy code
+```
+```python
 instrumentation_key = "<your_instrumentation_key>"
 appinsights = AppInsights(app, instrumentation_key=instrumentation_key)
+```
 Replace <your_instrumentation_key> with the instrumentation key of your Application Insights resource.
 
-# Step 5: Configure logging in your Flask application:
+WARNINING: The OpenTelemetry library might be preferrable
 
+# Step 4: Configure logging in your Flask application:
 Import the necessary module at the top of your Flask application file:
-python
-Copy code
+```python
 import logging
+``
 Add the following code to configure the Flask app to use the Application Insights logger:
-python
-Copy code
+```python
 app.logger.addHandler(appinsights.get_logger_handler())
+``
 Optionally, you can set the logging level to capture logs of a specific severity, such as errors and warnings:
-python
-Copy code
+```python
 app.logger.setLevel(logging.WARNING)
+```
 
-# Step 6: Start your Flask application:
+# Step 5: Start your Flask application:
 
 Run your Flask application as you normally would.
 
-# Step 7: View logs in Application Insights and Log Analytics
+# Step 6: View logs in Application Insights and Log Analytics
 
 Once your application is sending logs to Application Insights, you can view them by navigating to your Application Insights resource in the Azure portal.
 In the Application Insights resource, you can explore different sections like "Logs," "Metrics," "Failures," and "Performance" to analyze the logs and monitor your application's behavior.
