@@ -23,6 +23,18 @@ AppServiceConsoleLogs
 AppServiceHTTPLogs
 ```
 
+# Alerts
+## Portal
+Set up Alerts through the portal.
+
+## CLI (very rought draft, commands do not work yet)
+```
+az monitor action-group create --name $action_group_name --resource-group $RG --short-name $short_name --email-receiver $email_address
+```
+```
+az monitor metrics alert create --name $alert_name -g $RG --scopes $app_service_id --metric "AppServiceConsoleLogs" --operator "GreaterThanOrEqual" --threshold 1 --evaluation-frequency "PT1M" --window-size "PT5M" --action $action_group_id
+```
+
 # Application Insights (Untested very rough draft)
 # Step 1: Create an Application Insights resource
 ## From the Portal
