@@ -10,15 +10,15 @@ Click on "Review + Create" and then click on "Create" to create the Log Analytic
 ## With CLI
 ### Create a resource group (if needed)
 ```
-az group create --name <resource_group_name> --location <location>
+az group create --name $RG --location $LOC
 ```
 ### Create a Log Analytics workspace
 ```
-az monitor log-analytics workspace create --resource-group <resource_group_name> --workspace-name <workspace_name> --location <location>
+az monitor log-analytics workspace create --resource-group $RG --workspace-name $WSNAME --location $LOC
 ```
 ### Retrieve the workspace ID and key
 ```
-az monitor log-analytics workspace get-shared-keys --resource-group <resource_group_name> --workspace-name <workspace_name>
+az monitor log-analytics workspace get-shared-keys --resource-group $RG --workspace-name $WSNAME
 
 ```
 
