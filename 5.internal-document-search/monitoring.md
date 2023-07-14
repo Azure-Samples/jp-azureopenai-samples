@@ -1,5 +1,5 @@
 # Step 1: Create an Azure Log Analytics workspace
-
+## From Portal
 Go to the Azure portal (https://portal.azure.com) and sign in to your Azure account.
 In the Azure portal, click on "Create a resource" and search for "Log Analytics workspace".
 Click on "Log Analytics workspace" from the search results.
@@ -7,6 +7,20 @@ Click on "Create" to start creating a new Log Analytics workspace.
 Provide the required details such as subscription, resource group, workspace name, and region.
 Configure other optional settings as per your requirements.
 Click on "Review + Create" and then click on "Create" to create the Log Analytics workspace.
+## With CLI
+### Create a resource group (if needed)
+```
+az group create --name <resource_group_name> --location <location>
+```
+### Create a Log Analytics workspace
+```
+az monitor log-analytics workspace create --resource-group <resource_group_name> --workspace-name <workspace_name> --location <location>
+```
+### Retrieve the workspace ID and key
+```
+az monitor log-analytics workspace get-shared-keys --resource-group <resource_group_name> --workspace-name <workspace_name>
+
+```
 
 # Step 2: Create an Application Insights resource
 
