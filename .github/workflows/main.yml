@@ -39,3 +39,8 @@ jobs:
           az account show
           az group list
           pwd 
+      - name: 'Run Azure Developer CLI commands'
+        run: |
+          azd version
+          azd deploy
+          pwd 
