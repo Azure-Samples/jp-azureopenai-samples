@@ -50,5 +50,5 @@ jobs:
           pwd
           ls
           export AZURE_PRINCIPAL_ID=${{ secrets.AZURE_PRINCIPAL_ID }}
-          azd deploy
+          azd deploy --no-prompt
           pwd 
