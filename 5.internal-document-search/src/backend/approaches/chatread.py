@@ -33,7 +33,7 @@ class ChatReadApproach(Approach):
             n=1)
 
         response_text = response.choices[0]["message"]["content"]
-        response_text += "TEST"
+        response_text += "TEST2"
         total_tokens = response.usage.total_tokens
         input_text = history[-1]["user"]
 
