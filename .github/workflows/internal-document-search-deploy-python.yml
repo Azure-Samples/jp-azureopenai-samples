@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 jobs:
-  continuous_deployment:
+  continuous_deployment_with_az:
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/azure-dev-cli-apps:latest
