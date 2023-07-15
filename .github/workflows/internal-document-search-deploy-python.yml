@@ -30,6 +30,7 @@ jobs:
       - name: 'git clone and cd'
         run: |
           git clone https://github.com/rukasakurai/jp-azureopenai-samples
+          git checkout feature/cd
           cd jp-azureopenai-samples/5.internal-document-search/src/backend
           pwd
           ls
