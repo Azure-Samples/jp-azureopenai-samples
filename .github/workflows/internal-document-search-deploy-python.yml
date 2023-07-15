@@ -14,16 +14,7 @@ permissions:
 jobs:
   continuous_deployment_with_az:
     runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/azure-dev-cli-apps:latest
     steps:          
-      - name: "Check versions"
-        run: |
-          azd version
-          az --version
-          python --version
-          which python
-          
       - name: "Az CLI login"
         uses: azure/login@v1
         with:
@@ -42,16 +33,17 @@ jobs:
           cd jp-azureopenai-samples/5.internal-document-search/src/backend
           pwd
           ls
-                    
+
+      - name: Setup Python 3.11 
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.11
+
       - name: 'Install dependencies'
         shell: bash
         run: |
           which python
-          which python3.11
           python --version
-          echo $LD_LIBRARY_PATH
-          ls /usr/lib
-          ls /__t/Python/3.11.4/x64
           echo "---"
           pip install -r requirements.txt
    
