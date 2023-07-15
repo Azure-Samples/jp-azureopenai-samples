@@ -53,6 +53,8 @@ jobs:
           which python
           which python3.11
           echo $LD_LIBRARY_PATH
+          export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/__t/Python/3.11.3/x64/bin/python
+          echo $LD_LIBRARY_PATH
           python -m pip install --upgrade pip
           pip install -r requirements.txt
    
