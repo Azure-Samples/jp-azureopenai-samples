@@ -44,6 +44,9 @@ jobs:
         run: |
           ls
           pwd
+          cd jp-azureopenai-samples/5.internal-document-search/src/backend
+          pwd
+          ls
           which python
           python --version
           echo "---"
