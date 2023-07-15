@@ -1,4 +1,4 @@
-name: Greeting on variable day
+name: Continuous Deployment
 
 on:
   workflow_dispatch:
@@ -10,17 +10,11 @@ permissions:
   id-token: write
   contents: read
 
-env:
-  DAY_OF_WEEK: Monday
-
 jobs:
   greeting_job:
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/azure-dev-cli-apps:latest
-    env:
-      Greeting: Hello
-      TEST_VAR: ${{ vars.TEST_VAR }}
     steps:
       - name: "Say Hello Mona it's Monday"
         run: echo "$Greeting $First_Name. Today is $DAY_OF_WEEK!"
