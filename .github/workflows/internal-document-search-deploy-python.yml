@@ -54,9 +54,7 @@ jobs:
           which python3.11
           echo $LD_LIBRARY_PATH
           ls /usr/lib
-          export LD_LIBRARY_PATH=/usr/lib
-          echo $LD_LIBRARY_PATH
-          python -m pip install --upgrade pip
+          ls /__t/Python/3.11.4/x64
           pip install -r requirements.txt
    
       - name: 'Deploy to Azure WebApp'
