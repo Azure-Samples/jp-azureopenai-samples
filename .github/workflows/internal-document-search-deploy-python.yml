@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - feature/cd
       
 permissions:
   id-token: write
