@@ -1,4 +1,4 @@
-name: Continuous Deployment
+name: Continuous Deployment (az not azd)
 
 on:
   workflow_dispatch:
