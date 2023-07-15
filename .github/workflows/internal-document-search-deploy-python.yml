@@ -42,19 +42,21 @@ jobs:
           pwd
           ls
           
-      - name: Setup Python 3.x 
-        uses: actions/setup-python@v1
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v2
         with:
-          python-version: 3.x        
+          python-version: 3.11      
           
       - name: 'Install dependencies'
         shell: bash
         run: |
           which python
           which python3.11
+          python --version
           echo $LD_LIBRARY_PATH
           ls /usr/lib
           ls /__t/Python/3.11.4/x64
+          echo "---"
           pip install -r requirements.txt
    
       - name: 'Deploy to Azure WebApp'
