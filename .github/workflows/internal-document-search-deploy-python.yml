@@ -52,7 +52,6 @@ jobs:
         run: |
           which python
           which python3.11
-          python3 --version
           echo $LD_LIBRARY_PATH
           python -m pip install --upgrade pip
           pip install -r requirements.txt
