@@ -41,14 +41,14 @@ jobs:
           pwd
           ls
                 
-      - name: 'Resolve Project Dependencies Using Pip'
+      - name: 'Install dependencies'
         shell: bash
         run: |
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
    
       - name: 'Deploy to Azure WebApp'
         uses: azure/webapps-deploy@v2
         with: 
-          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
-          package: ${{ secrets.AZURE_WEBAPP_PACKAGE_PATH }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          app-name: ${{ vars.AZURE_WEBAPP_NAME }}
+          package: '.'
