@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - main
-      - feature/cd
       
 permissions:
   id-token: write
@@ -34,10 +33,10 @@ jobs:
           pwd
           ls
 
-      - name: Setup Python 3.11 
+      - name: Setup Python 3.10 
         uses: actions/setup-python@v2
         with:
-          python-version: 3.11
+          python-version: 3.10
 
       - name: 'Install dependencies'
         shell: bash
@@ -56,4 +55,4 @@ jobs:
         uses: azure/webapps-deploy@v2
         with: 
           app-name: ${{ vars.AZURE_WEBAPP_NAME }}
-          package: '.'
+          package: /home/runner/work/jp-azureopenai-samples/jp-azureopenai-samples/jp-azureopenai-samples/5.internal-document-search/src/backend
