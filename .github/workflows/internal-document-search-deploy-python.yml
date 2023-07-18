@@ -57,3 +57,5 @@ jobs:
         uses: azure/webapps-deploy@v2
         with: 
           app-name: ${{ vars.AZURE_WEBAPP_NAME }}
+          package: ${{ env.WORKING_DIRECTORY }}
+          startup-command: ${{ env.STARTUP_COMMAND }}
