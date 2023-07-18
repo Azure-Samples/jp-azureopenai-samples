@@ -57,5 +57,4 @@ jobs:
         uses: azure/webapps-deploy@v2
         with: 
           app-name: ${{ vars.AZURE_WEBAPP_NAME }}
-          package: ${{ env.WORKING_DIRECTORY }}
-          startup-command: ${{ env.STARTUP_COMMAND }}
+          package: "/home/runner/work/jp-azureopenai-samples/jp-azureopenai-samples/jp-azureopenai-samples/5.internal-document-search/src/backend"
