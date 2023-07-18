@@ -16,7 +16,7 @@ jobs:
     container:
       image: mcr.microsoft.com/azure-dev-cli-apps:latest
     steps:          
-      - name: "Check azd version"
+- name: "Check azd version"
         run: azd version
         
       - name: "Az CLI login"
