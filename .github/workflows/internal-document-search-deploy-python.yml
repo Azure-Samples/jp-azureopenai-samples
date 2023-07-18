@@ -1,0 +1,59 @@
+name: Continuous Deployment (az not azd)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - feature/cd
+      
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  continuous_deployment_with_az:
+    runs-on: ubuntu-latest
+    steps:          
+      - name: "Az CLI login"
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          
+      - name: 'Run Azure CLI commands'
+        run: |
+          az account show
+          az group list
+          pwd 
+          ls
+
+      - name: 'git clone and cd'
+        run: |
+          git clone https://github.com/rukasakurai/jp-azureopenai-samples
+          cd jp-azureopenai-samples
+          git checkout feature/cd
+
+      - name: Setup Python 3.10 
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10.12"
+
+      - name: 'Install dependencies'
+        shell: bash
+        run: |
+          ls
+          pwd
+          cd jp-azureopenai-samples/5.internal-document-search/src/backend
+          git branch
+          pwd
+          ls
+          which python
+          python --version
+          echo "---"
+          pip install -r requirements.txt
+   
+      - name: 'Deploy to Azure WebApp'
+        uses: azure/webapps-deploy@v2
+        with: 
+          app-name: ${{ vars.AZURE_WEBAPP_NAME }}
+          package: /home/runner/work/jp-azureopenai-samples/jp-azureopenai-samples/jp-azureopenai-samples/5.internal-document-search/src/backend
