@@ -2,9 +2,6 @@ name: Continuous Deployment
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
       
 permissions:
   id-token: write
