@@ -1,7 +1,7 @@
 # Chat+社内文書検索
 
 ## 概要
-このデモは、ChatGPT ライクなインターフェースを使用して企業の社内文書を検索するアプリケーションの実装パターンです。デモアプリを利用するためには、Azure Open AI の ChatGPT(text-davinci-003/gpt-35-turbo) モデルと、Azure Cognitive Search、他にいくつかのリソースの作成が必要です。
+このデモは、ChatGPT ライクなインターフェースを使用して企業の社内文書を検索するアプリケーションの実装パターンです。デモアプリを利用するためには、Azure Open AI の ChatGPT(gpt-35-turbo) モデルと、Azure Cognitive Search、他にいくつかのリソースの作成が必要です。
 
 このリポジトリでは、サンプルデータに[厚生労働省のモデル就業規則](https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudoukijun/zigyonushi/model/index.html)を使用しています。
 
@@ -24,7 +24,7 @@
 | サービス名 | SKU | Note |
 | --- | --- | --- |
 |Azure App Service|S1||
-|Azure OpenAI Service|S0|text-davinchi-003,gpt-3.5-turbo|
+|Azure OpenAI Service|S0|gpt-3.5-turbo|
 |Azure Cognitive Search|S1||
 |Azure Cosmos DB|プロビジョニング済みスループット||
 |Azure Form Recgonizer|S0||
@@ -33,17 +33,18 @@
 #### ローカル開発環境
 このデモをデプロイするためには、ローカルに以下の開発環境が必要です。
 > **重要** このサンプルは Windows もしくは Linux 環境で動作します。ただし、WSL2 の環境では正常に動作しません。
-- [Azure Developer CLI](https://aka.ms/azure-dev/install)
-- [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli)
-- [Python 3+](https://www.python.org/downloads/)
+- [Azure Developer CLI](https://aka.ms/azure-dev/install) （version 1.0.2以降推奨）
+- [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) （version 2.50.0以降推奨）
+- [Python 3+](https://www.python.org/downloads/)（version 3.11以降推奨）
     - **重要**: Windows 環境では、python および pip を Path 環境変数に含める必要があります。
     - **重要**: `python --version` で現在インストールされている Python のバージョンを確認することができます。 Ubuntu を使用している場合、`sudo apt install python-is-python3` で `python` と `python3` をリンクさせることができます。    
-- [Node.js](https://nodejs.org/en/download/)
+- [Node.js](https://nodejs.org/en/download/)（version 14.18以降推奨）
 - [Git](https://git-scm.com/downloads)
 - [Powershell 7+ (pwsh)](https://github.com/powershell/powershell) - Windows で実行する場合のみ
    - **重要**: `pwsh.exe` が PowerShell コマンドとして実行できることを確認して下さい。
 
 >注意: 実行するユーザの AAD アカウントは、`Microsoft.Authorization/roleAssignments/write` 権限を持っている必要があります。この権限は [ユーザーアクセス管理者](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#user-access-administrator) もしくは [所有者](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#owner)が保持しています。  
+`az role assignment list --assignee <your-Azure-email-address> --subscription <subscription-id> --output table`
 
 ### インストール
 
@@ -77,6 +78,15 @@
 1. `azd login` を実行する。
 2. `src` フォルダに移動する。
 3. `./start.ps1` もしくは `./start.sh` を実行します。
+
+##### VS Codeでのデバッグ実行
+1. `src\backend`フォルダに異動する
+2. `code .`でVS Codeを開く
+3. Run>Start Debugging または F5
+
+#### FrontendのJavaScriptのデバッグ
+1. src/frontend/vite.config.tsのbuildに`minify: false`を追加
+2. ブラウザのDeveloper tools > Sourceでブレイクポイントを設定して実行
 
 ### GPT-4モデルの利用
 2023年6月現在、GPT-4 モデルは申請することで利用可能な状態です。このサンプルは GPT-4 モデルのデプロイに対応していますが、GPT-4 モデルを利用する場合には、[こちら](https://learn.microsoft.com/ja-jp/azure/cognitive-services/openai/how-to/create-resource?pivots=web-portal#deploy-a-model)を参考に、GPT-4 モデルをデプロイしてください。また、GPT-4 モデルの利用申請は[こちらのフォーム](https://aka.ms/oai/get-gpt4)から可能です。
