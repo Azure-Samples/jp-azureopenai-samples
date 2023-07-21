@@ -1,9 +1,9 @@
-name: Build and deploy Python app to Azure Web App - app-backend-v3kwinjxodkwe
+name: CD with 1 job
 
 on:
   push:
     branches:
-      - deactivate-feature/cd
+      - main
   workflow_dispatch:
 
 jobs:
