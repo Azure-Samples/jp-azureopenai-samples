@@ -52,9 +52,9 @@ def write_chatlog(approach: ApproachType, user_name: str, total_tokens: int, inp
 
     if query != "":
         properties["query"] = query
-    
-    credential = DefaultAzureCredential()	
-    database = CosmosClient(endpoint, credential).get_database_client(database_name)	
+
+    credential = DefaultAzureCredential()
+    database = CosmosClient(endpoint, credential).get_database_client(database_name)
     container = database.get_container_client(container_name)
     container.create_item(body=properties, enable_automatic_id_generation=True)
     

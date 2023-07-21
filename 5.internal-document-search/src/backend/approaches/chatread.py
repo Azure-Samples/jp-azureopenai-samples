@@ -33,10 +33,9 @@ class ChatReadApproach(Approach):
             n=1)
 
         response_text = response.choices[0]["message"]["content"]
-        response_text += "TEST_GH"
         total_tokens = response.usage.total_tokens
         input_text = history[-1]["user"]
 
         write_chatlog(ApproachType.Chat, user_name, total_tokens, input_text, response_text)
-            
+
         return { "answer": response_text }
