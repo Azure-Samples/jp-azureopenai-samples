@@ -1,0 +1,14 @@
+name: Build and deploy Python app to Azure Web App - app-backend-v3kwinjxodkwe
+
+on:
+  push:
+    branches:
+      - deactivate-feature/cd
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
