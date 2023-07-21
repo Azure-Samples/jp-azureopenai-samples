@@ -1,4 +1,7 @@
 # トラブルシューティングガイド (Troubleshooting Guide)
+## Table of Contents
+1. [InsufficientQuota](#InsufficientQuota)
+2. [InvalidTemplateDeployment](#InvalidTemplateDeployment)
 ## InsufficientQuota
 ### エラーメッセージ例 (Example error message)
 ```
@@ -76,3 +79,18 @@ Quotaはサブスクリプション内のリージョン毎に設定されてい
 4. デプロイされたモデルのリストからQuotaを変えたいモデルを選択
 5. 「デプロイの編集」＞「詳細設定オプション」からQuotaを変更
 6. 「保存して終了」を選択
+7. 
+## InvalidTemplateDeployment
+### エラーメッセージ例 (Example error message)
+```
+ERROR: deployment failed: failing invoking action 'provision', error deploying infrastructure: deploying to subscription:
+
+Deployment Error Details:
+InvalidTemplateDeployment: The template deployment 'openai' is not valid according to the validation procedure. The tracking id is 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'. See inner errors for details.
+DeploymentModelNotSupported: Creating account deployment is not supported by the model 'text-davinci-003'. This is usually because there are better models available for the similar functionality.
+```
+### エラーの説明
+対象のAzure OpenAIモデルがデプロイできない。
+
+### 解決方法
+別のモデルとバージョンを指定（例: text-davinci-003のversion=1からのgpt-35-turboのversion=0301）
