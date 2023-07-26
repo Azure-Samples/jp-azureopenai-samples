@@ -112,14 +112,17 @@ def gpt():
         azure_token = DefaultAzureCredential().get_token("https://cognitiveservices.azure.com/.default")
         openai.api_key = azure_token.token
         
-        main_prompt=transcription[0:2600]
-        followup_prompt = '\n"""\n上記の会話内容を、次の4項目について回答しなさい:\nQ1>. 簡潔な文章に要約:\nQ2>. センチメントスコアを0～100の間で評価し、数値で回答:\nQ3>. キーエンティティを抽出:\nQ4>. 該当するカテゴリはどれか [情報,質問,技術,クレーム,依頼,その他]\n"""'
+        system_content = '\n"""\n会話内容を、次の4項目について回答しなさい。回答は A1>, A2>, A3>, A4> として記述し各項目の説明は不要です:\nQ1>. 簡潔な文章に要約:\nQ2>. センチメントスコアを0～100の数値で評価し、数値で回答:\nQ3>. キーエンティティを抽出:\nQ4>. 該当するカテゴリはどれか [情報,質問,技術,クレーム,依頼,その他]\n"""'
+        user_content=transcription[0:2600]
 
-        response = openai.Completion.create(engine=gptModel, 
-                                            prompt=main_prompt+followup_prompt, 
+        response = openai.ChatCompletion.create(engine=gptModel, 
+                                            messages=[
+                                                {"role": "system", "content": system_content},
+                                                {"role": "user", "content": user_content}
+                                            ],
                                             temperature=0, 
                                             max_tokens=400)
-        text = response['choices'][0]['text'].replace('\n', '').replace(' .', '.').strip()
+        text = response['choices'][0]['message']['content'].replace('\n', '').replace(' .', '.').strip()
 
         # regex function to extract all characters after [4].
         def extract_category(pattern, text):
