@@ -25,7 +25,7 @@
 ## Azureのリソース作成
 ```PowerShell
 $ENV:SUB = "your-subscription-id"
-$ENV:EMAIL = "your-email"
+$ENV:EMAIL = "your-email" # 作業者のユーザープリンシパル名
 $Env:AZURE_PRINCIPAL_ID = az ad user show --id $ENV:EMAIL -o tsv --query id # 作業者のObjectId
 
 $ENV:LOC = "francecentral" # The location to store the deployment metadata and to deploy resources
@@ -46,9 +46,12 @@ npm run build
 
 ### Pythonコードのデプロイ
 ```
+$ENV:AZURE_WEBAPP_RESOURCE_GROUP = "rg-${ENV:AZURE_ENV_NAME}"
+$ENV:WEBAPP_NAME = "app service name"
+
 cd jp-azureopenai-samples/5.internal-document-search/src/backend
 zip -r app.zip .
-az webapp deployment source config-zip --resource-group $RG --name $WEBAPP --src ./app.zip
+az webapp deployment source config-zip --resource-group $ENV:AZURE_WEBAPP_RESOURCE_GROUP --name $ENV:WEBAPP_NAME --src ./app.zip
 ```
 
 コマンドの実行が終了すると、アプリケーションにアクセスする為の URL が表示されます。この URL をブラウザで開き、サンプルアプリケーションの利用を開始してください
@@ -71,6 +74,8 @@ $env:AZURE_TENANT_ID = "Azure AD tenant ID"
 
 ### Create and assign Cosmos DB data actions roles
 ```PowerShell
+cd jp-azureopenai-samples/5.internal-document-search
+
 Write-Host "Create and assign Cosmos DB data actions roles"
 $roleId = az cosmosdb sql role definition create --account-name $env:AZURE_COSMOSDB_ACCOUNT --resource-group $env:AZURE_COSMOSDB_RESOURCE_GROUP --body ./scripts/cosmosreadwriterole.json --output tsv --query id
 
@@ -83,6 +88,8 @@ az cosmosdb sql role assignment create --account-name $env:AZURE_COSMOSDB_ACCOUN
 
 ### Run prepdocs.py
 ```PowerShell
+cd jp-azureopenai-samples/5.internal-document-search
+
 $pythonCmd = Get-Command python -ErrorAction SilentlyContinue
 if (-not $pythonCmd) {
   # fallback to python3 if python not found
