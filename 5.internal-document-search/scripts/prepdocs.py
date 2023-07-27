@@ -44,6 +44,8 @@ args = parser.parse_args()
 
 print("args.searchkey:") # TODO: Delete before PR
 print(args.searchkey) # TODO: Delete before PR
+print("args.formrecognizerkey:") # TODO: Delete before PR
+print(args.formrecognizerkey) # TODO: Delete before PR
 
 # Use the current user identity to connect to Azure services unless a key is explicitly set for any of them
 if args.managedidentitycredential:
