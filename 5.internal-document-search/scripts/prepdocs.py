@@ -42,6 +42,9 @@ parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output
 parser.add_argument('--managedidentitycredential', action='store_true', help='Use Managed Identity (e.g., Cloud Shell) credentials')
 args = parser.parse_args()
 
+print("args.searchkey:") # TODO: Delete before PR
+print(args.searchkey) # TODO: Delete before PR
+
 # Use the current user identity to connect to Azure services unless a key is explicitly set for any of them
 if args.managedidentitycredential:
     default_creds = ManagedIdentityCredential()
