@@ -15,6 +15,8 @@ from azure.search.documents.indexes.models import *
 from azure.search.documents import SearchClient
 from azure.ai.formrecognizer import DocumentAnalysisClient
 
+print ("in prepdocs.py") # TODO: Delete before PR
+
 MAX_SECTION_LENGTH = 1000
 SENTENCE_SEARCH_LIMIT = 100
 SECTION_OVERLAP = 100
