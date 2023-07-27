@@ -43,7 +43,7 @@ parser.add_argument('--managedidentitycredential', action='store_true', help='Us
 args = parser.parse_args()
 
 # Use the current user identity to connect to Azure services unless a key is explicitly set for any of them
-if args.cloudshell:
+if args.managedidentitycredential:
     default_creds = ManagedIdentityCredential()
 else:
     azd_credential = AzureDeveloperCliCredential() if args.tenantid is None else AzureDeveloperCliCredential(tenant_id=args.tenantid, process_timeout=60)
