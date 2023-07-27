@@ -65,7 +65,9 @@ $env:AZURE_STORAGE_ACCOUNT = "storagae account name"
 $env:AZURE_STORAGE_CONTAINER = "content"
 $env:AZURE_SEARCH_SERVICE = "search service name"
 $env:AZURE_SEARCH_INDEX = "gptkbindex"
+$env:AZURE_SEARCH_KEY = "xxx"
 $env:AZURE_FORMRECOGNIZER_SERVICE = "form recognizer name"
+$env:AZURE_FORMRECOGNIZER_KEY = "xxx"
 $env:AZURE_TENANT_ID = "Azure AD tenant ID"
 ```
 
@@ -103,12 +105,8 @@ Start-Process -FilePath $venvPythonPath -ArgumentList "-m pip install -r ./scrip
 
 Write-Host 'Running "prepdocs.py"'
 $cwd = (Get-Location)
-Start-Process -FilePath $venvPythonPath -ArgumentList "./scripts/prepdocs.py $cwd/data/* --storageaccount $env:AZURE_STORAGE_ACCOUNT --container $env:AZURE_STORAGE_CONTAINER --searchservice $env:AZURE_SEARCH_SERVICE --index $env:AZURE_SEARCH_INDEX --formrecognizerservice $env:AZURE_FORMRECOGNIZER_SERVICE --tenantid $env:AZURE_TENANT_ID -v" -Wait -NoNewWindow
+Start-Process -FilePath $venvPythonPath -ArgumentList "./scripts/prepdocs.py $cwd/data/* --storageaccount $env:AZURE_STORAGE_ACCOUNT --container $env:AZURE_STORAGE_CONTAINER --searchservice $env:AZURE_SEARCH_SERVICE --searchkey $env:AZURE_SEARCH_KEY --index $env:AZURE_SEARCH_INDEX --formrecognizerservice $env:AZURE_FORMRECOGNIZER_SERVICE --formrecognizerkey $env:AZURE_FORMRECOGNIZER_KEY --tenantid $env:AZURE_TENANT_ID -v --managedidentitycredential" -Wait -NoNewWindow
 ```
-
-prepdocs.pyで、azdを使っているので変える必要がある
-・AzureDeveloperCliCredential から DefaultAzureCredential/AzureCliCredential?
-・対応オプション - 案1: prepdocs.pyで、azd/azを選択できるように変更するか、 案2: READMEにprepdocs.pyの変更手順を追加、案3: az用のprepdocs.pyを用意
 
 ## アプリケーションのローカル実行
 アプリケーションをローカルで実行する場合には、以下のコマンドを実行してください。`azd up`で既に Azure 上にリソースがデプロイされていることを前提にしています。
