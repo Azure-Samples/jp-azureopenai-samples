@@ -84,6 +84,17 @@ App ServiceがCosmos DBにアクセスするための権限付与が必要にな
 ```PowerShell
 $env:AZURE_COSMOSDB_ACCOUNT = "xxx" # Azureリソースの作成時に作成されているリソースの名前
 $env:AZURE_COSMOSDB_RESOURCE_GROUP = "rg-${ENV:AZURE_ENV_NAME}"
+$env:BACKEND_IDENTITY_PRINCIPAL_ID = "app serviceのManaged IdentityのObject ID"
+
+$env:AZURE_STORAGE_ACCOUNT = "storagae account name"
+$env:AZURE_STORAGE_CONTAINER = "content"
+$env:AZURE_SEARCH_SERVICE = "search service name"
+$env:AZURE_SEARCH_INDEX = "gptkbindex"
+$env:AZURE_SEARCH_KEY = "search serviceのプライマリ管理者キー"
+$env:AZURE_FORMRECOGNIZER_SERVICE = "form recognizer name"
+$env:AZURE_FORMRECOGNIZER_KEY = "form recognizer key"
+$env:AZURE_TENANT_ID = "Azure AD tenant ID"
+```
 $env:BACKEND_IDENTITY_PRINCIPAL_ID = "app serviceのManaged IdentityのObject ID" # Azure PortalからApp ServiceのObejct IDを取得
 
 cd jp-azureopenai-samples/5.internal-document-search
