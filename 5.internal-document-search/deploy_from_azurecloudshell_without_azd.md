@@ -104,8 +104,10 @@ $env:AZURE_STORAGE_ACCOUNT = "xxx" # Azureリソースの作成時に作成さ�
 $env:AZURE_STORAGE_CONTAINER = "content" # 固定値
 $env:AZURE_SEARCH_SERVICE = "xxx" # Azureリソースの作成時に作成されているリソースの名前
 $env:AZURE_SEARCH_INDEX = "gptkbindex" # 固定値
+$env:AZURE_SEARCH_KEY = "search serviceのプライマリ管理者キー"
 $env:AZURE_SEARCH_KEY = "xxx" # Azure PortalからAzure Search ServiceのKeyを取得
 $env:AZURE_FORMRECOGNIZER_SERVICE = "xxx" # Azureリソースの作成時に作成されているリソースの名前
+$env:AZURE_FORMRECOGNIZER_KEY = "form recognizer key"
 $env:AZURE_FORMRECOGNIZER_KEY = "xxx" # Azure PortalからAzure Form RecognizerのKeyを取得
 ```
 
