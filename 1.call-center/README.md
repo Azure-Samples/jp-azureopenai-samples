@@ -25,7 +25,7 @@ WEB アプリケーションを Azure App Service でホストしたソリュー
 |  サービス名  |  SKU  | Note |
 | ---- | ---- | ---- |
 | Azure App Service  |  Standard (S1) | Python 3.11 |
-| Azure OpenAI Service |  Standard  | text-davinci-003 |
+| Azure OpenAI Service |  Standard  | gpt-35-turbo |
 | Speech Services |  Standard  | |
 | Language Services |  Standard  | |
 
@@ -42,7 +42,7 @@ WEB アプリケーションを Azure App Service でホストしたソリュー
 
 |  サービス名  |  SKU  | Note |
 | ---- | ---- | ---- |
-| Azure OpenAI Service |  Standard  | text-davinci-003 |
+| Azure OpenAI Service |  Standard  | gpt-35-turbo |
 | Speech Services |  Standard  | |
 | Language Services |  Standard  | |
 
@@ -50,17 +50,14 @@ WEB アプリケーションを Azure App Service でホストしたソリュー
 
 [Azure Cloud Shell](https://learn.microsoft.com/ja-jp/azure/cloud-shell/quickstart?tabs=azurecli) から、以下のコマンドを実行する事でデプロイ出来ます。
 
-※ 現時点で OpenAI サービスをデプロイ可能なリージョンが限定されています。利用可能なリージョンの詳細は、[モデルの概要テーブルとリージョンの可用性](https://learn.microsoft.com/ja-jp/azure/cognitive-services/openai/concepts/models#model-summary-table-and-region-availability)をご確認ください。
-
 ```bash
 # 環境変数
 export RESOURCE_GROUP=<Your resource group>
 export SPEECHSERVICE_NAME=<Your speech service name>
-export LANGUAGE_SERVICE=<Your language service name>
+export LANGUAGE_SERVICE_NAME=<Your language service name>
 export OPENAI_NAME=<Your OpenAI service name>
 
 export REGION="japaneast"
-export REGION_OPENAI="eastus"
 
 # RESOURCE GROUP
 az group create --location $REGION --resource-group $RESOURCE_GROUP
@@ -70,17 +67,17 @@ az cognitiveservices account create --name $SPEECHSERVICE_NAME --resource-group 
  --kind SpeechServices --sku S0 --location $REGION --custom-domain $SPEECHSERVICE_NAME --yes
 
 # LANGUAGE_SERVICE
-az cognitiveservices account create --name $LANGUAGE_SERVICE --resource-group $RESOURCE_GROUP \
- --kind TextAnalytics --sku S --location $REGION --custom-domain $LANGUAGE_SERVICE --yes
+az cognitiveservices account create --name $LANGUAGE_SERVICE_NAME --resource-group $RESOURCE_GROUP \
+ --kind TextAnalytics --sku S --location $REGION --custom-domain $LANGUAGE_SERVICE_NAME --yes
 
 # OPENAI
 az cognitiveservices account create --name $OPENAI_NAME --resource-group $RESOURCE_GROUP \
- --kind OpenAI --sku S0 --location $REGION_OPENAI --custom-domain $OPENAI_NAME --yes
+ --kind OpenAI --sku S0 --location $REGION --custom-domain $OPENAI_NAME --yes
 ```
 
-上記コマンドの実行後、[Azure Open AI Studio](https://oai.azure.com/)を使用して、[text-davinci-003モデルをデプロイ](https://learn.microsoft.com/ja-jp/azure/cognitive-services/openai/how-to/create-resource?pivots=web-portal#deploy-a-model)してください。デプロイしたモデル名は、後の手順で環境変数の値として利用するので、手元に控えておいてください。
+上記コマンドの実行後、[Azure Open AI Studio](https://oai.azure.com/) を使用して、[gpt-35-turbo モデルをデプロイ](https://learn.microsoft.com/ja-jp/azure/cognitive-services/openai/how-to/create-resource?pivots=web-portal#deploy-a-model)してください。デプロイしたモデル名は、後の手順で環境変数の値として利用するので、手元に控えておいてください。
 
-> Azure Text Analyticsを一度もご利用戴いたことがない場合、上記の`az cognitive...`コマンドのうち、**LANGUAGE_SERVICE**の実行が失敗します。その場合は、Text AnalyticsのリソースをAzure Portal上から作成してください。
+> Azure Text Analytics を一度もご利用戴いたことがない場合、上記の `az cognitive...` コマンドのうち、**LANGUAGE_SERVICE** の実行が失敗します。その場合は、Text Analytics のリソースを Azure Portal 上から作成してください。
 
 ### 1. アクセス制御 (IAM) の構成
 
