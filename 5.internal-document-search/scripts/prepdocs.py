@@ -15,8 +15,6 @@ from azure.search.documents.indexes.models import *
 from azure.search.documents import SearchClient
 from azure.ai.formrecognizer import DocumentAnalysisClient
 
-print ("in prepdocs.py") # TODO: Delete before PR
-
 MAX_SECTION_LENGTH = 1000
 SENTENCE_SEARCH_LIMIT = 100
 SECTION_OVERLAP = 100
@@ -43,11 +41,6 @@ parser.add_argument("--formrecognizerkey", required=False, help="Optional. Use t
 parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
 parser.add_argument('--managedidentitycredential', action='store_true', help='Use Managed Identity (e.g., Cloud Shell) credentials')
 args = parser.parse_args()
-
-print("args.searchkey:") # TODO: Delete before PR
-print(args.searchkey) # TODO: Delete before PR
-print("args.formrecognizerkey:") # TODO: Delete before PR
-print(args.formrecognizerkey) # TODO: Delete before PR
 
 # Use the current user identity to connect to Azure services unless a key is explicitly set for any of them
 if args.managedidentitycredential:
