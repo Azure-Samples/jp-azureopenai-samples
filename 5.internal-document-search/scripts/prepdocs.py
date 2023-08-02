@@ -7,6 +7,7 @@ import re
 import time
 from pypdf import PdfReader, PdfWriter
 from azure.identity import AzureDeveloperCliCredential
+from azure.identity import ManagedIdentityCredential
 from azure.core.credentials import AzureKeyCredential
 from azure.storage.blob import BlobServiceClient
 from azure.search.documents.indexes import SearchIndexClient
@@ -38,12 +39,17 @@ parser.add_argument("--localpdfparser", action="store_true", help="Use PyPdf loc
 parser.add_argument("--formrecognizerservice", required=False, help="Optional. Name of the Azure Form Recognizer service which will be used to extract text, tables and layout from the documents (must exist already)")
 parser.add_argument("--formrecognizerkey", required=False, help="Optional. Use this Azure Form Recognizer account key instead of the current user identity to login (use az login to set current user for Azure)")
 parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
+parser.add_argument('--managedidentitycredential', action='store_true', help='Use Managed Identity (e.g., Cloud Shell) credentials')
 args = parser.parse_args()
 
 # Use the current user identity to connect to Azure services unless a key is explicitly set for any of them
-azd_credential = AzureDeveloperCliCredential() if args.tenantid == None else AzureDeveloperCliCredential(tenant_id=args.tenantid, process_timeout=60)
-default_creds = azd_credential if args.searchkey == None or args.storagekey == None else None
-search_creds = default_creds if args.searchkey == None else AzureKeyCredential(args.searchkey)
+if args.managedidentitycredential:
+    default_creds = ManagedIdentityCredential()
+else:
+    azd_credential = AzureDeveloperCliCredential() if args.tenantid is None else AzureDeveloperCliCredential(tenant_id=args.tenantid, process_timeout=60)
+    default_creds = azd_credential if args.searchkey is None or args.storagekey is None else None
+search_creds = default_creds if args.searchkey is None else AzureKeyCredential(args.searchkey)
+
 if not args.skipblobs:
     storage_creds = default_creds if args.storagekey == None else args.storagekey
 if not args.localpdfparser:
