@@ -23,5 +23,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-02-01' = {
   }
 }
 
-output privateEndpointId string = privateEndpoint.id
-output privateEndpointName string = privateEndpoint.name
+output id string = privateEndpoint.id
+output name string = privateEndpoint.name
+// TODO: output private ip adress
+// output ip string = privateEndpoint.properties.ipConfigurations[0].properties.privateIPAddress

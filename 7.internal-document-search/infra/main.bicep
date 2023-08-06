@@ -61,7 +61,7 @@ param privateEndpointLocation string = location
 param principalId string = ''
 
 var abbrs = loadJsonContent('abbreviations.json')
-var resourceToken = toLower(uniqueString(subscription().id, environmentName, location, 'v1'))
+var resourceToken = toLower(uniqueString(subscription().id, environmentName, location, 'v6'))
 var tags = { 'azd-env-name': environmentName }
 
 // Organize resources in a resource group
@@ -403,6 +403,18 @@ module formRecognizerPrivateEndopoint 'core/network/privateEndpoint.bicep' = {
   }
 }
 
+module appServicePrivateEndopoint 'core/network/privateEndpoint.bicep' = {
+  name: 'app-service-private-endpoint'
+  scope: resourceGroup
+  params: {
+    location: privateEndpointLocation
+    name: '${backend.outputs.name}-endpoint'
+    subnetId: privateEndpointSubnet.outputs.id
+    privateLinkServiceId: backend.outputs.id
+    privateLinkServiceGroupIds: ['sites']
+  }
+}
+
 output AZURE_LOCATION string = location
 output AZURE_TENANT_ID string = tenant().tenantId
 output AZURE_RESOURCE_GROUP string = resourceGroup.name
@@ -436,3 +448,9 @@ output AZURE_COSMOSDB_RESOURCE_GROUP string = resourceGroup.name
 output BACKEND_IDENTITY_PRINCIPAL_ID string = backend.outputs.identityPrincipalId
 output BACKEND_URI string = backend.outputs.uri
 output APPLICATIONINSIGHTS_CONNECTION_STRING string = backend.outputs.applicationInsightsConnectionString
+
+// output STORAGE_PRIVATE_ENDPOINT_IP string = storagePrivateEndopoint.outputs.ip
+// output SEARCH_PRIVATE_ENDPOINT_IP string = searchServicePrivateEndopoint.outputs.ip
+// output OPENAI_PRIVATE_ENDPOINT_IP string = oepnaiPrivateEndopoint.outputs.ip
+// output FORMRECOGNIZER_PRIVATE_ENDPOINT_IP string = formRecognizerPrivateEndopoint.outputs.ip
+// output APPSERVICE_PRIVATE_ENDPOINT_IP string = appServicePrivateEndopoint.outputs.ip

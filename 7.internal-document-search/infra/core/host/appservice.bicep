@@ -107,5 +107,6 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!(empty(
 
 output identityPrincipalId string = managedIdentity ? appService.identity.principalId : ''
 output name string = appService.name
+output id string = appService.id
 output uri string = 'https://${appService.properties.defaultHostName}'
 output applicationInsightsConnectionString string = applicationInsights.properties.ConnectionString

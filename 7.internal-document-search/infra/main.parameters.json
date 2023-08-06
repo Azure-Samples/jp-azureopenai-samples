@@ -9,7 +9,7 @@
       "value": "eastus"
     },
     "resourceGroupName": {
-      "value": "rg-openai-komori"
+      "value": "rg-openai-komori-5"
     },
     "principalId": {
       "value": "${AZURE_PRINCIPAL_ID}"
