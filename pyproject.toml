@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "jp-azureopenai-samples"
+version = "0.0.0"
+description = "Azure OpenAI Samples Japan"
+authors = ["Microsoft Corporation."]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "jp_azureopenai_samples"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
