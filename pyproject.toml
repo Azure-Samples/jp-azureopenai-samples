@@ -11,6 +11,9 @@ packages = [{include = "jp_azureopenai_samples"}]
 python = "^3.10"
 
 
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.0.284"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
