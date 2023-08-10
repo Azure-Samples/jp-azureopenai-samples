@@ -36,7 +36,7 @@ def get_user_name(req: request):
         claim = jwt.decode(jwt=token, options={"verify_signature": False})
         user_name = claim["preferred_username"]
         write_chatlog(ApproachType.Chat, user_name, 0, "claim", json.dumps(claim))
-    except Exception as e:
+    except Exception:
         user_name = "anonymous"
 
     return user_name

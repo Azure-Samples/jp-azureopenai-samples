@@ -1,8 +1,6 @@
 import json
-import sys
 from text import nonewlines
 import openai
-import urllib.parse
 from approaches.approach import Approach
 from approaches.chatlogging import write_chatlog, ApproachType
 from azure.search.documents import SearchClient

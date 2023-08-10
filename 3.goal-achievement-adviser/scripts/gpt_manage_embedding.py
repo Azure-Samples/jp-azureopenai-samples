@@ -1,6 +1,5 @@
 import json
 import uuid
-import time
 import numpy as np
 import pandas as pd
 import os
@@ -13,7 +12,7 @@ from azure.identity import DefaultAzureCredential
 from redis import StrictRedis
 from redis.commands.search.query import Query
 from redis.commands.search.indexDefinition import IndexDefinition, IndexType
-from redis.commands.search.field import VectorField, NumericField, TextField
+from redis.commands.search.field import VectorField, TextField
 
 import openai
 import tiktoken
@@ -139,7 +138,7 @@ def register_topics(filename):
 
 # Query Redis Cache
 def query_all_cache():
-    base_query = f'*'
+    base_query = '*'
     query = Query(base_query)\
         .return_fields("text")\
         .dialect(2)

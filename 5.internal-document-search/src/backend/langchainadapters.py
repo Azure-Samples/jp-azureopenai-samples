@@ -18,7 +18,7 @@ class HtmlCallbackHandler (BaseCallbackHandler):
         self, serialized: Dict[str, Any], prompts: List[str], **kwargs: Any
     ) -> None:
         """Print out the prompts."""
-        self.html += f"LLM prompts:<br>" + "<br>".join(ch(prompts)) + "<br>";
+        self.html += "LLM prompts:<br>" + "<br>".join(ch(prompts)) + "<br>"
 
     def on_llm_end(self, response: LLMResult, **kwargs: Any) -> None:
         """Do nothing."""
@@ -36,7 +36,7 @@ class HtmlCallbackHandler (BaseCallbackHandler):
 
     def on_chain_end(self, outputs: Dict[str, Any], **kwargs: Any) -> None:
         """Print out that we finished a chain."""
-        self.html += f"Finished chain<br>"
+        self.html += "Finished chain<br>"
 
     def on_chain_error(self, error: Exception, **kwargs: Any) -> None:
         self.html += f"<span style='color:red'>Chain error: {ch(error)}</span><br>"

@@ -1,6 +1,5 @@
 import openai
 import json
-import tiktoken
 from approaches.approach import Approach
 from approaches.chatlogging import write_chatlog, ApproachType
 

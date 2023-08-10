@@ -9,7 +9,7 @@ import json
 import logging
 import re
 
-from flask import Flask, render_template, request, redirect, url_for, jsonify, session
+from flask import Flask, render_template, request
 from flask_cors import CORS
 from flask_session import Session  # https://pythonhosted.org/Flask-Session
 

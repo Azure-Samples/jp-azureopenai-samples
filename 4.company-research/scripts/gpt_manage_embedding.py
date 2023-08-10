@@ -190,7 +190,7 @@ def register_company_topics(category, filename):
 
 # Query Redis Cache
 def query_all_cache(category):
-    base_query = f'*'
+    base_query = '*'
     query = Query(base_query)\
         .return_fields("name", "data", "tokens")\
         .dialect(2)
