@@ -1,0 +1,29 @@
+name: static-analysis
+
+on: push
+
+jobs:
+  static-analysis:
+    strategy:
+      matrix:
+        python-version: ["3.11"]
+        poetry-version: ["1.4.2"]
+        platform: [ubuntu-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Run image
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: ${{ matrix.poetry-version }}
+      - name: Run CI tests
+        run: |
+          poetry install
+          poetry run ruff check .
