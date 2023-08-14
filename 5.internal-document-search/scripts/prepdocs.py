@@ -51,13 +51,13 @@ else:
 search_creds = default_creds if args.searchkey is None else AzureKeyCredential(args.searchkey)
 
 if not args.skipblobs:
-    storage_creds = default_creds if args.storagekey == None else args.storagekey
+    storage_creds = default_creds if args.storagekey is None else args.storagekey
 if not args.localpdfparser:
     # check if Azure Form Recognizer credentials are provided
-    if args.formrecognizerservice == None:
+    if args.formrecognizerservice is None:
         print("Error: Azure Form Recognizer service is not provided. Please provide formrecognizerservice or use --localpdfparser for local pypdf parser.")
         exit(1)
-    formrecognizer_creds = default_creds if args.formrecognizerkey == None else AzureKeyCredential(args.formrecognizerkey)
+    formrecognizer_creds = default_creds if args.formrecognizerkey is None else AzureKeyCredential(args.formrecognizerkey)
 
 def blob_name_from_file_page(filename, page = 0):
     if os.path.splitext(filename)[1].lower() == ".pdf":
@@ -94,7 +94,7 @@ def remove_blobs(filename):
     blob_service = BlobServiceClient(account_url=f"https://{args.storageaccount}.blob.core.windows.net", credential=storage_creds)
     blob_container = blob_service.get_container_client(args.container)
     if blob_container.exists():
-        if filename == None:
+        if filename is None:
             blobs = blob_container.list_blob_names()
         else:
             prefix = os.path.splitext(os.path.basename(filename))[0]
@@ -156,7 +156,7 @@ def get_document_text(filename):
             for idx, table_id in enumerate(table_chars):
                 if table_id == -1:
                     page_text += form_recognizer_results.content[page_offset + idx]
-                elif not table_id in added_tables:
+                elif table_id not in added_tables:
                     page_text += table_to_html(tables_on_page[table_id])
                     added_tables.add(table_id)
 
@@ -288,7 +288,7 @@ def remove_from_index(filename):
                                     index_name=args.index,
                                     credential=search_creds)
     while True:
-        filter = None if filename == None else f"sourcefile eq '{os.path.basename(filename)}'"
+        filter = None if filename is None else f"sourcefile eq '{os.path.basename(filename)}'"
         r = search_client.search("", filter=filter, top=1000, include_total_count=True)
         if r.get_count() == 0:
             break
@@ -304,7 +304,7 @@ else:
     if not args.remove:
         create_search_index()
     
-    print(f"Processing files...")
+    print("Processing files...")
     for filename in glob.glob(args.files):
         if args.verbose: print(f"Processing '{filename}'")
         if args.remove:

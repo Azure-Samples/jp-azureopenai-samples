@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "jp-azureopenai-samples"
+version = "0.0.0"
+description = "Azure OpenAI Samples Japan"
+authors = ["Microsoft Corporation."]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.0.284"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+ignore = [
+    "E501",
+    "E722",
+]
+
+[tool.ruff.per-file-ignores]
+"5.internal-document-search/scripts/prepdocs.py" = [
+    "E701",
+    "E741",
+    "F403",
+    "F405",
+]

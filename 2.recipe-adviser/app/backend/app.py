@@ -1,11 +1,8 @@
 import os
-import sys
-import time
 import json
 import jwt
 import openai
 from flask import Flask, request, jsonify, render_template, send_from_directory
-from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
 from dotenv import load_dotenv
 
 # Food Menu
@@ -54,7 +51,7 @@ def get_user_name(req: request):
         claim = jwt.decode(jwt=token, options={"verify_signature": False})
         user_name = claim["preferred_username"]
         user_name = user_name.split("@")[0]
-    except Exception as e:
+    except Exception:
         user_name = ""
 
     return user_name
