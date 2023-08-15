@@ -46,8 +46,10 @@ param formRecognizerSkuName string = 'S0'
 
 param gptDeploymentName string = 'davinci'
 param gptModelName string = 'gpt-35-turbo'
+param gptCapacity int = 40
 param chatGptDeploymentName string = 'chat'
 param chatGptModelName string = 'gpt-35-turbo'
+param chatGptCapacity int =  40
 
 param cosmosDbDatabaseName string = 'ChatHistory'
 param cosmosDbContainerName string = 'Prompts'
@@ -161,8 +163,9 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
           name: gptModelName
           version: '0301'
         }
-        scaleSettings: {
-          scaleType: 'Standard'
+        sku: {
+          name: 'Standard'
+          capacity: gptCapacity
         }
       }
       {
@@ -172,8 +175,9 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
           name: chatGptModelName
           version: '0301'
         }
-        scaleSettings: {
-          scaleType: 'Standard'
+        sku: {
+          name: 'Standard'
+          capacity: chatGptCapacity
         }
       }
     ]
