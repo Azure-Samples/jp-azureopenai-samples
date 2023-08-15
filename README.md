@@ -15,10 +15,10 @@ Azure OpenAIを活用したアプリケーション実装のリファレンス�
 
 ## Getting Started
 ### 前提知識
-- Azureの基礎: Azure Portalの使い方、Azure CLIの使い方、Azureリソースの概念、RBAC等のAzureの基礎が前提知識になります。自信のない方は、[Microsoft Azure Virtual Training Day: Azureの基礎](https://www.microsoft.com/ja-jp/events/top/training-days/azure?activetab=pivot:azure%E3%81%AE%E5%9F%BA%E7%A4%8Etab)等の活用を推奨します。
-- Azure OpenAI Serviceの基礎: Azure OpenAI Serviceとは何かを理解している必要があります。[Azure OpenAI Developers セミナー](https://www.youtube.com/watch?v=ek3YWrHD76g)をご覧いただければ、最低限の基礎は身に付きます。
-- PowerShellやBash等のコマンドラインツールの使い方の基礎: 自信がない場合は[Introduction to PowerShell](https://learn.microsoft.com/training/modules/introduction-to-powershell/)や[Introduction to Bash](https://learn.microsoft.com/training/modules/bash-introduction/)をご活用ください
-- VS Code等のコードエディタの使い方の基礎: 自信がない場合は[Introduction to Visual Studio Code](https://learn.microsoft.com/training/modules/introduction-to-visual-studio-code/)をご活用ください
+- **Azureの基礎**: Azure Portalの使い方、Azure CLIの使い方、Azureリソースの概念、RBAC等のAzureの基礎が前提知識になります。自信がない場合は、[Microsoft Azure Virtual Training Day: Azureの基礎](https://www.microsoft.com/ja-jp/events/top/training-days/azure?activetab=pivot:azure%E3%81%AE%E5%9F%BA%E7%A4%8Etab)等の活用を推奨します。
+- **Azure OpenAI Serviceの基礎**: Azure OpenAI Serviceとは何かを理解している必要があります。[Azure OpenAI Developers セミナー](https://www.youtube.com/watch?v=ek3YWrHD76g)をご覧いただければ、最低限の基礎は身に付きます。
+- **PowerShellやBash等のコマンドラインツールの使い方の基礎**: 自信がない場合は、[Introduction to PowerShell](https://learn.microsoft.com/training/modules/introduction-to-powershell/)や[Introduction to Bash](https://learn.microsoft.com/training/modules/bash-introduction/)をご活用ください
+- **VS Code等のコードエディタの使い方の基礎**: 自信がない場合は、[Introduction to Visual Studio Code](https://learn.microsoft.com/training/modules/introduction-to-visual-studio-code/)をご活用ください
  
 ### サンプルアプリケーションのデプロイ
 日本語: 各サンプルのREADMEをご参照ください。
