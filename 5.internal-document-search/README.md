@@ -107,9 +107,12 @@ GPT-4 モデルは、チャット機能、文書検索機能のオプション�
 Easy Auth の設定は、[こちら](https://learn.microsoft.com/ja-jp/azure/app-service/scenario-secure-app-authentication-app-service)を参考にしてください。
 
 ## 本番稼働を視野にいれる場合の考慮事項
-本番稼働（や本番に近い検証環境等）を視野にいれる場合、様々な考慮事項があります。考えられる考慮事項はCloud Adoption FrameworkやWell-Architected Frameworkにまとめられていますが、考慮事項は多岐にわたるので、状況（例: シナリオ、企業の事情）に応じた重要度や緊急度等を考慮した優先順位付けが必要になります。
+本番稼働（や本番に近い検証環境等）を視野にいれる場合、様々な考慮事項があります。考えられる考慮事項は[Azure Cloud Adoption Framework](https://learn.microsoft.com/azure/cloud-adoption-framework/overview) kやWell-Architected Frameworkにまとめられていますが、考慮事項は多岐にわたるので、状況（例: シナリオ、企業の事情）に応じた重要度や緊急度等を考慮した優先順位付けが必要になります。
 
 社内文書検索シナリオにおいては、社内データと連携する場合にはプライベートネットワークを考慮した設計や企業のAzure基盤との連携が重要になること多くなるとことが推測されるます。
+
+### Azure共通基盤との連携
+Azure共通基盤を意識した場合、[Azure Cloud Adoption Framework](https://learn.microsoft.com/azure/cloud-adoption-framework/overview)で紹介されている [Azure Enterprise Scale Landing Zone](https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/)を意識することになります。こちらのシナリオはEnterprise Scale Landing Zoneでいう、1ランディングゾーンに相当します。
 
 ### プライベートネットワーク構成
 - Bicepを活用した構築ガイダンス: Coming soon
