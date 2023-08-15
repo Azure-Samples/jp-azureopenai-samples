@@ -3,23 +3,23 @@
 name: internal-document-search
 metadata:
   template: internal-document-search@0.0.1-beta
-services:
-  backend:
-    project: ./src/backend
-    language: py
-    host: appservice
-    hooks:
-      prepackage:
-        windows:
-          shell: pwsh
-          run:  cd ../frontend;npm install;npm run build
-          interactive: true
-          continueOnError: false
-        posix:
-          shell: sh
-          run:  cd ../frontend;npm install;npm run build
-          interactive: true
-          continueOnError: false
+# services:
+#   backend:
+#     project: ./src/backend
+#     language: py
+#     host: appservice
+#     hooks:
+#       prepackage:
+#         windows:
+#           shell: pwsh
+#           run:  cd ../frontend;npm install;npm run build
+#           interactive: true
+#           continueOnError: false
+#         posix:
+#           shell: sh
+#           run:  cd ../frontend;npm install;npm run build
+#           interactive: true
+#           continueOnError: false
 hooks:
     postprovision:
       windows:
