@@ -458,7 +458,7 @@ module nic 'core/network/nic.bicep' = {
   }
 }
 
-module vm 'core/network/vm.bicep' = {
+module vm 'core/vm/vm.bicep' = {
   name: 'vm'
   scope: resourceGroup
   params: {
