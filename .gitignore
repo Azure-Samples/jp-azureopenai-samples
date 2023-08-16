@@ -167,3 +167,5 @@ cython_debug/
 # parameterfile
 */*.local
 */*/*.local
+
+8.test/
