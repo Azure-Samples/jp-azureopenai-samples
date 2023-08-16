@@ -352,6 +352,9 @@ module privateEndpointSubnet 'core/network/subnet.bicep' = {
     existVnetName: vnet.outputs.name
     name: 'private-endpoint-subnet'
     addressPrefix: '10.0.0.0/24'
+    networkSecurityGroup: {
+      id: nsg.outputs.id
+    }
   }
 }
 
@@ -451,7 +454,7 @@ module nic 'core/network/nic.bicep' = {
     location: location
     subnetId: vmSubnet.outputs.id
     publicIPId: publicIP.outputs.publicIPId
-    nsgId: nsg.outputs.nsgId
+    nsgId: nsg.outputs.id
   }
 }
 

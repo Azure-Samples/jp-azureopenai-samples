@@ -1,7 +1,6 @@
 param name string
 param location string = resourceGroup().location
 param adminUsername string
-param authenticationType string = 'password'
 @secure()
 param adminPasswordOrKey string
 param vmSize string = 'Standard_D2s_v3'

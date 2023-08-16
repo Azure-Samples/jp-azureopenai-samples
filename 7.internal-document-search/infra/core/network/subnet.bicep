@@ -1,6 +1,7 @@
 param existVnetName string
 param name string
 param addressPrefix string
+param networkSecurityGroup object = {}
 
 resource existVnet 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
   scope: resourceGroup()
@@ -12,6 +13,7 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-02-01' = {
   name: name
   properties: {
     addressPrefix: addressPrefix
+    networkSecurityGroup: networkSecurityGroup
   }
 }
 
