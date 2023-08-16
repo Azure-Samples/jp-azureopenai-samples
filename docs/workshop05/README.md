@@ -1,4 +1,4 @@
-# Chat+社内文書検索 ワークショップ
+# 企業内向けChatと社内文書検索
 
 このワークショップは [Azure OpenAi Service リファレンスアーキテクチャ](https://www.microsoft.com/ja-jp/events/azurebase/contents/default.aspx?pg=AzureOAIS) ５章 - 企業内向けChatと社内文書検索 の内容と、
 その[サンプルコード](https://github.com/Azure-Samples/jp-azureopenai-samples) を元に作成されています。
