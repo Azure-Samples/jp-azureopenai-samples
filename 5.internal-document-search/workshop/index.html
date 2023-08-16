@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/themes/vue.css" />
+  <style>
+    body {
+      font-family: "UD デジタル 教科書体 NK-R", "游ゴシック", "メイリオ", "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", sans-serif;
+    }
+
+    .markdown-section h1 {
+      page-break-before: always;
+      margin-top: 32px;
+    }
+
+    .markdown-section h2 {
+      page-break-before: auto;
+    }
+
+    .markdown-section p, ul, pre, table {
+      page-break-inside: avoid;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app"></div>
+  <script>
+    window.$docsify = {
+      loadSidebar: true,
+      subMaxLevel: 2
+    };
+  </script>
+  <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+</body>
+
+</html>

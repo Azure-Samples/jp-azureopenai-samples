@@ -1,159 +1,84 @@
-# Module 0 : Windows 実行環境の確認とインストール
+# Chat+社内文書検索 ワークショップ
 
-## Azure CLI
+このワークショップは [Azure OpenAi Service リファレンスアーキテクチャ](https://www.microsoft.com/ja-jp/events/azurebase/contents/default.aspx?pg=AzureOAIS) ５章 - 企業内向けChatと社内文書検索 の内容と、
+その[サンプルコード](https://github.com/Azure-Samples/jp-azureopenai-samples) を元に作成されています。
 
-Azure CLI version 2.50.0 以降が推奨です。
-以下のコマンドでバージョンを確認してください。
+## ワークショップの概要
 
-```pwsh
-az --version
+社内文書など通常の OpenAI では学習されていない情報をもとに適切な回答を作成するチャットシステム の作成を通して、
+Azure OpenAI Service や Azure Cognitive Search などの使い方、
+チャットシステムを社内に展開するための Web アプリケーションの作成の基礎を学びます。
+
+![](./images/component-and-dataflow.png)
+
+このワークショップの特徴は次の2つです。
+
+- 専門用語や業界独自のナレッジを検索できる
+    - ChatGPT(gpt-35-turbo)モデルでトレーニングされたデータに基づいてテキストを生成しません
+    - ChatGPTのトレーニングに使用されていない、企業内に閉じたデータや最新のデータをもとに生成します
+- 回答の根拠を明確にする
+    - ChatGPTの回答に「引用」をテキストに付加することで信頼できる応答を生成します
+
+![](./images/sample-app-webui.png)
+
+### 対象者
+
+このワークショップは、AI技術に興味のあるデータサイエンティスト、エンジニア、研究者、または企業内での情報アクセスやナレッジ共有の改善を目指す方々に適しています。
+
+### 参考資料
+
+- [ChatGPT + Enterprise data with Azure OpenAI and Cognitive Search](https://github.com/nohanaga/azure-search-openai-demo)
+- [Azure で ChatGPT × Cognitive Search を使ったエンタープライズサーチを実現](https://qiita.com/nohanaga/items/803c09b5a3a4e2d1776f)
+- [Azure OpenAI Developers セミナー](https://www.youtube.com/watch?v=tFgqdHKsOME)
+- [『ChatGPTによって描かれる未来とAI開発の変遷』日本マイクロソフト株式会社 蒲生 弘郷氏](https://www.youtube.com/watch?v=l9fpxtz22JU)
+- [Revolutionize your Enterprise Data with ChatGPT: Next-gen Apps w/ Azure OpenAI and Cognitive Search](https://aka.ms/entgptsearchblog)
+- [Azure Cognitive Search](https://learn.microsoft.com/azure/search/search-what-is-azure-search)
+- [Azure OpenAI Service](https://learn.microsoft.com/azure/cognitive-services/openai/overview)
+
+### 留意事項
+
+本ワークショップは 2023 年 8 月現在での情報を元に作成しています。
+Azure および Azure OpenAI Service の関連技術は変化が激しく、本ワークショップの内容は古くなっている可能性があることに注意してください。
+
+本ワークショップで解説しているサンプルコードは Azure OpenAI Service の gpt-35-turbo (0301) モデルに対する ChatML を使用した Completion API を使用しています。
+この方式は現時点においてもプレビュー段階であり、最新の GPT-4 では利用できませんので、今後動作しなくなる可能性があります。
+詳細は [GPT-35-Turbo と GPT-4 - ChatML](https://learn.microsoft.com/ja-jp/azure/ai-services/openai/how-to/chatgpt?pivots=programming-language-chat-ml)をご参照ください。
+
+## Module 0 : Workshop 実施環境の準備
+
+### Azure サブスクリプション
+
+このワークショップを実行するには、 Azure OpenAI Service へのアクセスを有効にした Azure サブスクリプションが必要です。
+アクセスは[こちら](https://aka.ms/oaiapply)からリクエストできます。
+また開発者がワークショップで使用するユーザーアカウントには、Azure サブスクリプションに対する `Microsoft.Authorization/roleAssignments/write` の権限が必要です。
+この権限は [所有者](https://learn.microsoft.com/ja-jp/azure/role-based-access-control/built-in-roles#owner) や [ユーザー アクセス 管理者](https://learn.microsoft.com/ja-jp/azure/role-based-access-control/built-in-roles#user-access-administrator) RBAC ロールに含まれています。
+
+
+### Windows PC を使用する場合
+
+Windows 環境で実施する場合の準備は[こちら](./workshop-environment-setup-windows.md)を参照してください。
+
+### Visual Studio Code Dev Container を使用する場合（オススメ）
+
+こちらの手順は Windows PC / Mac で共通です。
+
 ```
-```pwsh
-# 出力結果の例
-azure-cli                         2.49.0 *
-```
-
-バージョンが古い場合は、以下のコマンドでアップデートしてください。
-
-```pwsh
-az upgrade
-```
-
-インストールされていない場合は、以下のコマンドでインストールしてください。
-
-```pwsh
-winget install Microsoft.AzureCLI
-```
-
-## Azure Developer CLI
-
-Azure Developer CLI version 1.0.2 以降が推奨です。
-以下のコマンドでバージョンを確認してください。
-
-```pwsh
-azd version
-```
-```pwsh
-# 出力結果の例
-azd version 1.2.0 (commit 99ea7577f0df0df2ba34b677da189fafba18c0f7)
-```
-
-インストールされていない場合は、以下のコマンドでインストールしてください。
-
-```pwsh
-winget install Microsoft.Azd
-```
-
-## Python 3
-
-Python version 3.11 以降が推奨です。
-以下のコマンドでバージョンを確認してください。
-
-```pwsh
-python --version
-```
-```pwsh
-# 出力結果の例
-Python 3.11.4
-```
-
-インストールされていない場合は、以下のコマンドでインストールしてください。
-
-```pwsh
-winget install Python.Python.3.11 
-```
-https://learn.microsoft.com/ja-jp/windows/python/beginners
-
-## Node.js
-
-Node.js version 14.18 以降が推奨です。
-以下のコマンドでバージョンを確認してください。
-
-```pwsh
-node --version
-```
-```pwsh
-# 出力結果の例
-v18.16.1
+準備中
 ```
 
-## Git
+### Github Codespaces を使用する場合
 
-Git のバージョンは以下で確認できます。
-
-```pwsh
-git --version
 ```
-```pwsh
-# 出力結果の例
-git version 2.41.0.windows.3
-```
-
-インストールされていない場合は、以下のコマンドでインストールしてください。
-
-```pwsh
-winget install Git.Git
-```
-
-## PowerShell (pwsh)
-
-PowerShell version 7 以降が推奨です。
-以下のコマンドでバージョンを確認してください。
-
-```pwsh
-pwsh --version
-```
-```pwsh
-# 出力結果の例
-PowerShell 7.3.6
-```
-
-インストールされていない場合は、以下のコマンドでインストールしてください。
-
-```pwsh
-winget install Microsoft.PowerShell
-```
-
-## Visual Studio Code
-
-インストールされている Visual Studio Code のバージョンを確認します。
-
-```pwsh
-code --version
-```
-```pwsh
-# 出力結果の例
-1.81.1
-6c3e3dba23e8fadc360aed75ce363ba185c49794
-x64
-```
-
-インストールされていない場合は、以下のコマンドでインストールしてください。
-
-```pwsh
-winget install Microsoft.VisualStudioCode
+準備中
 ```
 
 
-# Module 1 : サンプルコードのセットアップ
+## Module 1 : 実行環境の構築
 
-## サンプルコードの取得
+Azure の各種サービスのデプロイとサンプルコードのデプロイを行います。
+各種コマンド実行は Visual Studio Code ターミナルを使用してください。
 
-このリポジトリをクローンします。
-
-```pwsh
-git clone https://github.com/ayuina/jp-azureopenai-samples.git
-```
-
-`Chat+社内文書検索` のサンプルを含むディレクトリを Visual Studio Code で開きます
-
-```pwsh
-code .\jp-azureopenai-samples\5.internal-document-search\
-```
-
-以降のコマンドは Visual Studio Code の pwsh ターミナルで実行してください。
-
-## 開発者の認証と Azure サブスクリプションの指定
+###  開発者の認証と Azure サブスクリプションの指定
 
 pwsh ターミナルを使用して Azure CLI でサインインを行います。
 Azure OpenAI サービスを有効化済みの Azure サブスクリプションに対してアクセス権を持つユーザーでサインインしてください。
@@ -193,7 +118,7 @@ echo $userobjid
 wwwwwwww-xxxx-yyyy-zzzzzzzzzzzz
 ```
 
-## 開発者向けの環境構築
+###  開発者向けの環境構築
 
 Azure Developer CLI でサインインを行います。
 ここでは先ほど Azure CLI でのサインインと同じユーザーを使用してください。
@@ -230,7 +155,7 @@ azd up
 
 この処理にはおおむね60分程度かかりますので、待っている間にリポジトリに含まれる各ファイルを確認しておくとよいでしょう。
 
-## 複数の環境を使い分けたい場合
+###  複数の環境を使い分けたい場合
 
 Azure Developer CLI では複数の環境を管理し使い分けることができます。
 前述の `azd init` で作成した環境が既定値に設定されているため、各コマンドでは明示的に `--environment` オプションを使用して環境名を指定します。
@@ -252,13 +177,13 @@ azd up --environment $envname
 環境名に分かりやすい名前を指定し `.env` ファイルの記載内容によって環境固有のパラメータを切り替えていくとよいでしょう。
 
 
-# Module 2 : 構築結果とアプリケーションの動作確認
+## Module 2 : 構築結果とアプリケーションの動作確認
 
 `azd up` が正常に完了したら構築された環境やアプリケーションを、アーキテクチャ図と比較しながら確認していきます。
 
 ![](./images/component-and-dataflow.png)
 
-## アプリの動作確認
+###  アプリの動作確認
 
 まずは出来上がってるアプリケーションの動作を確認してみましょう。
 前述のアーキテクチャ図の `1. URLを開く` および `3. 問い合わせ`の部分に該当します。
@@ -295,7 +220,7 @@ https://portal.azure.com/#@/resource/subscriptions/aaaaaaaa-bbbb-cccc-dddddddddd
 ![](./images/search-internal-doc.png)
 
 
-## 構築された Azure 環境の確認
+###  構築された Azure 環境の確認
 
 自動的に構築された Azure リソースを確認してみましょう。
 先ほどのターミナル出力の最後に `You can view the resources created under the resource group rg-aoaiws-eastus in Azure Portal:` というメッセージとともに URL が表示されています。
@@ -308,7 +233,7 @@ https://portal.azure.com/#@/resource/subscriptions/aaaaaaaa-bbbb-cccc-dddddddddd
 `infra` ディレクトリに格納されている `main.bicep` 等のファイルがその実体になります。
 こちらも併せて中身を確認してみてください。
 
-## 言語モデルを使用した検索クエリの生成
+###  言語モデルを使用した検索クエリの生成
 
 この `社内文書検索` では、まず初めに `4. 問い合わせからCognitive Search の検索クエリを生成` を行っています。
 なお画像では `Davinci モデルを使用` との記載がありますが、現在こちらは gpt-35-turbo (0301) モデルを使用しています。
@@ -349,7 +274,7 @@ Azure OpenAI Studio 左側にある `Completions` メニューを開き、`davin
 
 この質問文 `就業規則の概要について教えてください` に対する参考情報を検索するためのクエリキーワードとしては `就業規則` `概要` がよさそうです。
 
-## 検索エンジンによる参考情報の検索
+###  検索エンジンによる参考情報の検索
 
 次に `5. Cognitive Search で文書を検索` を確認します。
 Azure Portal に戻り Azure Congitive Search を選択します。
@@ -366,7 +291,7 @@ Azure Portal に戻り Azure Congitive Search を選択します。
 
 こちらに関しては Module 3 を通して確認していきます。
 
-## 検索結果と言語モデルを使用して最終的な回答を生成する
+###  検索結果と言語モデルを使用して最終的な回答を生成する
 
 得られた検索結果を元に `7. Azure OpenAI で回答生成` を確認します。
 このサンプルでは [ChatML というマークアップ言語](https://learn.microsoft.com/ja-jp/azure/ai-services/openai/how-to/chatgpt?pivots=programming-language-chat-ml) を用いてプロンプトを構成していますので、
@@ -400,7 +325,7 @@ Each source has a name followed by colon and the actual information, always incl
 
 ![generate-answer-onyourdata](./images/generate-answer-onyourdata.png)
 
-## チャット履歴の確認
+###  チャット履歴の確認
 
 本サンプルアプリケーションでは過去の会話履歴を Cosmos DB に保存しています。
 Azure Portal から Azure CosmosDB サービスのリソースを選択し、左側のメニューで `データ エクスプローラー` を選択します。
@@ -408,7 +333,7 @@ Azure Portal から Azure CosmosDB サービスのリソースを選択し、左
 
 ![](./images/history-cosmosdb.png)
 
-## 光学文字認識（OCR）
+###  光学文字認識（OCR）
 
 本サンプルアプリケーションでは `2. 分割した PDF から Cognitive Search のインデックスを作成` 処理の中で PDF ファイルの内容を Form Recognizer サービスの OCR 機能を使用してテキストデータに変換し、それを元にインデックスを構築しています。
 ここでは OCR の動作を確認してみましょう。
@@ -422,7 +347,7 @@ Azure Portal から Form Recognizer サービスを開き `Form Recognizer Studi
 
 ![](./images/form-recognizer-ocr-result.png)
 
-## 分割された PDF ファイル
+###  分割された PDF ファイル
 
 本サンプルアプリケーションでは回答結果の前提となった参考ドキュメントとして参照できるように、`1.データソースとなるPDFを分割し、Blob Storage にアップロード` しています。
 Azure Portal から Storage アカウントを選択し、左側の `コンテナー` メニューを選択すると、`content` という名前のコンテナーが作られていることが分かります。
@@ -431,11 +356,11 @@ Azure Portal から Storage アカウントを選択し、左側の `コンテ�
 ![](./images/splitted-pdf-files.png)
 
 
-# Module 3 : アプリとデータのカスタマイズ
+## Module 3 : アプリとデータのカスタマイズ
 
 使用するデータやプロンプトを調整してサンプルをカスタマイズしていきます。
 
-## 開発端末ローカルでのアプリ実行とデバッグの準備
+###  開発端末ローカルでのアプリ実行とデバッグの準備
 
 この後のプロンプトの調整等のアプリケーションのカスタマイズの作業を進める上では、開発端末上でアプリケーションをデバッグ実行できると便利です。
 バックエンドアプリケーションのソースコードは `src/backend` ディレクトリに格納されているため、こちらを Visual Studio Code で開きます。
@@ -479,7 +404,7 @@ code .\src\backend\
 ![start-debugging-and-break](./images/start-debugging-and-break.png)
 
 
-## プロンプトの調整
+###  プロンプトの調整
 
 アプリケーション内で実装されているプロンプトを調整してみましょう。
 先ほど確認した通り `src/backend/approaches/chatreadretrieveread.py` に記述されているシステムメッセージ等が英語になっています。
@@ -527,7 +452,7 @@ system_prompt = """
 
 動作確認が終わったらデバッガを停止します。
 
-## 社内文書と役割の変更
+###  社内文書と役割の変更
 
 今度はベースとなる社内文書を変更し、AI の役割を変更してみましょう。
 まず既存の Cogitive Search サービスに作成された `gptkbindex` インデックスを削除します。
@@ -595,7 +520,7 @@ Surface 以外の製品に関する質問には回答しないでください。
 
 動作確認が終わったらデバッガを停止します。
 
-## 環境へのデプロイ
+###  環境へのデプロイ
 
 カスタマイズしたアプリケーションを Azure 環境にデプロイしてみましょう。
 既に Azure リソースは作成済みですので、今度は `azd up` ではなく `azd deploy` を実行します。
@@ -618,7 +543,7 @@ https://portal.azure.com/#@/resource/subscriptions/3dedf418-2574-41e1-87f9-f7ea5
 
 表示された Azure App Service の URL を開いて動作を確認してみましょう。
 
-## 環境の削除
+###  環境の削除
 
 最後に環境を削除します。
 
