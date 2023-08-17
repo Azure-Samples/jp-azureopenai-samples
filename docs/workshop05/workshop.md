@@ -7,19 +7,19 @@ Azure の各種サービスのデプロイとサンプルコードのデプロ�
 
 ###  開発者の認証と Azure サブスクリプションの指定
 
-pwsh ターミナルを使用して Azure CLI でサインインを行います。
+まず Azure CLI でサインインを行います。
 Azure OpenAI サービスを有効化済みの Azure サブスクリプションに対してアクセス権を持つユーザーでサインインしてください。
 
-```pwsh
+```powershell, bash
 az login
 ```
 
 アクセス可能なサブスクリプションの一覧を取得し、利用するサブスクリプションの `SubscriptionId` コピーします。
 
-```pwsh
+```powershell, bash
 az account list --output table
 ```
-```pwsh
+```powershell, bash
 # 出力結果の例
 Name                          CloudName    SubscriptionId                        TenantId                              State    IsDefault
 ----------------------------  -----------  ------------------------------------  ------------------------------------  -------  -----------
@@ -29,28 +29,39 @@ Subscription Name             AzureCloud   aaaaaaaa-bbbb-cccc-dddddddddddd      
 サブスクリプション ID を変数に格納し、既定のサブスクリプションとして指定しておきます。
 複数のサブスクリプションが表示されていた場合は、ワークショップに使用する適切なサブスクリプションを選択してください。
 
+
+<!-- tabs:start -->
+###### **Windows**
 ```pwsh
 $subscid = 'aaaaaaaa-bbbb-cccc-dddddddddddd'
 az account set -s $subscid
 ```
+###### **Dev Container**
+```bash
+subscid=aaaaaaaa-bbbb-cccc-dddddddddddd
+az account set -s $subscid
+```
+<!-- tabs:end -->
 
 Azure CLI でサインインしたユーザーの ObjectID を変数に格納しておきます。
 
+<!-- tabs:start -->
+###### **Windows**
 ```pwsh
 az ad signed-in-user show --query id --output tsv | sv userobjid
-echo $userobjid
 ```
-```pwsh
-# 出力結果の例
-wwwwwwww-xxxx-yyyy-zzzzzzzzzzzz
+###### **Dev Container**
+```bash
+userobjid=$(az ad signed-in-user show --query id --output tsv)
 ```
+<!-- tabs:end -->
 
 ###  開発者向けの環境構築
 
 Azure Developer CLI でサインインを行います。
 ここでは先ほど Azure CLI でのサインインと同じユーザーを使用してください。
 
-```pwsh
+```powershell, bash
 azd auth login
 ```
 
@@ -62,7 +73,7 @@ azd auth login
     - `westeurope` : 西ヨーロッパリージョン
 - 環境名は任意の名前を付けられますが、同一サブスクリプションを共有している場合は名前が衝突しないように注意してください
 
-```pwsh
+```powershell, bash
 azd init --subscription $subscid --location eastus --environment aoai-workshop   
 ```
 
@@ -71,12 +82,12 @@ azd init --subscription $subscid --location eastus --environment aoai-workshop
 この `.azure` ディレクトリは `.gitignore` で指定されているため、その他のソースコードと一緒に共有はされず、操作をしている開発者固有の環境となります。
 
 先ほど変数に控えておいた開発者ユーザーアカウントの ObjectID も `AZURE_PRINCIPAL_ID` として `.env` ファイルに追記しておきます。
-```pwsh
+```powershell, bash
 azd env set AZURE_PRINCIPAL_ID $userobjid
 ```
 
 指定した Azure サブスクリプションに対して環境を構築します。
-```pwsh
+```powershell, bash
 azd up
 ```
 
@@ -87,18 +98,37 @@ azd up
 Azure Developer CLI では複数の環境を管理し使い分けることができます。
 前述の `azd init` で作成した環境が既定値に設定されているため、各コマンドでは明示的に `--environment` オプションを使用して環境名を指定します。
 
-```pwsh
-# 利用するリージョンを環境名に含める（リソースグループやリソース名に反映される）
+<!-- tabs:start -->
+###### **Windows**
+```powershell
+# リージョンの異なる環境を作る例
 $region = 'francecentral'
 $envname = "aoaiws-${region}"
 
-# 同じサブスクリプションで異なるリージョンを利用したい場合
+# azd init ではなく azd env new で環境を追加
 azd env new $envname --subscription $subscid --location $region
 azd env set AZURE_PRINCIPAL_ID $userobjid --environment $envname
 
 # 環境構築
 azd up --environment $envname
 ```
+###### **Dev Container**
+```bash
+# リージョンの異なる環境を作る例
+region=francecentral
+envname="aoaiws-${region}"
+
+# azd init ではなく azd env new で環境を追加
+azd env new $envname --subscription $subscid --location $region
+azd env set AZURE_PRINCIPAL_ID $userobjid --environment $envname
+
+# 環境構築
+azd up --environment $envname
+
+```
+<!-- tabs:end -->
+
+
 
 上記の `azd env new` コマンドを実行すると `.azure` 配下に環境名のディレクトリが作成され、各環境固有の .env ファイルが作成されます。
 環境名に分かりやすい名前を指定し `.env` ファイルの記載内容によって環境固有のパラメータを切り替えていくとよいでしょう。
@@ -296,7 +326,10 @@ Azure Portal から Storage アカウントを選択し、左側の `コンテ�
 code .\src\backend\
 ```
 
-新しく開いた Visual Studio Code のウィンドウでデバッグ実行するための構成を行います。
+以降では最初に開いた Visual Studio Code ウィンドウを **VSC1** 、新しく開いた ウィンドウを **VSC2** と表記します。
+
+?> 新しく開いた Visual Studio Code のウィンドウ **VSC2** でデバッグ実行するための構成を行います。
+
 - `Run` メニューから `Add Configuration...` を選択します
 - `Select Debugger` で `Python` を選択します
     - ここで `Python` が表示されない場合には `Install extension...` を選択して Python 拡張機能をインストールしてください
@@ -321,7 +354,13 @@ code .\src\backend\
 }
 ```
 
-設定が完了したら以下の手順でローカル実行およびデバッグを行います。
+アプリケーション実行に必要なモジュールをインストールします。
+
+```powershell, bash
+pip install -r requirements.txt
+```
+
+準備が完了したら以下の手順でローカル実行およびデバッグを行います。
 
 - 処理を止めたい箇所にブレークポイントを設置
 - `Run` メニューから `Start Debugging` を選択
@@ -381,6 +420,8 @@ system_prompt = """
 
 ###  社内文書と役割の変更
 
+?> 最初に開いていた Visual Studio Code のウィンドウ **VSC1** で作業を進めます。
+
 今度はベースとなる社内文書を変更し、AI の役割を変更してみましょう。
 まず既存の Cogitive Search サービスに作成された `gptkbindex` インデックスを削除します。
 また `data` ディレクトリに配置されている `001018385.pdf` も削除してください。
@@ -393,14 +434,23 @@ system_prompt = """
 呼び出し方が若干複雑ですので、同ディレクトリにある `prepdocs.ps1` や `prepdocs.sh` を使用すると良いでしょう。
 Visual Studio Code で開いた際のワークスペース ディレクトリ `5.internal-document-search` から __移動せずに__ 下記を実行します。
 
-```pwsh
+<!-- tabs:start -->
+###### **Windows**
+```powershell
 .\scripts\prepdocs.ps1
 ```
+###### **Dev Container**
+```bash
+./scripts/prepdocs.sh
+```
+<!-- tabs:end -->
 
 この処理中に Cosmos DB へのアクセスするためのロール定義を作成する箇所でエラーが発生しますが、無視してそのまま続けてしまって構いません。
 
 インデックスの構築が終わったら、今度は使用した PDF ファイルの内容に沿ったプロンプトに書き換えます。
 ここでは Surface Pro 4 のカスタマーサポートを想定しています。
+
+?> 新しく開いた Visual Studio Code のウィンドウ VSC2 で作業を進めます。
 
 ```python
 # クエリ生成のプロンプト
@@ -448,6 +498,8 @@ Surface 以外の製品に関する質問には回答しないでください。
 動作確認が終わったらデバッガを停止します。
 
 ###  環境へのデプロイ
+
+?> 最初に開いていた Visual Studio Code のウィンドウ **VSC1** で作業を進めます。
 
 カスタマイズしたアプリケーションを Azure 環境にデプロイしてみましょう。
 既に Azure リソースは作成済みですので、今度は `azd up` ではなく `azd deploy` を実行します。
