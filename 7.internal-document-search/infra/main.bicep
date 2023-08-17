@@ -355,6 +355,16 @@ module privateEndpointSubnet 'core/network/subnet.bicep' = {
   }
 }
 
+module vmSubnet 'core/network/subnet.bicep' = {
+  name: 'vm-subnet'
+  scope: resourceGroup
+  params: {
+    existVnetName: vnet.outputs.name
+    name: 'vm-subnet'
+    addressPrefix: '10.0.1.0/24'
+  }
+}
+
 module storagePrivateEndopoint 'core/network/privateEndpoint.bicep' = {
   name: 'storage-private-endpoint'
   scope: resourceGroup
@@ -412,6 +422,48 @@ module appServicePrivateEndopoint 'core/network/privateEndpoint.bicep' = {
     subnetId: privateEndpointSubnet.outputs.id
     privateLinkServiceId: backend.outputs.id
     privateLinkServiceGroupIds: ['sites']
+  }
+}
+
+module publicIP 'core/network/pip.bicep' = {
+  name: 'publicIP'
+  scope: resourceGroup
+  params: {
+    name: 'publicIP'
+    location: location
+  }
+}
+
+module nsg 'core/network/nsg.bicep' = {
+  name: 'nsg'
+  scope: resourceGroup
+  params: {
+    name: 'nsg'
+    location: location
+  }
+}
+
+module nic 'core/network/nic.bicep' = {
+  name: 'nic'
+  scope: resourceGroup
+  params: {
+    name: 'nic'
+    location: location
+    subnetId: vmSubnet.outputs.id
+    publicIPId: publicIP.outputs.publicIPId
+    nsgId: nsg.outputs.nsgId
+  }
+}
+
+module vm 'core/network/vm.bicep' = {
+  name: 'vm'
+  scope: resourceGroup
+  params: {
+    name: 'vm'
+    location: location
+    adminUsername: 'azureuser'
+    adminPasswordOrKey: 'Admin#123456#'
+    nicId: nic.outputs.nicId
   }
 }
 
