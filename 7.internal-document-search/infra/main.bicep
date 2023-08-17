@@ -61,7 +61,7 @@ param privateEndpointLocation string = location
 param principalId string = ''
 
 var abbrs = loadJsonContent('abbreviations.json')
-var resourceToken = toLower(uniqueString(subscription().id, environmentName, location, 'v6'))
+var resourceToken = toLower(uniqueString(subscription().id, environmentName, location, 'v1'))
 var tags = { 'azd-env-name': environmentName }
 
 // Organize resources in a resource group
@@ -96,6 +96,7 @@ module cosmosDb 'core/db/cosmosdb.bicep' = {
     tags: union(tags, { 'azd-service-name': 'cosmosdb' })
     cosmosDbDatabaseName: cosmosDbDatabaseName
     cosmosDbContainerName: cosmosDbContainerName
+    publicNetworkAccess: 'Disabled'
   }
 }
 
@@ -130,6 +131,7 @@ module backend 'core/host/appservice.bicep' = {
     scmDoBuildDuringDeployment: true
     managedIdentity: true
     applicationInsightsName: !empty(backendServiceName) ? backendServiceName : '${abbrs.webSitesAppService}backend-${resourceToken}'
+    vnetIntegrationID: appServiceSubnet.outputs.id
     appSettings: {
       AZURE_STORAGE_ACCOUNT: storage.outputs.name
       AZURE_STORAGE_CONTAINER: storageContainerName
@@ -144,6 +146,9 @@ module backend 'core/host/appservice.bicep' = {
       AZURE_COSMOSDB_CONTAINER: cosmosDbContainerName
       AZURE_COSMOSDB_DATABASE: cosmosDbDatabaseName
       AZURE_COSMOSDB_ENDPOINT: cosmosDb.outputs.endpoint
+      WEBSITE_ENTRY_POINT: 'app.py'
+      WEBSITES_PORT: '5000'
+      PORT: '5000'
     }
   }
 }
@@ -182,6 +187,7 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
         }
       }
     ]
+    publicNetworkAccess: 'Disabled'
   }
 }
 
@@ -346,11 +352,11 @@ module vnet 'core/network/vnet.bicep' = {
 }
 
 module privateEndpointSubnet 'core/network/subnet.bicep' = {
-  name: 'private-endpoint-subnet'
+  name: '${abbrs.networkVirtualNetworksSubnets}private-endpoint-${resourceToken}'
   scope: resourceGroup
   params: {
     existVnetName: vnet.outputs.name
-    name: 'private-endpoint-subnet'
+    name: '${abbrs.networkVirtualNetworksSubnets}private-endpoint${resourceToken}'
     addressPrefix: '10.0.0.0/24'
     networkSecurityGroup: {
       id: nsg.outputs.id
@@ -359,12 +365,39 @@ module privateEndpointSubnet 'core/network/subnet.bicep' = {
 }
 
 module vmSubnet 'core/network/subnet.bicep' = {
-  name: 'vm-subnet'
+  name: '${abbrs.networkVirtualNetworksSubnets}vm-${resourceToken}'
   scope: resourceGroup
   params: {
     existVnetName: vnet.outputs.name
-    name: 'vm-subnet'
+    name: '${abbrs.networkVirtualNetworksSubnets}vm-${resourceToken}'
     addressPrefix: '10.0.1.0/24'
+    networkSecurityGroup: {
+      id: nsg.outputs.id
+    }
+  }
+}
+
+module appServiceSubnet 'core/network/subnet.bicep' = {
+  name: '${abbrs.webSitesAppService}app-${resourceToken}'
+  scope: resourceGroup
+  params: {
+    existVnetName: vnet.outputs.name
+    name: '${abbrs.webSitesAppService}app-${resourceToken}'
+    addressPrefix: '10.0.2.0/24'
+  }
+}
+
+module cosmosDBPrivateEndpoint 'core/network/privateEndpoint.bicep' = {
+  name: 'cosmos-private-endpoint'
+  scope: resourceGroup
+  params: {
+    location: privateEndpointLocation
+    name: cosmosDb.outputs.name
+    subnetId: privateEndpointSubnet.outputs.id
+    privateLinkServiceId: cosmosDb.outputs.id
+    privateLinkServiceGroupIds: ['SQL']
+    dnsZoneName: 'documents.azure.com'
+    linkVnetId: vnet.outputs.id
   }
 }
 
@@ -373,10 +406,12 @@ module storagePrivateEndopoint 'core/network/privateEndpoint.bicep' = {
   scope: resourceGroup
   params: {
     location: privateEndpointLocation
-    name: '${storage.outputs.name}-endpoint'
+    name: storage.outputs.name
     subnetId: privateEndpointSubnet.outputs.id
     privateLinkServiceId: storage.outputs.id
     privateLinkServiceGroupIds: ['Blob']
+    dnsZoneName: 'blob.core.windows.net'
+    linkVnetId: vnet.outputs.id
   }
 }
 
@@ -385,10 +420,12 @@ module searchServicePrivateEndopoint 'core/network/privateEndpoint.bicep' = {
   scope: resourceGroup
   params: {
     location: privateEndpointLocation
-    name: '${searchService.outputs.name}-endpoint'
+    name: searchService.outputs.name
     subnetId: privateEndpointSubnet.outputs.id
     privateLinkServiceId: searchService.outputs.id
     privateLinkServiceGroupIds: ['searchService']
+    dnsZoneName: 'search.windows.net'
+    linkVnetId: vnet.outputs.id
   }
 }
 
@@ -397,10 +434,12 @@ module oepnaiPrivateEndopoint 'core/network/privateEndpoint.bicep' = {
   scope: resourceGroup
   params: {
     location: privateEndpointLocation
-    name: '${openAi.outputs.name}-endpoint'
+    name: openAi.outputs.name
     subnetId: privateEndpointSubnet.outputs.id
     privateLinkServiceId: openAi.outputs.id
     privateLinkServiceGroupIds: ['account']
+    dnsZoneName: 'openai.azure.com'
+    linkVnetId: vnet.outputs.id
   }
 }
 
@@ -409,10 +448,12 @@ module formRecognizerPrivateEndopoint 'core/network/privateEndpoint.bicep' = {
   scope: resourceGroup
   params: {
     location: privateEndpointLocation
-    name: '${formRecognizer.outputs.name}-endpoint'
+    name: formRecognizer.outputs.name
     subnetId: privateEndpointSubnet.outputs.id
     privateLinkServiceId: formRecognizer.outputs.id
     privateLinkServiceGroupIds: ['account']
+    dnsZoneName: 'cognitiveservices.azure.com'
+    linkVnetId: vnet.outputs.id
   }
 }
 
@@ -421,10 +462,12 @@ module appServicePrivateEndopoint 'core/network/privateEndpoint.bicep' = {
   scope: resourceGroup
   params: {
     location: privateEndpointLocation
-    name: '${backend.outputs.name}-endpoint'
+    name: backend.outputs.name
     subnetId: privateEndpointSubnet.outputs.id
     privateLinkServiceId: backend.outputs.id
     privateLinkServiceGroupIds: ['sites']
+    dnsZoneName: 'azurewebsites.net'
+    linkVnetId: vnet.outputs.id
   }
 }
 

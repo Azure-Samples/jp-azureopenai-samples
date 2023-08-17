@@ -9,10 +9,10 @@
       "value": "eastus"
     },
     "resourceGroupName": {
-      "value": "rg-openai-komori-5"
+      "value": "rg-openai-komori-2"
     },
     "principalId": {
-      "value": "${AZURE_PRINCIPAL_ID}"
+      "value": "ef2385b6-c827-4814-bbd1-9ef1ff18ee97"
     },
     "openAiServiceName": {
       "value": "${AZURE_OPENAI_SERVICE}"

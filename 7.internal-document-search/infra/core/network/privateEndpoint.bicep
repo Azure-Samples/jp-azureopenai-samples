@@ -1,11 +1,31 @@
 param location string = resourceGroup().location
+param dnsZoneName string
+param linkVnetId string
+param name string
 param subnetId string
 param privateLinkServiceId string
-param name string
 param privateLinkServiceGroupIds array
 
+resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+  name: 'privatelink.${dnsZoneName}'
+  location: 'global'
+}
+
+resource virtualNetworkLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
+  name: 'vnet-link-${name}'
+  location: 'global'
+  parent: privateDnsZone
+  properties: {
+    registrationEnabled: false
+    virtualNetwork: {
+      id: linkVnetId
+    }
+  }
+}
+
+// https://github.com/MicrosoftDocs/azure-docs/blob/main/articles/private-link/private-endpoint-overview.md
 resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-02-01' = {
-  name: name
+  name: '${name}-endpoint'
   location: location
   properties: {
     subnet: {
@@ -13,7 +33,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-02-01' = {
     }
     privateLinkServiceConnections: [
       {
-        name: '${name}Connection}'
+        name: '${name}-connection}'
         properties: {
           privateLinkServiceId: privateLinkServiceId
           groupIds: privateLinkServiceGroupIds
@@ -23,7 +43,20 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-02-01' = {
   }
 }
 
-output id string = privateEndpoint.id
-output name string = privateEndpoint.name
-// TODO: output private ip adress
-// output ip string = privateEndpoint.properties.ipConfigurations[0].properties.privateIPAddress
+resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2023-04-01' = {
+  parent: privateEndpoint
+  name: privateDnsZone.name
+  properties: {
+    privateDnsZoneConfigs: [
+      {
+        name: 'private-link-${name}'
+        properties: {
+          privateDnsZoneId: privateDnsZone.id
+        }
+      }
+    ]
+  }
+}
+
+output privateEndpointId string = privateEndpoint.id
+output privateEndpointName string = privateEndpoint.name

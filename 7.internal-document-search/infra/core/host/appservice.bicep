@@ -34,6 +34,7 @@ param scmDoBuildDuringDeployment bool = false
 param use32BitWorkerProcess bool = false
 param ftpsState string = 'FtpsOnly'
 param healthCheckPath string = ''
+param vnetIntegrationID string
 
 
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
@@ -66,6 +67,7 @@ resource appService 'Microsoft.Web/sites@2022-03-01' = {
         allowedOrigins: union([ 'https://portal.azure.com', 'https://ms.portal.azure.com' ], allowedOrigins)
       }
     }
+    virtualNetworkSubnetId: vnetIntegrationID
     clientAffinityEnabled: clientAffinityEnabled
     httpsOnly: true
   }
