@@ -9,13 +9,14 @@ import json
 import logging
 import re
 
-from flask import Flask, render_template, request, redirect, url_for, jsonify, session
+from flask import Flask, render_template, request
 from flask_cors import CORS
 from flask_session import Session  # https://pythonhosted.org/Flask-Session
 
 import openai
 from azure.ai.textanalytics import TextAnalyticsClient
 from azure.identity import DefaultAzureCredential
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from utilities import config
 
@@ -33,7 +34,6 @@ logging.basicConfig(level=logging.WARNING)
 text_analytics_client = None
 
 # For generating https scheme when deployed behind reverse proxy
-from werkzeug.middleware.proxy_fix import ProxyFix
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 @app.route('/', methods=['GET'])

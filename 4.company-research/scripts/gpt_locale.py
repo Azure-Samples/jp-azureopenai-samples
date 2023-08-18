@@ -41,6 +41,6 @@ def get_company_description(locale, data, years, revenues, operating_profits, op
             f'総資産は{years[0]}年が{total_assets[0]}、{years[1]}年が{total_assets[1]}、{years[2]}年が{total_assets[2]}、' + \
             f'総資産は{years[0]}年が{equity_ratios[0]}、{years[1]}年が{equity_ratios[1]}、{years[2]}年が{equity_ratios[2]}、' + \
             f'上場市場は{data["listed_market"]} ' + \
-            f'です。'
+            'です。'
 
     return description

@@ -11,9 +11,6 @@ from azure.identity import DefaultAzureCredential
 from azure.search.documents import SearchClient
 from azure.storage.blob import BlobServiceClient
 from approaches.chatlogging import get_user_name, write_error
-from approaches.retrievethenread import RetrieveThenReadApproach
-from approaches.readretrieveread import ReadRetrieveReadApproach
-from approaches.readdecomposeask import ReadDecomposeAsk
 from approaches.chatreadretrieveread import ChatReadRetrieveReadApproach
 from approaches.chatread import ChatReadApproach
 
@@ -85,14 +82,6 @@ blob_client = BlobServiceClient(
     account_url=f"https://{AZURE_STORAGE_ACCOUNT}.blob.core.windows.net", 
     credential=azure_credential)
 blob_container = blob_client.get_container_client(AZURE_STORAGE_CONTAINER)
-
-# Various approaches to integrate GPT and external knowledge, most applications will use a single one of these patterns
-# or some derivative, here we include several for exploration purposes
-ask_approaches = {
-    "rtr": RetrieveThenReadApproach(search_client, KB_FIELDS_SOURCEPAGE, KB_FIELDS_CONTENT),
-    "rrr": ReadRetrieveReadApproach(search_client, KB_FIELDS_SOURCEPAGE, KB_FIELDS_CONTENT),
-    "rda": ReadDecomposeAsk(search_client, KB_FIELDS_SOURCEPAGE, KB_FIELDS_CONTENT)
-}
 
 chat_approaches = {
     "rrr": ChatReadRetrieveReadApproach(search_client, KB_FIELDS_SOURCEPAGE, KB_FIELDS_CONTENT),
@@ -184,27 +173,6 @@ def docsearch():
         return jsonify(r)
     except Exception as e:
         write_error("docsearch", user_name, str(e))
-        return jsonify({"error": str(e)}), 500
-
-# Ask a question
-@app.route("/ask", methods=["POST"])
-def ask():
-    ensure_openai_token()
-    approach = request.json["approach"]
-    user_name = get_user_name(request)
-    overrides = request.json.get("overrides")
-
-    selected_model_name = overrides.get("gptModel")
-    gpt_model = gpt_models.get(selected_model_name)
-
-    try:
-        impl = ask_approaches.get(approach)
-        if not impl:
-            return jsonify({"error": "unknown approach"}), 400
-        r = impl.run(gpt_model.get("deployment"), gpt_model, user_name, request.json["question"], overrides)
-        return jsonify(r)
-    except Exception as e:
-        write_error("ask", user_name, str(e))
         return jsonify({"error": str(e)}), 500
 
 def ensure_openai_token():
