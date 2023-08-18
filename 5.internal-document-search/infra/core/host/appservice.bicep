@@ -37,8 +37,6 @@ param scmDoBuildDuringDeployment bool = false
 param use32BitWorkerProcess bool = false
 param ftpsState string = 'FtpsOnly'
 param healthCheckPath string = ''
-// param integrationVnetName string
-// param integrationSubnetName string
 param virtualNetworkSubnetId string
 
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
@@ -111,24 +109,6 @@ resource appService 'Microsoft.Web/sites@2022-03-01' = {
 resource keyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!(empty(keyVaultName))) {
   name: keyVaultName
 }
-
-// resource existVnet 'Microsoft.Network/virtualNetworks@2023-04-01' existing = {
-//   name: integrationVnetName
-// }
-
-// resource existSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' existing = {
-//   parent: existVnet
-//   name: integrationSubnetName
-// }
-
-// resource vnetIntegration 'Microsoft.Web/sites/networkConfig@2022-09-01' = {
-//   parent: appService
-//   name: 'virtualNetwork'
-//   properties: {
-//     swiftSupported: true
-//     subnetResourceId: existSubnet.id
-//   }
-// }
 
 output identityPrincipalId string = managedIdentity ? appService.identity.principalId : ''
 output name string = appService.name

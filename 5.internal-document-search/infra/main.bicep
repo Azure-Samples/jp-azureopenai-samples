@@ -57,6 +57,11 @@ param cosmosDbContainerName string = 'Prompts'
 
 
 param vnetLocation string = location
+param vnetAddressPrefix string = '10.0.0.0/16'
+
+param subnetAddressPrefix1 string = '10.0.0.0/24'
+param subnetAddressPrefix2 string = '10.0.1.0/24'
+param subnetAddressPrefix3 string = '10.0.2.0/24'
 
 param privateEndpointLocation string = location
 
@@ -134,8 +139,6 @@ module backend 'core/host/appservice.bicep' = {
     scmDoBuildDuringDeployment: true
     managedIdentity: true
     applicationInsightsName: !empty(backendServiceName) ? backendServiceName : '${abbrs.webSitesAppService}backend-${resourceToken}'
-    // integrationVnetName: vnet.outputs.name
-    // integrationSubnetName: appServiceSubnet.outputs.name
     virtualNetworkSubnetId: isPrivateNetworkEnabled ? appServiceSubnet.outputs.id : ''
     appSettings: {
       AZURE_STORAGE_ACCOUNT: storage.outputs.name
@@ -156,9 +159,6 @@ module backend 'core/host/appservice.bicep' = {
       PORT: '5000'
     }
   }
-  dependsOn: [
-    // appServiceSubnet
-  ]
 }
 
 module openAi 'core/ai/cognitiveservices.bicep' = {
@@ -355,7 +355,7 @@ module vnet 'core/network/vnet.bicep' = if (isPrivateNetworkEnabled) {
   params: {
     name: 'vnet'
     location: vnetLocation
-    addressPrefixes: ['10.0.0.0/16']
+    addressPrefixes: [vnetAddressPrefix]
   }
 }
 
@@ -365,7 +365,7 @@ module privateEndpointSubnet 'core/network/subnet.bicep' = if (isPrivateNetworkE
   params: {
     existVnetName: vnet.outputs.name
     name: '${abbrs.networkVirtualNetworksSubnets}private-endpoint-${resourceToken}'
-    addressPrefix: '10.0.0.0/24'
+    addressPrefix: subnetAddressPrefix1
     networkSecurityGroup: {
       id: nsg.outputs.id
     }
@@ -382,7 +382,7 @@ module vmSubnet 'core/network/subnet.bicep' = if (isPrivateNetworkEnabled) {
   params: {
     existVnetName: vnet.outputs.name
     name: '${abbrs.networkVirtualNetworksSubnets}vm-${resourceToken}'
-    addressPrefix: '10.0.1.0/24'
+    addressPrefix: subnetAddressPrefix2
     networkSecurityGroup: {
       id: nsg.outputs.id
     }
@@ -400,7 +400,7 @@ module appServiceSubnet 'core/network/subnet.bicep' = if (isPrivateNetworkEnable
   params: {
     existVnetName: vnet.outputs.name
     name: '${abbrs.networkVirtualNetworksSubnets}${abbrs.webSitesAppService}${resourceToken}'
-    addressPrefix: '10.0.2.0/24'
+    addressPrefix: subnetAddressPrefix3
     networkSecurityGroup: {
       id: nsg.outputs.id
     }
