@@ -3,13 +3,14 @@ param name string
 param addressPrefix string
 param networkSecurityGroup object = {}
 param delegations array = []
+param isPrivateNetworkEnabled bool
 
-resource existVnet 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
+resource existVnet 'Microsoft.Network/virtualNetworks@2021-02-01' existing = if (isPrivateNetworkEnabled) {
   scope: resourceGroup()
   name: existVnetName
 }
 
-resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-02-01' = {
+resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-02-01' = if (isPrivateNetworkEnabled) {
   parent: existVnet
   name: name
   properties: {

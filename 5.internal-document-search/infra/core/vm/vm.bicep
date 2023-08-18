@@ -6,6 +6,7 @@ param adminPasswordOrKey string
 param vmSize string = 'Standard_D2s_v3'
 param nicId string
 param osDiskType string = 'Standard_LRS'
+param isPrivateNetworkEnabled bool
 
 param imageReference object = {
   publisher: 'MicrosoftWindowsDesktop'
@@ -14,7 +15,7 @@ param imageReference object = {
   version: 'latest'
 }
 
-resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-04-01' = {
+resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-04-01' = if (isPrivateNetworkEnabled) {
   name: name
   location: location
   properties: {

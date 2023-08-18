@@ -69,7 +69,7 @@ resource appService 'Microsoft.Web/sites@2022-03-01' = {
         allowedOrigins: union([ 'https://portal.azure.com', 'https://ms.portal.azure.com' ], allowedOrigins)
       }
     }
-    virtualNetworkSubnetId: virtualNetworkSubnetId
+    virtualNetworkSubnetId: virtualNetworkSubnetId != '' ? virtualNetworkSubnetId : null
     publicNetworkAccess: publicNetworkAccess
     clientAffinityEnabled: clientAffinityEnabled
     httpsOnly: true

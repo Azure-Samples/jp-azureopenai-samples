@@ -1,10 +1,11 @@
 param name string
-param location string = resourceGroup().location
+param location string
 param subnetId string
 param publicIPId string
 param nsgId string
+param isPrivateNetworkEnabled bool
 
-resource networkInterface 'Microsoft.Network/networkInterfaces@2021-02-01' = {
+resource networkInterface 'Microsoft.Network/networkInterfaces@2021-02-01' = if (isPrivateNetworkEnabled) {
   name: name
   location: location
   properties: {
@@ -28,5 +29,4 @@ resource networkInterface 'Microsoft.Network/networkInterfaces@2021-02-01' = {
   }
 }
 
-output nicId string = networkInterface.id
-output privateIPAddress string = networkInterface.properties.ipConfigurations[0].properties.privateIPAddress
+output nicId string = networkInterface.?id
