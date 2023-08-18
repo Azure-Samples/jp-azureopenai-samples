@@ -3,8 +3,6 @@ import json
 import jwt
 import openai
 from flask import Flask, request, jsonify, render_template, send_from_directory
-
-from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
 from dotenv import load_dotenv
 
 # Food Menu
