@@ -37,7 +37,6 @@ param openAiGpt4DeploymentName string = ''
 param openAiGpt432kDeploymentName string = ''
 param openAiApiVersion string = '2023-05-15'
 
-
 param formRecognizerServiceName string = ''
 param formRecognizerResourceGroupName string = ''
 param formRecognizerResourceGroupLocation string = location
@@ -45,8 +44,10 @@ param formRecognizerResourceGroupLocation string = location
 param formRecognizerSkuName string = 'S0'
 
 param gptDeploymentName string = 'davinci'
+param gptDeploymentCapacity int = 30
 param gptModelName string = 'gpt-35-turbo'
 param chatGptDeploymentName string = 'chat'
+param chatGptDeploymentCapacity int = 30
 param chatGptModelName string = 'gpt-35-turbo'
 
 param cosmosDbDatabaseName string = 'ChatHistory'
@@ -93,7 +94,6 @@ module cosmosDb 'core/db/cosmosdb.bicep' = {
     cosmosDbContainerName: cosmosDbContainerName
   }
 }
-
 
 // Create an App Service Plan to group applications under the same payment plan and SKU
 module appServicePlan 'core/host/appserviceplan.bicep' = {
@@ -161,9 +161,7 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
           name: gptModelName
           version: '0301'
         }
-        scaleSettings: {
-          scaleType: 'Standard'
-        }
+        capacity: gptDeploymentCapacity
       }
       {
         name: chatGptDeploymentName
@@ -172,9 +170,7 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
           name: chatGptModelName
           version: '0301'
         }
-        scaleSettings: {
-          scaleType: 'Standard'
-        }
+        capacity: chatGptDeploymentCapacity
       }
     ]
   }
@@ -328,7 +324,6 @@ module searchRoleBackend 'core/security/role.bicep' = {
     principalType: 'ServicePrincipal'
   }
 }
-
 
 output AZURE_LOCATION string = location
 output AZURE_TENANT_ID string = tenant().tenantId

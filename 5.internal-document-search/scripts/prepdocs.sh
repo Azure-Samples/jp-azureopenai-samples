@@ -1,4 +1,4 @@
- #!/bin/sh
+#!/bin/sh
 
 echo ""
 echo "Loading azd .env file from current environment"
@@ -11,13 +11,13 @@ done <<EOF
 $(azd env get-values)
 EOF
 
-roleId = (az cosmosdb sql role definition create --account-name "$AZURE_COSMOSDB_ACCOUNT" --resource-group "$AZURE_COSMOSDB_RESOURCE_GROUP" --body ./scripts/cosmosreadwriterole.json --output tsv --query id)
+roleId=(az cosmosdb sql role definition create --account-name "$AZURE_COSMOSDB_ACCOUNT" --resource-group "$AZURE_COSMOSDB_RESOURCE_GROUP" --body ./scripts/cosmosreadwriterole.json --output tsv --query id)
 az cosmosdb sql role assignment create --account-name "$AZURE_COSMOSDB_ACCOUNT" --resource-group "$AZURE_COSMOSDB_RESOURCE_GROUP" --scope / --principal-id "$BACKEND_IDENTITY_PRINCIPAL_ID" --role-definition-id $roleId
 az cosmosdb sql role assignment create --account-name "$AZURE_COSMOSDB_ACCOUNT" --resource-group "$AZURE_COSMOSDB_RESOURCE_GROUP" --scope / --principal-id "$AZURE_PRINCIPAL_ID" --role-definition-id $roleId
 
 
 echo 'Creating python virtual environment "scripts/.venv"'
-python -m venv scripts/.venv
+python3 -m venv scripts/.venv
 
 echo 'Installing dependencies from "requirements.txt" into virtual environment'
 ./scripts/.venv/bin/python -m pip install -r scripts/requirements.txt
