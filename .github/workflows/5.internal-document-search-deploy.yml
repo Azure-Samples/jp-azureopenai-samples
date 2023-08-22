@@ -1,0 +1,19 @@
+name: '5.internal-document-search-deployment'
+
+on: [push]
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }} 
+          enable-AzPSSession: true
+      
+      - name: Set up Azure PowerShell
+        uses: azure/powershell@v1
+        with:
+          inlineScript: "Get-AzContext"
+          azPSVersion: "latest"
