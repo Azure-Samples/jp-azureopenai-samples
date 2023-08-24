@@ -26,15 +26,9 @@ jobs:
 
       - name: Install azd
         uses: Azure/setup-azd@v0.1.0
-      
-      - name: Debug env vars
-        run: |
-          echo "AZURE_CLIENT_ID: ${{ env.AZURE_CLIENT_ID }}"
-          echo "AZURE_TENANT_ID: ${{ env.AZURE_TENANT_ID }}"
-          echo "AZURE_TENANT_ID: ${{ env.AZURE_CREDENTIALS }}"
 
       - name: Log in with Azure (Federated Credentials)
-        # if: ${{ env.AZURE_CLIENT_ID != '' }}
+        if: ${{ env.AZURE_CLIENT_ID != '' }}
         run: |
           $env:AZURE_CLIENT_ID
           cd 5.internal-document-search
@@ -45,7 +39,7 @@ jobs:
         shell: pwsh
 
       - name: Log in with Azure (Client Credentials)
-        # if: ${{ env.AZURE_CREDENTIALS != '' }}
+        if: ${{ env.AZURE_CREDENTIALS != '' }}
         run: |
           cd 5.internal-document-search
           $info = $Env:AZURE_CREDENTIALS | ConvertFrom-Json -AsHashtable;
