@@ -51,7 +51,7 @@ jobs:
         env:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDEfNTIALS }}
       
-      -- name: Provision Infrastructure
+      - name: Provision Infrastructure
         run: azd provision --no-prompt
         env:
           AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
