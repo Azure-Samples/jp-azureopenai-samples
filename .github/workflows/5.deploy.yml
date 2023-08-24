@@ -29,6 +29,7 @@ jobs:
         run: |
           echo "AZURE_CLIENT_ID: ${{ env.AZURE_CLIENT_ID }}"
           echo "AZURE_TENANT_ID: ${{ env.AZURE_TENANT_ID }}"
+          echo "AZURE_TENANT_ID: ${{ env.AZURE_CREDENTIALS }}"
 
       - name: Log in with Azure (Federated Credentials)
         # if: ${{ env.AZURE_CLIENT_ID != '' }}
