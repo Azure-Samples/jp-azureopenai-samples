@@ -30,7 +30,6 @@ jobs:
       - name: Log in with Azure (Federated Credentials)
         if: ${{ env.AZURE_CLIENT_ID != '' }}
         run: |
-          $env:AZURE_CLIENT_ID
           cd 5.internal-document-search
           azd auth login `
             --client-id "$Env:AZURE_CLIENT_ID" `
