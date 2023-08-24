@@ -26,7 +26,7 @@ jobs:
         uses: Azure/setup-azd@v0.1.0
 
       - name: Log in with Azure (Federated Credentials)
-        if: ${{ env.AZURE_CLIENT_ID != '' }}
+        # if: ${{ env.AZURE_CLIENT_ID != '' }}
         run: |
           cd 5.internal-document-search
           azd auth login `
@@ -36,7 +36,7 @@ jobs:
         shell: pwsh
 
       - name: Log in with Azure (Client Credentials)
-        if: ${{ env.AZURE_CREDENTIALS != '' }}
+        # if: ${{ env.AZURE_CREDENTIALS != '' }}
         run: |
           cd 5.internal-document-search
           $info = $Env:AZURE_CREDENTIALS | ConvertFrom-Json -AsHashtable;
