@@ -1,6 +1,6 @@
-on:
-  workflow_dispatch:
-  on: [push]
+name: '5.internal-document-search-deployment'
+
+on: [push]
 # GitHub Actions workflow to deploy to Azure using azd
 # To configure required secrets for connecting to Azure, simply run `azd pipeline config`
 
@@ -48,4 +48,4 @@ jobs:
             --tenant-id "$($info.tenantId)"
         shell: pwsh
         env:
-          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDEfNTIALS }}
