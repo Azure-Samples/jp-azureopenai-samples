@@ -116,5 +116,5 @@ Easy Auth の設定は、[こちら](https://learn.microsoft.com/ja-jp/azure/app
 Azure共通基盤を意識した場合、[Azure Cloud Adoption Framework](https://learn.microsoft.com/azure/cloud-adoption-framework/overview)で紹介されている [Azure Enterprise Scale Landing Zone](https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/)を意識することになります。こちらのシナリオはEnterprise Scale Landing Zoneでいう、1ランディングゾーンに相当します。
 
 ### プライベートネットワーク構成
-- Bicepを活用した構築ガイダンス: Coming soon
+- [Bicepを活用した構築ガイダンス](https://github.com/Azure-Samples/jp-azureopenai-samples/blob/main/5.internal-document-search/deploy_private_endpoint_ennabled.md)
 - [Azure CLIを活用した構築ガイダンス](https://github.com/nakamacchi/AzureCAF.LandingZones.Demo/blob/master/41.Spoke%20D%20(AOAI)%20%E7%A4%BE%E5%86%85%E6%96%87%E6%9B%B8%E6%A4%9C%E7%B4%A2%20%E3%82%A4%E3%83%B3%E3%83%95%E3%83%A9%E6%A7%8B%E7%AF%89/41_00_%E6%9C%AC%E3%82%B5%E3%83%B3%E3%83%97%E3%83%AB%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6.md)
