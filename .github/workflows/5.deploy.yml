@@ -27,6 +27,7 @@ jobs:
       - name: Install azd
         uses: Azure/setup-azd@v0.1.0
 
+      # add federation setting
       - name: Log in with Azure (Federated Credentials)
         if: ${{ env.AZURE_CLIENT_ID != '' }}
         run: |
