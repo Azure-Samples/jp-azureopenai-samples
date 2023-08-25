@@ -1,0 +1,166 @@
+name: '5.internal-document-search-deployment'
+
+on: []
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Login azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }} 
+          enable-AzPSSession: true
+      
+      - name: Deploy Azure Resources
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            $ENV:SUB = "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+            $ENV:USER_ID = "${{ secrets.AZURE_USER_ID }}"
+            $ENV:AZURE_PRINCIPAL_ID = "${{ secrets.AZURE_OBJECT_ID }}"
+            $ENV:LOC = "${{ secrets.AZURE_LOCATION }}"
+            $ENV:DEP_NAME = "github-actions-deploy-${{ github.run_id }}"
+            $ENV:AZURE_ENV_NAME = "github-actions-test-${{ github.run_id }}"
+            $ENV:BACKEND_SERVICE_NAME = "app-backend-${{ github.run_id }}"
+            $ENV:APP_SERVICE_PLAN_NAME = "plan-${{ github.run_id }}"
+            $ENV:AZURE_COSMOSDB_ACCOUNT = "cosmos-${{ github.run_id }}"
+            $ENV:STORAGE_ACCOUNT_NAME = "st${{ github.run_id }}"
+            $ENV:SEARCH_SERVICE_NAME = "gptkb-${{ github.run_id }}"
+            $ENV:FORMRECOGNIZER_SERVICE_NAME = "cog-fr-${{ github.run_id }}"
+
+            cd 5.internal-document-search/infra
+            az deployment sub create --name $ENV:DEP_NAME --location $ENV:LOC --template-file main.bicep --parameters principalId=$ENV:AZURE_PRINCIPAL_ID environmentName=$ENV:AZURE_ENV_NAME location=$ENV:LOC backendServiceName=$ENV:BACKEND_SERVICE_NAME appServicePlanName=$ENV:APP_SERVICE_PLAN_NAME cosmosDbAccountName=$ENV:AZURE_COSMOSDB_ACCOUNT storageAccountName=$ENV:STORAGE_ACCOUNT_NAME searchServiceName=$ENV:SEARCH_SERVICE_NAME formRecognizerServiceName=$ENV:FORMRECOGNIZER_SERVICE_NAME
+          azPSVersion: "latest"
+
+      - name: Build frontend
+        run: |
+          cd 5.internal-document-search/src/frontend
+          npm install
+          npm run build
+      
+      - name: Build Backend
+        run: |
+          cd 5.internal-document-search/src/backend
+          zip -r app.zip .
+
+      - name: Deploy to App Service
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            $ENV:AZURE_WEBAPP_RESOURCE_GROUP = "rg-github-actions-test-${{ github.run_id }}"
+            $ENV:WEBAPP_NAME = "app-backend-${{ github.run_id }}"
+
+            cd 5.internal-document-search/src/backend
+            az webapp deployment source config-zip --resource-group $ENV:AZURE_WEBAPP_RESOURCE_GROUP --name $ENV:WEBAPP_NAME --src ./app.zip
+          azPSVersion: "latest"
+      
+      - name: Assgin RBAC to CosmosDB
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            $ENV:RESOURCE_GROUP_NAME = "rg-github-actions-test-${{ github.run_id }}"
+            $ENV:BACKEND_SERVICE_NAME = "app-backend-${{ github.run_id }}"
+            $ENV:AZURE_COSMOSDB_ACCOUNT = "cosmos-${{ github.run_id }}"
+              
+            $ENV:BACKEND_IDENTITY_PRINCIPAL_ID = az webapp identity show --name $ENV:BACKEND_SERVICE_NAME --resource-group $ENV:RESOURCE_GROUP_NAME --query principalId
+
+            cd 5.internal-document-search
+            $roleId = az cosmosdb sql role definition create --account-name $ENV:AZURE_COSMOSDB_ACCOUNT --resource-group $ENV:RESOURCE_GROUP_NAME --body ./scripts/cosmosreadwriterole.json --output tsv --query id
+
+            echo "roleId=$roleId" >> $GITHUB_ENV
+
+            az cosmosdb sql role assignment create --account-name $ENV:AZURE_COSMOSDB_ACCOUNT --resource-group $ENV:RESOURCE_GROUP_NAME --scope / --principal-id $ENV:BACKEND_IDENTITY_PRINCIPAL_ID --role-definition-id $roleId
+
+          azPSVersion: "latest"
+      
+      - name: setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Create Search Index
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            $env:RESOURCE_GROUP_NAME = "rg-github-actions-test-${{ github.run_id }}"
+            $env:AZURE_STORAGE_ACCOUNT = "st${{ github.run_id }}"
+            $env:AZURE_STORAGE_CONTAINER = "content"
+            $env:AZURE_SEARCH_SERVICE = "gptkb-${{ github.run_id }}"
+            $env:AZURE_SEARCH_INDEX = "gptkbindex"
+            $env:AZURE_FORMRECOGNIZER_SERVICE = "cog-fr-${{ github.run_id }}"
+            $env:AZURE_PRINCIPAL_ID = "${{ secrets.AZURE_OBJECT_ID }}"
+            $env:AZURE_COSMOSDB_ACCOUNT = "cosmos-${{ github.run_id }}"
+            $roleId = "${{env.roleId}}"
+            
+            $key = az search admin-key show -g $env:RESOURCE_GROUP_NAME --service-name $env:AZURE_SEARCH_SERVICE | ConvertFrom-Json
+            $env:AZURE_SEARCH_KEY = $key.primaryKey
+
+            $key = az cognitiveservices account keys list -n $env:AZURE_FORMRECOGNIZER_SERVICE -g $env:RESOURCE_GROUP_NAME | ConvertFrom-Json
+            $env:AZURE_FORMRECOGNIZER_KEY = $key.key1
+
+            cd 5.internal-document-search
+            az cosmosdb sql role assignment create --account-name $env:AZURE_COSMOSDB_ACCOUNT --resource-group $env:RESOURCE_GROUP_NAME --scope / --principal-id $env:AZURE_PRINCIPAL_ID --role-definition-id $roleId
+
+
+            $pythonCmd = Get-Command python -ErrorAction SilentlyContinue
+            if (-not $pythonCmd) {
+              $pythonCmd = Get-Command python3 -ErrorAction SilentlyContinue
+            }
+
+            Start-Process -FilePath ($pythonCmd).Source -ArgumentList "-m venv ./scripts/.venv" -Wait -NoNewWindow
+
+            $venvPythonPath = "./scripts/.venv/scripts/python.exe"
+            if (Test-Path -Path "/usr") {
+              $venvPythonPath = "./scripts/.venv/bin/python"
+            }
+
+            Start-Process -FilePath $venvPythonPath -ArgumentList "-m pip install -r ./scripts/requirements.txt" -Wait -NoNewWindow
+
+            $cwd = (Get-Location)
+            Start-Process -FilePath $venvPythonPath -ArgumentList "./scripts/prepdocs.py $cwd/data/* --storageaccount $env:AZURE_STORAGE_ACCOUNT --container $env:AZURE_STORAGE_CONTAINER --searchservice $env:AZURE_SEARCH_SERVICE --searchkey $env:AZURE_SEARCH_KEY --index $env:AZURE_SEARCH_INDEX --formrecognizerservice $env:AZURE_FORMRECOGNIZER_SERVICE --formrecognizerkey $env:AZURE_FORMRECOGNIZER_KEY -v --managedidentitycredential" -Wait -NoNewWindow
+          azPSVersion: "latest"
+  
+
+  wait-for-2min:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for 2 min
+        run: |
+          sleep 120
+
+
+  test-openai-status:
+    needs: wait-for-2min
+    runs-on: ubuntu-latest
+    steps:
+      - name: test /chat endpoint
+        id: test-openai-status
+        run: |
+          response=$(curl -X POST "https://app-backend-${{ github.run_id }}.azurewebsites.net/chat" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "approach": "r",
+              "history": [
+                {
+                  "user": "test",
+                  "assistant": "This is a test response from an AI language model. How may I assist you?"
+                }
+              ],
+              "assistant": "This is a test response from an AI language model. How may I assist you?",
+              "user": "test",
+              "overrides": {
+                "gptModel": "gpt-3.5-turbo",
+                "temperature": "0.0",
+                "systemPrompt": ""
+              },
+              "gptModel": "gpt-3.5-turbo",
+              "systemPrompt": "",
+              "temperature": "0.0"
+            }')
+          
+          echo "$response"
