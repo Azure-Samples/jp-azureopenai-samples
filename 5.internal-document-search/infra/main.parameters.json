@@ -6,10 +6,7 @@
       "value": "${AZURE_ENV_NAME}"
     },
     "location": {
-      "value": "eastus"
-    },
-    "resourceGroupName": {
-      "value": "ryusei-openai-rg"
+      "value": "${AZURE_LOCATION}"
     },
     "principalId": {
       "value": "${AZURE_PRINCIPAL_ID}"
