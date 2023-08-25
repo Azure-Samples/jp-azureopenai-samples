@@ -49,6 +49,9 @@
     },
     "appInsightsInstrumentationKey": {
       "value": "${AZURE_APPINSIGHTS_INSTRUMENTATION_KEY}"
+    },
+    "principalType": {
+      "value": "${AZURE_PRINCIPAL_TYPE}"
     }
   }
 }

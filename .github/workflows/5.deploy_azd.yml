@@ -1,4 +1,4 @@
-name: '5.internal-document-search-deployment'
+name: '5.internal-document-search-deployment-azd'
 
 on: [push]
 # GitHub Actions workflow to deploy to Azure using azd
@@ -66,7 +66,7 @@ jobs:
           AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
           AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
           AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDEfNTIALS }}
+          AZURE_PRINCIPAL_TYPE: ${{ vars.AZURE_PRINCIPAL_TYPE }}
 
       - name: Deploy Application
         run: |
@@ -77,4 +77,5 @@ jobs:
           AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
           AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
           AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          AZURE_PRINCIPAL_TYPE: ${{ vars.AZURE_PRINCIPAL_TYPE }}
           
