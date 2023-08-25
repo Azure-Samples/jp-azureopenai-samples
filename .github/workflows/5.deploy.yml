@@ -26,6 +26,12 @@ jobs:
       - name: Install azd
         uses: Azure/setup-azd@v0.1.0
 
+        - name: Login azure
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets.AZURE_CREDENTIALS }} 
+            enable-AzPSSession: true
+
       - name: Log in with Azure (Federated Credentials)
         if: ${{ env.AZURE_CLIENT_ID != '' }}
         run: |
