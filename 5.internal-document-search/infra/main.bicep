@@ -66,7 +66,8 @@ param subnetAddressPrefix3 string = '10.0.2.0/24'
 param privateEndpointLocation string = location
 
 param vmLoginName string = 'azureuser'
-param vmLoginPassword string = 'Admin#123456#'
+@secure()
+param vmLoginPassword string
 
 @description('Id of the user or app to assign application roles')
 param principalId string = ''
