@@ -167,3 +167,6 @@ cython_debug/
 # parameterfile
 */*.local
 */*/*.local
+
+# credentials
+5.internal-document-search/sample.json
