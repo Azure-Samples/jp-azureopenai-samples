@@ -6,7 +6,7 @@
       "value": "${AZURE_ENV_NAME}"
     },
     "location": {
-      "value": "eastus"
+      "value": "${AZURE_LOCATION}"
     },
     "resourceGroupName": {
       "value": "${AZURE_RESOURCE_GROUP}"
