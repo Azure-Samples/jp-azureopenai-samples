@@ -162,6 +162,7 @@ def get_document_text(filename):
 
             page_text += " "
             page_map.append((page_num, offset, page_text))
+            print(page)
             offset += len(page_text)
 
     return page_map

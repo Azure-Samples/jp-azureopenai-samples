@@ -3,10 +3,13 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "environmentName": {
-      "value": "${AZURE_ENV_NAME}"
+      "value": "v21"
     },
     "location": {
-      "value": "${AZURE_LOCATION}"
+      "value": "eastus"
+    },
+    "resourceGroupName": {
+      "value": "rg-form-recognizer-3"
     },
     "principalId": {
       "value": "${AZURE_PRINCIPAL_ID}"
