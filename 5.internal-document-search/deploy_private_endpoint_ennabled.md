@@ -75,7 +75,6 @@ azd up
 ```
 接続先：Virtual MachineのパブリックIPアドレス
 ユーザ名：azureuser
-パスワード：Admin#123456#
 ```
 
 6. Virtual Machine内での中でブラウザを開き、App Serviceの `既定のドメイン` へのアクセスが可能なことを確認してください。
