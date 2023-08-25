@@ -54,8 +54,8 @@ jobs:
       - name: Provision Infrastructure
         run: |
           cd 5.internal-document-search
-          chmod +x ./scripts/prepdocs.sh
           azd provision --no-prompt
+        shell: pwsh
         env:
           AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
           AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
@@ -64,9 +64,8 @@ jobs:
       - name: Deploy Application
         run: |
           cd 5.internal-document-search
-          ls -al
-          chmod +x ./scripts/prepdocs.sh
           azd deploy --no-prompt
+        shell: pwsh
         env:
           AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
           AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
