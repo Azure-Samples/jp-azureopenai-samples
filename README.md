@@ -25,7 +25,7 @@ Azure OpenAIを活用したアプリケーション実装のリファレンス�
 English: Please refer to the README for each of the samples.
 
 ### 本番稼働を視野にいれる場合
-本番稼働（や本番に近い検証環境等）を視野にいれる場合、様々な考慮事項があります。考えられる考慮事項は[Cloud Adoption Framework](https://learn.microsoft.com/azure/cloud-adoption-framework/overview)や[Well-Architected Framework](https://learn.microsoft.com/azure/well-architected/)にまとめられていますが、考慮事項は多岐にわたるので、状況（例: シナリオ、企業の事情）に応じた重要度や緊急度等を考慮した優先順位付けが必要になります。例えば、社内文書検索シナリオにおいて社内データと連携する場合にはプライベートネットワークを考慮した設計が重要になること多くなるとことが推測される一方、料理メニューの提案シナリオにおいてはエンドユーザのニーズに合わせて柔軟にアプリケーションに機能追加をしていくことが重要になることが推測されます。
+本番稼働（や本番に近い検証環境等）を視野にいれる場合、様々な考慮事項があります。考えられる考慮事項は[Cloud Adoption Framework](https://learn.microsoft.com/azure/cloud-adoption-framework/overview)や[Well-Architected Framework](https://learn.microsoft.com/azure/well-architected/)にまとめられていますが、考慮事項は多岐にわたるので、状況（例: シナリオ、企業の事情）に応じて重要度や緊急度等をもとにした優先順位付けが必要になります。例えば、社内文書検索シナリオではプライベートネットワークを考慮した設計が重要になることが多くなると推測される一方、料理メニューの提案シナリオにおいてはエンドユーザのニーズに合わせて柔軟にアプリケーションに機能追加をしていくことが重要になることが推測されます。
 
 ## 制限事項
 本レポジトリの内容の使用においては、次の制限、制約をご理解の上、活用ください。
