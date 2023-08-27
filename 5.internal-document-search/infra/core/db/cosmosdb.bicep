@@ -3,6 +3,8 @@ param cosmosDbDatabaseName string
 param cosmosDbContainerName string
 param location string = resourceGroup().location
 param tags object = {}
+@allowed(['Enabled', 'Disabled'])
+param publicNetworkAccess string
 
 resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2021-04-15' = {
   name: name
@@ -18,6 +20,7 @@ resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2021-04-15' = {
       {
         locationName: location
       }]
+      publicNetworkAccess: publicNetworkAccess
   }
 }
 
@@ -51,8 +54,9 @@ resource cosmosDbContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/c
   }
 }
 
+output id string = cosmosDbAccount.id
+output name string = cosmosDbAccount.name
 output endpoint string = cosmosDbAccount.properties.documentEndpoint
-output key string = cosmosDbAccount.listKeys().primaryMasterKey
 output databaseName string = cosmosDbDatabase.name
 output containerName string = cosmosDbContainer.name
 output accountName string = cosmosDbAccount.name
