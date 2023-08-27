@@ -113,7 +113,7 @@ Easy Auth の設定は、[こちら](https://learn.microsoft.com/ja-jp/azure/app
 社内文書検索シナリオにおいては、社内データと連携する場合にはプライベートネットワークを考慮した設計や企業のAzure基盤との連携が重要になること多くなるとことが推測されるます。
 
 ### Azure共通基盤との連携
-Azure共通基盤を意識した場合、[Azure Cloud Adoption Framework](https://learn.microsoft.com/azure/cloud-adoption-framework/overview)で紹介されている [Azure Enterprise Scale Landing Zone](https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/)を意識することになります。こちらのシナリオはEnterprise Scale Landing Zoneでいう、1ランディングゾーンに相当します。
+PoC/検証等の目的で小さく始めた後に、本番稼働を視野にいれる場合には、社内ガバナンス等を意識する必要が出てきます。その際は、[Azure Cloud Adoption Framework](https://learn.microsoft.com/azure/cloud-adoption-framework/overview)で紹介されている [Azure Enterprise Scale Landing Zone](https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/)や[Azure CAF Landing Zones 設計・構築ハンズオン](https://github.com/nakamacchi/AzureCAF.LandingZones.Demo)等を参考にすることを推奨します。Azure Enterprise Scale Landing Zoneの概念において、こちらのサンプルアプリケーションは、アプリケーションランディングゾーン内にデプロイされるものになります。
 
 ### プライベートネットワーク構成
 - [Bicepを活用した構築ガイダンス](https://github.com/Azure-Samples/jp-azureopenai-samples/blob/main/5.internal-document-search/deploy_private_endpoint_ennabled.md)
