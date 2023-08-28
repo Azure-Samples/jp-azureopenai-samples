@@ -56,7 +56,7 @@ def _get_azd_credential(tenantid: str):
 	if tenantid is None:
 		return AzureDeveloperCliCredential()
 	else:
-         return AzureDeveloperCliCredential(tenant_id=tenantid, process_timeout=60)
+		return AzureDeveloperCliCredential(tenant_id=tenantid, process_timeout=60)
 
 
 # 認証方法を決定する関数
