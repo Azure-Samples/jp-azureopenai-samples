@@ -3,13 +3,16 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "environmentName": {
-      "value": "v21"
+      "value": "${AZURE_ENV_NAME}"
     },
     "location": {
-      "value": "eastus"
+      "value": "${AZURE_LOCATION}"
     },
     "resourceGroupName": {
-      "value": "rg-form-recognizer-3"
+      "value": "${AZURE_RESOURCE_GROUP}"
+    },
+    "isPrivateNetworkEnabled": {
+      "value": false
     },
     "principalId": {
       "value": "${AZURE_PRINCIPAL_ID}"
