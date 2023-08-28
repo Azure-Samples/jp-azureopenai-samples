@@ -6,7 +6,7 @@ echo ""
 
 while IFS='=' read -r key value; do
     value=$(echo "$value" | sed 's/^"//' | sed 's/"$//')
-    echo "export $key=$value"
+    export "$key=$value"
 done <<EOF
 $(azd env get-values)
 EOF
@@ -28,4 +28,4 @@ echo 'Installing dependencies from "requirements.txt" into virtual environment'
 ./scripts/.venv/bin/python -m pip install -r scripts/requirements.txt
 
 echo 'Running "prepdocs.py"'
-./scripts/.venv/bin/python ./scripts/prepdocs2.py './data/*' --storageaccount "$AZURE_STORAGE_ACCOUNT" --container "$AZURE_STORAGE_CONTAINER" --storagekey "$storageKey" --searchservice "$AZURE_SEARCH_SERVICE" --index "$AZURE_SEARCH_INDEX" --formrecognizerservice "$AZURE_FORMRECOGNIZER_SERVICE" --tenantid "$AZURE_TENANT_ID" -v
+./scripts/.venv/bin/python ./scripts/prepdocs.py './data/*' --storageaccount "$AZURE_STORAGE_ACCOUNT" --container "$AZURE_STORAGE_CONTAINER" --storagekey "$storageKey" --searchservice "$AZURE_SEARCH_SERVICE" --index "$AZURE_SEARCH_INDEX" --formrecognizerservice "$AZURE_FORMRECOGNIZER_SERVICE" --tenantid "$AZURE_TENANT_ID" -v
