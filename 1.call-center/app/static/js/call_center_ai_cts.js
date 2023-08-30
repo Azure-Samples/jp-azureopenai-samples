@@ -76,21 +76,26 @@ $(document).ready(function() {
         startAsyncButton.hide();
         stopAsyncButton.show();
 
-        //try {
-        // Speech config
-        authorizationToken = "aad#" + resourceId + "#" + token
-        const speechConfig = SpeechSDK.SpeechTranslationConfig.fromAuthorizationToken(authorizationToken, speechRegion);
-        
-        // Set recognition properties
-        speechConfig.speechRecognitionLanguage = speechLang;
-        speechConfig.addTargetLanguage(translateLang);
+        try {
+            // Speech config
+            authorizationToken = "aad#" + resourceId + "#" + token
+            const speechConfig = SpeechSDK.SpeechTranslationConfig.fromAuthorizationToken(authorizationToken, speechRegion);
+            
+            // Set recognition properties
+            speechConfig.speechRecognitionLanguage = speechLang;
+            speechConfig.addTargetLanguage(translateLang);
 
-        // Audio config for Recognizer
-        const audioConfig = SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
-        
-        // Initialize TranslationRecognizer
-        recognizer = new SpeechSDK.TranslationRecognizer(speechConfig, audioConfig);
-        recognizer.startContinuousRecognitionAsync(console.log('Recognizer session started'));
+            // Audio config for Recognizer
+            const audioConfig = SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
+            
+            // Initialize TranslationRecognizer
+            recognizer = new SpeechSDK.TranslationRecognizer(speechConfig, audioConfig);
+            recognizer.startContinuousRecognitionAsync(console.log('Recognizer session started'));
+        }
+        catch(err) {
+            displaySpeech.text(err);
+            return;
+        }
 
         // Translation recognizing
         recognizer.recognizing = (s, e) => {
