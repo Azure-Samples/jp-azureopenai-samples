@@ -1,9 +1,5 @@
 # 閉域網におけるデプロイ
 
-#### アーキテクチャ
-![Alt text](assets/architecture_private.png)
-
-
 #### リソース追加・変更内容
 
 - Virtual Machine
