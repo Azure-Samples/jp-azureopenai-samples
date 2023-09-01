@@ -27,7 +27,7 @@ class Logger:
 
 
 # 引数を読み込む関数
-def read_argument() -> Tuple[Dict[str, str], Logger]:
+def read_argument() -> Dict[str, str]:
 	parser = argparse.ArgumentParser(
 	description="Prepare documents by extracting content from PDFs, splitting content into sections, uploading to blob storage, and indexing in a search index.",
 	epilog="Example: prepdocs.py '..\data\*' --storageaccount myaccount --container mycontainer --searchservice mysearch --index myindex -v"
@@ -46,9 +46,7 @@ def read_argument() -> Tuple[Dict[str, str], Logger]:
 	parser.add_argument('--managedidentitycredential', action='store_true', help='Use Managed Identity (e.g., Cloud Shell) credentials')
 	args = parser.parse_args()
 
-	logger = Logger(args.verbose)
-
-	return args, logger
+	return args
 
 
 # Azure Developer CLIの認証情報を取得する関数
@@ -238,7 +236,9 @@ def upload_documents_to_blob_storage(
 # main実行関数
 def main():
 	# CLIから引数を取得
-	args, logger = read_argument()
+	args = read_argument()
+	# ログ出力用のクラスを定義
+	logger = Logger(args.verbose)
 
 	logger.log("\nGetting credentials...")
 	# 認証方法を定義
