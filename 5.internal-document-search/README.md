@@ -105,3 +105,9 @@ GPT-4 モデルは、チャット機能、文書検索機能のオプション�
 ### Easy Authの設定（オプション）
 必要に応じて、Azure AD に対応した Easy Auth を設定します。Easy Auth を設定した場合、UI の右上にログインユーザのアカウント名が表示され、チャットの履歴ログにもアカウント名が記録されます。
 Easy Auth の設定は、[こちら](https://learn.microsoft.com/ja-jp/azure/app-service/scenario-secure-app-authentication-app-service)を参考にしてください。
+
+## PDFファイルの追加
+このサンプルでは、`./data`フォルダにある PDF ファイルを Azure Cognitive Search にインデックスを作成するために使用しています。検索可能な PDF ファイルを変更する場合には、以下の手順を実行してください。
+
+1. `./data`フォルダに新しい PDF ファイルを追加する。
+2. PowerShellの場合は `./scripts/update_doc_index.ps1` を実行する。Bashの場合は `./scripts/update_doc_index.sh` を実行する。
