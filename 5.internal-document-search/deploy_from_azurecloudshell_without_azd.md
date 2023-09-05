@@ -104,6 +104,7 @@ az cosmosdb sql role assignment create --account-name $env:AZURE_COSMOSDB_ACCOUN
 ```PowerShell
 $env:AZURE_STORAGE_ACCOUNT = "xxx" # Azureリソースの作成時に作成されているリソースの名前
 $env:AZURE_STORAGE_CONTAINER = "content" # 固定値
+$env:AZURE_STORAGE_KEY = "xxx" # Azure PortalからAzure Storage AccountのKeyを取得
 $env:AZURE_SEARCH_SERVICE = "xxx" # Azureリソースの作成時に作成されているリソースの名前
 $env:AZURE_SEARCH_INDEX = "gptkbindex" # 固定値
 $env:AZURE_SEARCH_KEY = "xxx" # Azure PortalからAzure Search ServiceのKeyを取得
@@ -141,7 +142,7 @@ Start-Process -FilePath $venvPythonPath -ArgumentList "-m pip install -r ./scrip
 
 # Running "prepdocs.py"
 $cwd = (Get-Location)
-Start-Process -FilePath $venvPythonPath -ArgumentList "./scripts/prepdocs.py $cwd/data/* --storageaccount $env:AZURE_STORAGE_ACCOUNT --container $env:AZURE_STORAGE_CONTAINER --searchservice $env:AZURE_SEARCH_SERVICE --searchkey $env:AZURE_SEARCH_KEY --index $env:AZURE_SEARCH_INDEX --formrecognizerservice $env:AZURE_FORMRECOGNIZER_SERVICE --formrecognizerkey $env:AZURE_FORMRECOGNIZER_KEY -v --managedidentitycredential" -Wait -NoNewWindow
+Start-Process -FilePath $venvPythonPath -ArgumentList "./scripts/prepdocs_v2.py $cwd/data/* --storageaccount $env:AZURE_STORAGE_ACCOUNT --storagekey $env:AZURE_STORAGE_KEY --container $env:AZURE_STORAGE_CONTAINER --searchservice $env:AZURE_SEARCH_SERVICE --searchkey $env:AZURE_SEARCH_KEY --index $env:AZURE_SEARCH_INDEX --formrecognizerservice $env:AZURE_FORMRECOGNIZER_SERVICE --formrecognizerkey $env:AZURE_FORMRECOGNIZER_KEY -v --managedidentitycredential" -Wait -NoNewWindow
 ```
 
 データの投入し、Search Indexを作成することで、社内文書検索の機能も使えるようになります。
