@@ -3,7 +3,7 @@ from azure.identity import AzureDeveloperCliCredential
 from azure.identity import ManagedIdentityCredential
 from azure.core.credentials import AzureKeyCredential
 from azure.search.documents.indexes import SearchIndexClient
-from azure.search.documents.indexes.models import *
+from azure.search.documents.indexes.models import SimpleField, SemanticConfiguration, SearchIndex, SemanticField, PrioritizedFields, SearchableField, SemanticSettings
 from azure.ai.formrecognizer import DocumentAnalysisClient
 from azure.search.documents import SearchClient
 from azure.storage.blob import BlobServiceClient
@@ -13,7 +13,7 @@ import io
 import os
 import re
 
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
 
 # ログ出力用のクラス
