@@ -28,20 +28,20 @@ KB_FIELDS_SOURCEPAGE = os.environ.get("KB_FIELDS_SOURCEPAGE") or "sourcepage"
 AZURE_OPENAI_SERVICE = os.environ.get("AZURE_OPENAI_SERVICE")
 AZURE_OPENAI_API_VERSION = os.environ.get("AZURE_OPENAI_API_VERSION")
 
-AZURE_OPENAI_DAVINCI_DEPLOYMENT = os.environ.get("AZURE_OPENAI_DAVINCI_DEPLOYMENT")
 AZURE_OPENAI_GPT_35_TURBO_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_35_TURBO_DEPLOYMENT")
+AZURE_OPENAI_GPT_35_TURBO_16K_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_35_TURBO_16K_DEPLOYMENT")
 AZURE_OPENAI_GPT_4_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_4_DEPLOYMENT")
 AZURE_OPENAI_GPT_4_32K_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_4_32K_DEPLOYMENT")
 
 gpt_models = {
-    "text-davinci-003": {
-        "deployment": AZURE_OPENAI_DAVINCI_DEPLOYMENT,
-        "max_tokens": 1024,
-        "encoding": tiktoken.encoding_for_model("text-davinci-003")
-    },
     "gpt-3.5-turbo": {
         "deployment": AZURE_OPENAI_GPT_35_TURBO_DEPLOYMENT,
-        "max_tokens": 1024,
+        "max_tokens": 4096,
+        "encoding": tiktoken.encoding_for_model("gpt-3.5-turbo")
+    },
+    "gpt-3.5-turbo-16k": {
+        "deployment": AZURE_OPENAI_GPT_35_TURBO_16K_DEPLOYMENT,
+        "max_tokens": 16384,
         "encoding": tiktoken.encoding_for_model("gpt-3.5-turbo")
     },
     "gpt-4": {

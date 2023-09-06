@@ -34,8 +34,8 @@ param openAiResourceGroupLocation string = location
 
 param openAiSkuName string = 'S0'
 
-param openAiDavinciDeploymentName string = 'davinci'
-param openAiGpt35TurboDeploymentName string = 'chat'
+param openAiGpt35TurboDeploymentName string = 'gpt-35-turbo-deploy'
+param openAiGpt35Turbo16kDeploymentName string = 'gpt-35-turbo-16k-deploy'
 param openAiGpt4DeploymentName string = ''
 param openAiGpt432kDeploymentName string = ''
 param openAiApiVersion string = '2023-07-01-preview'
@@ -46,11 +46,6 @@ param formRecognizerResourceGroupName string = ''
 param formRecognizerResourceGroupLocation string = location
 
 param formRecognizerSkuName string = 'S0'
-
-param gptDeploymentName string = 'davinci'
-param gptModelName string = 'gpt-35-turbo'
-param chatGptDeploymentName string = 'chat'
-param chatGptModelName string = 'gpt-35-turbo'
 
 param cosmosDbDatabaseName string = 'ChatHistory'
 param cosmosDbContainerName string = 'Prompts'
@@ -150,8 +145,8 @@ module backend 'core/host/appservice.bicep' = {
       AZURE_OPENAI_SERVICE: openAi.outputs.name
       AZURE_SEARCH_INDEX: searchIndexName
       AZURE_SEARCH_SERVICE: searchService.outputs.name
-      AZURE_OPENAI_DAVINCI_DEPLOYMENT: gptDeploymentName
-      AZURE_OPENAI_GPT_35_TURBO_DEPLOYMENT: chatGptDeploymentName
+      AZURE_OPENAI_GPT_35_TURBO_DEPLOYMENT: openAiGpt35TurboDeploymentName
+      AZURE_OPENAI_GPT_35_TURBO_16K_DEPLOYMENT: openAiGpt35Turbo16kDeploymentName
       AZURE_OPENAI_GPT_4_32K_DEPLOYMENT: ''
       AZURE_OPENAI_GPT_4_DEPLOYMENT: ''
       AZURE_OPENAI_API_VERSION: '2023-07-01-preview'
@@ -177,10 +172,10 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
     }
     deployments: [
       {
-        name: gptDeploymentName
+        name: openAiGpt35TurboDeploymentName
         model: {
           format: 'OpenAI'
-          name: gptModelName
+          name: 'gpt-35-turbo'
           version: '0613'
         }
         sku: {
@@ -189,10 +184,10 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
         }
       }
       {
-        name: chatGptDeploymentName
+        name: openAiGpt35Turbo16kDeploymentName
         model: {
           format: 'OpenAI'
-          name: chatGptModelName
+          name: 'gpt-35-turbo-16k'
           version: '0613'
         }
         sku: {
@@ -610,7 +605,6 @@ output AZURE_RESOURCE_GROUP string = resourceGroup.name
 
 output AZURE_OPENAI_SERVICE string = openAi.outputs.name
 output AZURE_OPENAI_RESOURCE_GROUP string = openAiResourceGroup.name
-output AZURE_OPENAI_DAVINCI_DEPLOYMENT string = openAiDavinciDeploymentName
 output AZURE_OPENAI_GPT_35_TURBO_DEPLOYMENT string = openAiGpt35TurboDeploymentName
 output AZURE_OPENAI_GPT_4_DEPLOYMENT string = openAiGpt4DeploymentName
 output AZURE_OPENAI_GPT_4_32K_DEPLOYMENT string = openAiGpt432kDeploymentName
