@@ -21,6 +21,8 @@ export function parseAnswerToHtml(answer: string, onCitationClicked: (citationFi
     // trim any whitespace from the end of the answer after removing follow-up questions
     parsedAnswer = parsedAnswer.trim();
 
+    console.log(parsedAnswer)
+
     const parts = parsedAnswer.split(/\[([^\]]+)\]/g);
 
     const fragments: string[] = parts.map((part, index) => {

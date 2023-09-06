@@ -59,22 +59,40 @@ Search query:
     def run(self, selected_model_name, gpt_chat_model, gpt_completion_model, user_name: str, history: list[dict], overrides: dict) -> any:
         # STEP 1: Generate an optimized keyword search query based on the chat history and the last question
         chat_deployment = gpt_chat_model.get("deployment")
-        max_tokens = gpt_chat_model.get("max_tokens")
+        # max_tokens = gpt_chat_model.get("max_tokens")
+        max_tokens = 1024
         encoding = gpt_chat_model.get("encoding")
         prompt = self.query_prompt_template.format(chat_history=self.get_chat_history_as_text(history, include_last_turn=False), question=history[-1]["user"])
         token_length = len(encoding.encode(prompt))
         if max_tokens > token_length + 1:
             max_tokens = max_tokens - (token_length + 1)
-        completion = openai.Completion.create(
-            engine=chat_deployment, 
-            prompt=prompt, 
-            temperature=0.0, # Temperature is set to 0.0 because query keyword should be more stable.
+        messages = [
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": prompt}
+        ]
+        # completion = openai.Completion.create(
+        #     engine=chat_deployment, 
+        #     prompt=prompt, 
+        #     temperature=0.0, # Temperature is set to 0.0 because query keyword should be more stable.
+        #     max_tokens=max_tokens,
+        #     n=1, 
+        #     stop=["\n"])
+        # q = completion.choices[0].text
+
+        completion = openai.ChatCompletion.create(
+            engine=chat_deployment,
+            messages=messages,
+            temperature=0.0,
             max_tokens=max_tokens,
-            n=1, 
-            stop=["\n"])
-        q = completion.choices[0].text
+            n=1,
+            stop=["\n"],
+        )
+        q = completion.choices[0].message.content
 
         total_tokens = completion.usage.total_tokens
+
+        print("-------------- overrides ------------------")
+        print(overrides)
 
         # STEP 2: Retrieve relevant documents from the search index with the GPT optimized query
         use_semantic_captions = True if overrides.get("semanticCaptions") else False
@@ -99,6 +117,9 @@ Search query:
             results = [doc[self.sourcepage_field] + ": " + nonewlines(doc[self.content_field]) for doc in r]
         content = "\n".join(results)
 
+        print("-------------- results ------------------")
+        print(content)
+
         # STEP 3: Generate a contextual and content specific answer using the search results and chat history
         completion_deployment = gpt_completion_model.get("deployment")
         max_tokens = gpt_completion_model.get("max_tokens")
@@ -113,16 +134,30 @@ Search query:
             if max_tokens > token_length + 1:
                 max_tokens = max_tokens - (token_length + 1)
 
-            completion = openai.Completion.create(
-                engine=completion_deployment, 
-                prompt=prompt, 
-                temperature=temaperature, 
-                max_tokens=max_tokens, 
-                n=1, 
-                stop=["<|im_end|>", "<|im_start|>"])
-            
-            response_text = completion.choices[0].text
+            messages = [
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": prompt}
+            ]
+            # completion = openai.Completion.create(
+            #     engine=completion_deployment, 
+            #     prompt=prompt, 
+            #     temperature=temaperature, 
+            #     max_tokens=max_tokens, 
+            #     n=1, 
+            #     stop=["<|im_end|>", "<|im_start|>"])
 
+            # response_text = completion.choices[0].text
+            
+            completion = openai.ChatCompletion.create(
+                engine=completion_deployment,
+                messages=messages,
+                temperature=temaperature,
+                max_tokens=max_tokens,
+                n=1,
+                stop=["<|im_end|>", "<|im_start|>"]
+            )
+            
+            response_text = completion.choices[0].message.content
             total_tokens += completion.usage.total_tokens
 
             response = {"data_points": results, "answer": response_text, "thoughts": f"Searched for:<br>{q}<br><br>Prompt:<br>" + prompt.replace('\n', '<br>')}
@@ -135,6 +170,9 @@ Search query:
             if max_tokens > token_length + 1:
                 max_tokens = max_tokens - (token_length + 1)
 
+            print("-------------- max_tokens ------------------")
+            print(max_tokens)
+
             response = openai.ChatCompletion.create(
                 engine=completion_deployment, 
                 messages=messages,
@@ -146,6 +184,9 @@ Search query:
             total_tokens += response.usage.total_tokens
 
             response = {"data_points": results, "answer": response_text, "thoughts": f"Searched for:<br>{q}<br><br>Prompt:<br>" + json.dumps(messages, ensure_ascii=False).replace('\n', '<br>')}
+
+        print("-------------- response ------------------")
+        print(response)
 
         input_text = history[-1]["user"]
 

@@ -36,12 +36,12 @@ AZURE_OPENAI_GPT_4_32K_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_4_32K_DEPLO
 gpt_models = {
     "text-davinci-003": {
         "deployment": AZURE_OPENAI_DAVINCI_DEPLOYMENT,
-        "max_tokens": 4097,
+        "max_tokens": 1024,
         "encoding": tiktoken.encoding_for_model("text-davinci-003")
     },
     "gpt-3.5-turbo": {
         "deployment": AZURE_OPENAI_GPT_35_TURBO_DEPLOYMENT,
-        "max_tokens": 4096,
+        "max_tokens": 1024,
         "encoding": tiktoken.encoding_for_model("gpt-3.5-turbo")
     },
     "gpt-4": {
@@ -160,6 +160,8 @@ def docsearch():
     user_name = get_user_name(request)
     overrides = request.json.get("overrides")
 
+    print(overrides)
+
     selected_model_name = overrides.get("gptModel")
 
     gpt_chat_model = gpt_models.get("gpt-3.5-turbo")
@@ -169,6 +171,8 @@ def docsearch():
         impl = chat_approaches.get(approach)
         if not impl:
             return jsonify({"error": "unknown approach"}), 400
+        print("-------------- history ------------------")
+        print(request.json["history"])
         r = impl.run(selected_model_name, gpt_chat_model, gpt_completion_model, user_name, request.json["history"], overrides)
         return jsonify(r)
     except Exception as e:

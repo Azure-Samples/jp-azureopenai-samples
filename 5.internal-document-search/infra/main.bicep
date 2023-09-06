@@ -38,7 +38,7 @@ param openAiDavinciDeploymentName string = 'davinci'
 param openAiGpt35TurboDeploymentName string = 'chat'
 param openAiGpt4DeploymentName string = ''
 param openAiGpt432kDeploymentName string = ''
-param openAiApiVersion string = '2023-05-15'
+param openAiApiVersion string = '2023-07-01-preview'
 
 
 param formRecognizerServiceName string = ''
@@ -154,7 +154,7 @@ module backend 'core/host/appservice.bicep' = {
       AZURE_OPENAI_GPT_35_TURBO_DEPLOYMENT: chatGptDeploymentName
       AZURE_OPENAI_GPT_4_32K_DEPLOYMENT: ''
       AZURE_OPENAI_GPT_4_DEPLOYMENT: ''
-      AZURE_OPENAI_API_VERSION: '2023-05-15'
+      AZURE_OPENAI_API_VERSION: '2023-07-01-preview'
       AZURE_COSMOSDB_CONTAINER: cosmosDbContainerName
       AZURE_COSMOSDB_DATABASE: cosmosDbDatabaseName
       AZURE_COSMOSDB_ENDPOINT: cosmosDb.outputs.endpoint
@@ -181,10 +181,11 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
         model: {
           format: 'OpenAI'
           name: gptModelName
-          version: '0301'
+          version: '0613'
         }
-        scaleSettings: {
-          scaleType: 'Standard'
+        sku: {
+          name: 'Standard'
+          capacity: 60
         }
       }
       {
@@ -192,14 +193,14 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
         model: {
           format: 'OpenAI'
           name: chatGptModelName
-          version: '0301'
+          version: '0613'
         }
-        scaleSettings: {
-          scaleType: 'Standard'
+        sku: {
+          name: 'Standard'
+          capacity: 60
         }
       }
     ]
-    publicNetworkAccess: isPrivateNetworkEnabled ? 'Disabled' : 'Enabled'
   }
 }
 
