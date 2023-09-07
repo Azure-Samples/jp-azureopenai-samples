@@ -5,6 +5,7 @@ param tags object = {}
 param customSubDomainName string = name
 param deployments array = []
 param kind string = 'OpenAI'
+@allowed(['Enabled', 'Disabled'])
 param publicNetworkAccess string = 'Enabled'
 param sku object = {
   name: 'S0'
@@ -33,7 +34,10 @@ resource deployment 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01
     model: deployment.model
     raiPolicyName: contains(deployment, 'raiPolicyName') ? deployment.raiPolicyName : null
   }
-  sku: deployment.sku
+  sku: contains(deployment, 'sku') ? deployment.sku : {
+    name: 'Standard'
+    capacity: 20
+  }
 }]
 
 output endpoint string = account.properties.endpoint

@@ -1,204 +1,176 @@
 import json
 from text import nonewlines
+
 import openai
-from approaches.approach import Approach
-from approaches.chatlogging import write_chatlog, ApproachType
 from azure.search.documents import SearchClient
 from azure.search.documents.models import QueryType
+from approaches.approach import Approach
+from approaches.chatlogging import write_chatlog, ApproachType
+# TODO: To uncomment when enabling asynchronous support.
+# from azure.cosmos.aio import ContainerProxy
+from core.messagebuilder import MessageBuilder
+from core.modelhelper import get_gpt_model, get_max_token_from_messages
 
 # Simple retrieve-then-read implementation, using the Cognitive Search and OpenAI APIs directly. It first retrieves
 # top documents from search, then constructs a prompt with them, and then uses OpenAI to generate an completion 
 # (answer) with that prompt.
 class ChatReadRetrieveReadApproach(Approach):
-    prompt_prefix_davinci = """<|im_start|>system
-{system_prompt}
+    # Chat roles
+    SYSTEM = "system"
+    USER = "user"
+    ASSISTANT = "assistant"
 
-Sources:
-{sources}
-
-<|im_end|>
-{chat_history}
-"""
-
-    prompt_prefix_gpt_4 = """
-{system_prompt}
-
-Sources:
-{sources}
-"""
-
-    system_prompt = """
-Assistant helps the questions. Be brief in your answers.
-generate the answer in the same language as the language of the Sources.
+    """
+    Simple retrieve-then-read implementation, using the Cognitive Search and OpenAI APIs directly. It first retrieves
+    top documents from search, then constructs a prompt with them, and then uses OpenAI to generate an completion
+    (answer) with that prompt.
+    """
+    system_message_chat_conversation = """Assistant helps the customer questions. Be brief in your answers.
 Answer ONLY with the facts listed in the list of sources below. If there isn't enough information below, say you don't know. Do not generate answers that don't use the sources below. If asking a clarifying question to the user would help, ask the question.
-For tabular information return it as an html table. Do not return markdown format.
-Each source has a name followed by colon and the actual information, always include the source name for each fact you use in the response. Use square brakets to reference the source, e.g. [info1.txt]. Don't combine sources, list each source separately, e.g. [info1.txt][info2.pdf].
+For tabular information return it as an html table. Do not return markdown format. If the question is not in English, answer in the language used in the question.
+Each source has a name followed by colon and the actual information, always include the source name for each fact you use in the response. Use square brackets to reference the source, e.g. [info1.txt]. Don't combine sources, list each source separately, e.g. [info1.txt][info2.pdf].
 """
-
-
-    query_prompt_template = """Below is a history of the conversation so far, and a new question asked by the user that needs to be answered by searching in a knowledge base about financial documents.
-Generate a search query based on the conversation and the new question. 
+    query_prompt_template = """Below is a history of the conversation so far, and a new question asked by the user that needs to be answered by searching in a knowledge base.
+Generate a search query based on the conversation and the new question.
 Do not include cited source filenames and document names e.g info.txt or doc.pdf in the search query terms.
 Do not include any text inside [] or <<>> in the search query terms.
-generate the search query in the same language as the language of the question.
+Do not include any special characters like '+'.
+The language of the search query is generated in the language of the string described in the source question.
+If you cannot generate a search query, return just the number 0.
 
-Chat History:
-{chat_history}
-
-Question:
-{question}
-
-Search query:
+source quesion: {user_question}
 """
+    query_prompt_few_shots = [
+        {'role' : USER, 'content' : 'What are my health plans?' },
+        {'role' : ASSISTANT, 'content' : 'Show available health plans' },
+        {'role' : USER, 'content' : 'does my plan cover cardio?' },
+        {'role' : ASSISTANT, 'content' : 'Health plan cardio coverage' }
+    ]
 
-    def __init__(self, search_client: SearchClient, sourcepage_field: str, content_field: str):
+    # TODO: add container_log: ContainerProxy when quart is used
+    def __init__(self, search_client: SearchClient,  embedding_deployment: str, sourcepage_field: str, content_field: str):
         self.search_client = search_client
+        # TODO: To uncomment when enabling asynchronous support.
+        # self.container_log = container_log
         self.sourcepage_field = sourcepage_field
         self.content_field = content_field
+        self.embedding_deployment = embedding_deployment
+    
+    def run(self, user_name: str, history: list[dict], overrides: dict) -> any:
+        # chat_model = overrides.get("gptModel")
+        chat_model = "gpt-3.5-turbo"
+        chat_gpt_model = get_gpt_model(chat_model)
+        chat_deployment = chat_gpt_model.get("deployment")
 
-    def run(self, selected_model_name, gpt_chat_model, gpt_completion_model, user_name: str, history: list[dict], overrides: dict) -> any:
         # STEP 1: Generate an optimized keyword search query based on the chat history and the last question
-        chat_deployment = gpt_chat_model.get("deployment")
-        # max_tokens = gpt_chat_model.get("max_tokens")
-        max_tokens = 1024
-        encoding = gpt_chat_model.get("encoding")
-        prompt = self.query_prompt_template.format(chat_history=self.get_chat_history_as_text(history, include_last_turn=False), question=history[-1]["user"])
-        token_length = len(encoding.encode(prompt))
-        if max_tokens > token_length + 1:
-            max_tokens = max_tokens - (token_length + 1)
-        messages = [
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": prompt}
-        ]
-        # completion = openai.Completion.create(
-        #     engine=chat_deployment, 
-        #     prompt=prompt, 
-        #     temperature=0.0, # Temperature is set to 0.0 because query keyword should be more stable.
-        #     max_tokens=max_tokens,
-        #     n=1, 
-        #     stop=["\n"])
-        # q = completion.choices[0].text
+        user_q = 'Generate search query for: ' + history[-1]["user"]
+        query_prompt = self.query_prompt_template.format(user_question=history[-1]["user"])
+        message_builder = MessageBuilder(query_prompt)
+        messages = message_builder.get_messages_from_history(
+            history,
+            user_q,
+            self.query_prompt_few_shots
+            )
 
-        completion = openai.ChatCompletion.create(
-            engine=chat_deployment,
+        max_tokens =  get_max_token_from_messages(messages, chat_model)
+
+        # TODO: Change create type ChatCompletion.create → ChatCompletion.acreate when enabling asynchronous support.
+        chat_completion = openai.ChatCompletion.create(
+            engine=chat_deployment, 
             messages=messages,
             temperature=0.0,
             max_tokens=max_tokens,
-            n=1,
-            stop=["\n"],
-        )
-        q = completion.choices[0].message.content
+            n=1)
 
-        total_tokens = completion.usage.total_tokens
+        query_text = chat_completion.choices[0].message.content
+        if query_text.strip() == "0":
+            query_text = history[-1]["user"] # Use the last user input if we failed to generate a better query
 
-        print("-------------- overrides ------------------")
-        print(overrides)
+        total_tokens = chat_completion.usage.total_tokens
 
         # STEP 2: Retrieve relevant documents from the search index with the GPT optimized query
+        has_text = overrides.get("retrievalMode") in ["text", "hybrid", None]
+        # has_vector = overrides.get("retrievalMode") in ["vectors", "hybrid", None]
+        has_vector = overrides.get("retrievalMode") in ["vectors", "hybrid"]
+
         use_semantic_captions = True if overrides.get("semanticCaptions") else False
         top = overrides.get("top")
         exclude_category = overrides.get("excludeCategory") or None
         filter = "category ne '{}'".format(exclude_category.replace("'", "''")) if exclude_category else None
         semantic_ranker = overrides.get("semanticRanker")
-        if semantic_ranker:
-            r = self.search_client.search(q, 
+
+        if has_vector:
+            query_vector = (openai.Embedding.create(engine=self.embedding_deployment, input=query_text))["data"][0]["embedding"]
+        else:
+            query_vector = None
+
+         # Only keep the text query if the retrieval mode uses text, otherwise drop it
+        if not has_text:
+            query_text = None
+
+        if semantic_ranker and has_text:
+            r = self.search_client.search(query_text,
                                           filter=filter,
                                           query_type=QueryType.SEMANTIC,
-                                          query_language="en-US", 
-                                          query_speller="lexicon", 
-                                          semantic_configuration_name="default", 
-                                          top=top, 
-                                          query_caption="extractive|highlight-false" if use_semantic_captions else None)
+                                          query_language="en-us",
+                                          query_speller="lexicon",
+                                          semantic_configuration_name="default",
+                                          top=top,
+                                          query_caption="extractive|highlight-false" if use_semantic_captions else None,
+                                          vector=query_vector,
+                                          top_k=50 if query_vector else None,
+                                          vector_fields="embedding" if query_vector else None)
         else:
-            r = self.search_client.search(q, filter=filter, top=top)
+            r = self.search_client.search(query_text,
+                                          filter=filter,
+                                          top=top,
+                                          vector=query_vector,
+                                          top_k=50 if query_vector else None,
+                                          vector_fields="embedding" if query_vector else None)
         if use_semantic_captions:
             results = [doc[self.sourcepage_field] + ": " + nonewlines(" . ".join([c.text for c in doc['@search.captions']])) for doc in r]
         else:
             results = [doc[self.sourcepage_field] + ": " + nonewlines(doc[self.content_field]) for doc in r]
         content = "\n".join(results)
 
-        print("-------------- results ------------------")
-        print(content)
-
         # STEP 3: Generate a contextual and content specific answer using the search results and chat history
-        completion_deployment = gpt_completion_model.get("deployment")
-        max_tokens = gpt_completion_model.get("max_tokens")
-        encoding = gpt_completion_model.get("encoding")
-        temaperature = float(overrides.get("temperature"))
+        # GPT-3.5 Turbo (4k/16k)
+        if "gpt-3.5-turbo" in chat_model:
+            completion_model = chat_model
+            #completion_model = "gpt-35-turbo-instruct" # for future use
+        # GPT-4 (8k/32k)
+        else:
+            completion_model = chat_model
 
-        if (selected_model_name == "text-davinci-003"):   # davinci
-            prompt = self.prompt_prefix_davinci.format(system_prompt=self.system_prompt, sources=content, chat_history=self.get_chat_history_as_text(history))
+        completion_gpt_model = get_gpt_model(completion_model)
+        completion_deployment = completion_gpt_model.get("deployment")
 
-            # input tokens + output tokens < max tokens of the model
-            token_length = len(encoding.encode(prompt))
-            if max_tokens > token_length + 1:
-                max_tokens = max_tokens - (token_length + 1)
-
-            messages = [
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": prompt}
-            ]
-            # completion = openai.Completion.create(
-            #     engine=completion_deployment, 
-            #     prompt=prompt, 
-            #     temperature=temaperature, 
-            #     max_tokens=max_tokens, 
-            #     n=1, 
-            #     stop=["<|im_end|>", "<|im_start|>"])
-
-            # response_text = completion.choices[0].text
-            
-            completion = openai.ChatCompletion.create(
-                engine=completion_deployment,
-                messages=messages,
-                temperature=temaperature,
-                max_tokens=max_tokens,
-                n=1,
-                stop=["<|im_end|>", "<|im_start|>"]
+        message_builder = MessageBuilder(self.system_message_chat_conversation)
+        messages = message_builder.get_messages_from_history(
+            history,
+            history[-1]["user"]+ "\n\nSources:\n" + content, # Model does not handle lengthy system messages well. Moving sources to latest user conversation to solve follow up questions prompt.
             )
-            
-            response_text = completion.choices[0].message.content
-            total_tokens += completion.usage.total_tokens
 
-            response = {"data_points": results, "answer": response_text, "thoughts": f"Searched for:<br>{q}<br><br>Prompt:<br>" + prompt.replace('\n', '<br>')}
-        else:   # gpt-4 / gpt-4-32k
-            messages = [{"role": k, "content": v} for i in history for k, v in i.items()]
-            prompt = self.prompt_prefix_gpt_4.format(system_prompt=self.system_prompt, sources=content)
-            messages.insert(0, {"role": "system", "content": prompt})
+        temaperature = float(overrides.get("temperature"))
+        max_tokens = get_max_token_from_messages(messages, completion_model)
 
-            token_length = len(json.dumps(messages, ensure_ascii=False))
-            if max_tokens > token_length + 1:
-                max_tokens = max_tokens - (token_length + 1)
+        # TODO: Change create type ChatCompletion.create → ChatCompletion.acreate when enabling asynchronous support.
+        response = openai.ChatCompletion.create(
+            engine=completion_deployment, 
+            messages=messages,
+            temperature=temaperature, 
+            max_tokens=max_tokens,
+            n=1)
 
-            print("-------------- max_tokens ------------------")
-            print(max_tokens)
-
-            response = openai.ChatCompletion.create(
-                engine=completion_deployment, 
-                messages=messages,
-                max_tokens=max_tokens,
-                temperature=temaperature, 
-                n=1)
-
-            response_text = response.choices[0]["message"]["content"]
-            total_tokens += response.usage.total_tokens
-
-            response = {"data_points": results, "answer": response_text, "thoughts": f"Searched for:<br>{q}<br><br>Prompt:<br>" + json.dumps(messages, ensure_ascii=False).replace('\n', '<br>')}
-
-        print("-------------- response ------------------")
-        print(response)
-
-        input_text = history[-1]["user"]
+        response_text = response.choices[0]["message"]["content"]
+        total_tokens += response.usage.total_tokens
 
         # logging
-        write_chatlog(ApproachType.DocSearch, user_name, total_tokens, input_text, response_text, q)
+        input_text = history[-1]["user"]
+        write_chatlog(ApproachType.DocSearch, user_name, total_tokens, input_text, response_text, query_text)
+        # await write_chatlog(self.container_log, ApproachType.DocSearch, user_name, total_tokens, input_text, response_text, query_text)
 
-        return response
+        msg_to_display = '\n\n'.join([str(message) for message in messages])
+
+        return {"data_points": results, "answer": response_text, "thoughts": f"Searched for:<br>{query_text}<br><br>Conversations:<br>" + msg_to_display.replace('\n', '<br>')}
     
-    def get_chat_history_as_text(self, history, include_last_turn=True, approx_max_tokens=1000) -> str:
-        history_text = ""
-        for h in reversed(history if include_last_turn else history[:-1]):
-            history_text = """<|im_start|>user""" +"\n" + h["user"] + "\n" + """<|im_end|>""" + "\n" + """<|im_start|>assistant""" + "\n" + (h.get("bot") + """<|im_end|>""" if h.get("bot") else "") + "\n" + history_text
-            if len(history_text) > approx_max_tokens*4:
-                break    
-        return history_text

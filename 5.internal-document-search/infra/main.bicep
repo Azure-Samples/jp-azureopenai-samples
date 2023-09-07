@@ -16,6 +16,8 @@ param appServicePlanName string = ''
 param backendServiceName string = ''
 param resourceGroupName string = ''
 
+param applicationInsightsName string = ''
+
 param searchServiceName string = ''
 param searchServiceResourceGroupName string = ''
 param searchServiceResourceGroupLocation string = location
@@ -34,11 +36,12 @@ param openAiResourceGroupLocation string = location
 
 param openAiSkuName string = 'S0'
 
-param openAiDavinciDeploymentName string = 'davinci'
-param openAiGpt35TurboDeploymentName string = 'chat'
+param openAiGpt35TurboDeploymentName string = 'gpt-35-turbo-deploy'
+param openAiGpt35Turbo16kDeploymentName string = 'gpt-35-turbo-16k-deploy'
 param openAiGpt4DeploymentName string = ''
 param openAiGpt432kDeploymentName string = ''
-param openAiApiVersion string = '2023-07-01-preview'
+param openAiEmbeddingDeploymentName string = 'text-embedding-ada-002-deploy'
+param openAiApiVersion string = '2023-05-15'
 
 
 param formRecognizerServiceName string = ''
@@ -46,11 +49,6 @@ param formRecognizerResourceGroupName string = ''
 param formRecognizerResourceGroupLocation string = location
 
 param formRecognizerSkuName string = 'S0'
-
-param gptDeploymentName string = 'davinci'
-param gptModelName string = 'gpt-35-turbo'
-param chatGptDeploymentName string = 'chat'
-param chatGptModelName string = 'gpt-35-turbo'
 
 param cosmosDbDatabaseName string = 'ChatHistory'
 param cosmosDbContainerName string = 'Prompts'
@@ -71,6 +69,9 @@ param vmLoginPassword string
 
 @description('Id of the user or app to assign application roles')
 param principalId string = ''
+
+@description('Use Application Insights for monitoring and performance tracing')
+param useApplicationInsights bool = false
 
 var abbrs = loadJsonContent('abbreviations.json')
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
@@ -112,6 +113,16 @@ module cosmosDb 'core/db/cosmosdb.bicep' = {
   }
 }
 
+// Monitor application with Azure Monitor
+module monitoring 'core/monitor/monitoring.bicep' = if (useApplicationInsights) {
+  name: 'monitoring'
+  scope: resourceGroup
+  params: {
+    location: location
+    tags: tags
+    applicationInsightsName: !empty(applicationInsightsName) ? applicationInsightsName : '${abbrs.insightsComponents}${resourceToken}'
+  }
+}
 
 // Create an App Service Plan to group applications under the same payment plan and SKU
 module appServicePlan 'core/host/appserviceplan.bicep' = {
@@ -150,17 +161,16 @@ module backend 'core/host/appservice.bicep' = {
       AZURE_OPENAI_SERVICE: openAi.outputs.name
       AZURE_SEARCH_INDEX: searchIndexName
       AZURE_SEARCH_SERVICE: searchService.outputs.name
-      AZURE_OPENAI_DAVINCI_DEPLOYMENT: gptDeploymentName
-      AZURE_OPENAI_GPT_35_TURBO_DEPLOYMENT: chatGptDeploymentName
-      AZURE_OPENAI_GPT_4_32K_DEPLOYMENT: ''
+      AZURE_OPENAI_GPT_35_TURBO_DEPLOYMENT: openAiGpt35TurboDeploymentName
+      AZURE_OPENAI_GPT_35_TURBO_16K_DEPLOYMENT: openAiGpt35Turbo16kDeploymentName
       AZURE_OPENAI_GPT_4_DEPLOYMENT: ''
-      AZURE_OPENAI_API_VERSION: '2023-07-01-preview'
+      AZURE_OPENAI_GPT_4_32K_DEPLOYMENT: ''
+      AZURE_OPENAI_EMB_DEPLOYMENT: openAiEmbeddingDeploymentName
+      AZURE_OPENAI_API_VERSION: '2023-05-15'
       AZURE_COSMOSDB_CONTAINER: cosmosDbContainerName
       AZURE_COSMOSDB_DATABASE: cosmosDbDatabaseName
       AZURE_COSMOSDB_ENDPOINT: cosmosDb.outputs.endpoint
-      WEBSITE_ENTRY_POINT: 'app.py'
-      WEBSITES_PORT: '5000'
-      PORT: '5000'
+      APPLICATIONINSIGHTS_CONNECTION_STRING: useApplicationInsights ? monitoring.outputs.applicationInsightsConnectionString : ''
     }
   }
 }
@@ -177,30 +187,40 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
     }
     deployments: [
       {
-        name: gptDeploymentName
+        name: openAiGpt35TurboDeploymentName
         model: {
           format: 'OpenAI'
-          name: gptModelName
+          name: 'gpt-35-turbo'
           version: '0613'
         }
         sku: {
           name: 'Standard'
-          capacity: 60
+          capacity: 120
         }
       }
       {
-        name: chatGptDeploymentName
+        name: openAiGpt35Turbo16kDeploymentName
         model: {
           format: 'OpenAI'
-          name: chatGptModelName
+          name: 'gpt-35-turbo-16k'
           version: '0613'
         }
         sku: {
           name: 'Standard'
-          capacity: 60
+          capacity: 120
         }
       }
+      {
+        name: openAiEmbeddingDeploymentName
+        model: {
+          format: 'OpenAI'
+          name: 'text-embedding-ada-002'
+          version: '2'
+        }
+        capacity: 120
+      }
     ]
+    publicNetworkAccess: isPrivateNetworkEnabled ? 'Disabled' : 'Enabled'
   }
 }
 
@@ -610,10 +630,11 @@ output AZURE_RESOURCE_GROUP string = resourceGroup.name
 
 output AZURE_OPENAI_SERVICE string = openAi.outputs.name
 output AZURE_OPENAI_RESOURCE_GROUP string = openAiResourceGroup.name
-output AZURE_OPENAI_DAVINCI_DEPLOYMENT string = openAiDavinciDeploymentName
 output AZURE_OPENAI_GPT_35_TURBO_DEPLOYMENT string = openAiGpt35TurboDeploymentName
+output AZURE_OPENAI_GPT_35_TURBO_16K_DEPLOYMENT string = openAiGpt35Turbo16kDeploymentName
 output AZURE_OPENAI_GPT_4_DEPLOYMENT string = openAiGpt4DeploymentName
 output AZURE_OPENAI_GPT_4_32K_DEPLOYMENT string = openAiGpt432kDeploymentName
+output AZURE_OPENAI_EMB_DEPLOYMENT string = openAiEmbeddingDeploymentName
 output AZURE_OPENAI_API_VERSION string = openAiApiVersion
 
 output AZURE_FORMRECOGNIZER_SERVICE string = formRecognizer.outputs.name
