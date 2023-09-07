@@ -17,7 +17,7 @@ import { ClearChatButton } from "../../components/ClearChatButton";
 const DocSearch = () => {
     const [isConfigPanelOpen, setIsConfigPanelOpen] = useState(false);
 
-    const [gptModel, setGptModel] = useState<string>("text-davinci-003");
+    const [gptModel, setGptModel] = useState<string>("gpt-3.5-turbo");
     const [temperature, setTemperature] = useState<string>("0.0");
 
     const [retrieveCount, setRetrieveCount] = useState<number>(5);
@@ -38,7 +38,8 @@ const DocSearch = () => {
     const [answers, setAnswers] = useState<[user: string, response: AskResponse][]>([]);
 
     const gpt_models: IDropdownOption[] = [
-        { key: "text-davinci-003", text: "text-davinci-003" },
+        { key: "gpt-3.5-turbo", text: "gpt-3.5-turbo" },
+        { key: "gpt-3.5-turbo-16k", text: "gpt-3.5-turbo-16k" },
         { key: "gpt-4", text: "gpt-4" },
         { key: "gpt-4-32k", text: "gpt-4-32k" }
     ];
