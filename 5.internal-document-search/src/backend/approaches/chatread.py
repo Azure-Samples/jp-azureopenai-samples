@@ -10,11 +10,7 @@ from core.modelhelper import get_gpt_model, get_max_token_from_messages
 
 # Simple read implementation, using the OpenAI APIs directly. It uses OpenAI to generate an completion 
 # (answer) with that prompt.
-# TODO: add container_log: ContainerProxy when quart is used
 class ChatReadApproach(Approach):
-    # TODO: To uncomment when enabling asynchronous support.
-    # def __init__(self):
-        # self.container_log = container_log
 
     def run(self, user_name: str, history: list[dict[str, str]], overrides: dict[str, Any]) -> Any:
         chat_model = overrides.get("gptModel")

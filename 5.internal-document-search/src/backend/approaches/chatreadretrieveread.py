@@ -6,8 +6,6 @@ from azure.search.documents import SearchClient
 from azure.search.documents.models import QueryType
 from approaches.approach import Approach
 from approaches.chatlogging import write_chatlog, ApproachType
-# TODO: To uncomment when enabling asynchronous support.
-# from azure.cosmos.aio import ContainerProxy
 from core.messagebuilder import MessageBuilder
 from core.modelhelper import get_gpt_model, get_max_token_from_messages
 
@@ -47,14 +45,10 @@ source quesion: {user_question}
         {'role' : ASSISTANT, 'content' : 'Health plan cardio coverage' }
     ]
 
-    # TODO: add container_log: ContainerProxy when quart is used
-    def __init__(self, search_client: SearchClient,  embedding_deployment: str, sourcepage_field: str, content_field: str):
+    def __init__(self, search_client: SearchClient, sourcepage_field: str, content_field: str):
         self.search_client = search_client
-        # TODO: To uncomment when enabling asynchronous support.
-        # self.container_log = container_log
         self.sourcepage_field = sourcepage_field
         self.content_field = content_field
-        self.embedding_deployment = embedding_deployment
     
     def run(self, user_name: str, history: list[dict], overrides: dict) -> any:
         # chat_model = overrides.get("gptModel")
@@ -90,19 +84,12 @@ source quesion: {user_question}
 
         # STEP 2: Retrieve relevant documents from the search index with the GPT optimized query
         has_text = overrides.get("retrievalMode") in ["text", "hybrid", None]
-        # has_vector = overrides.get("retrievalMode") in ["vectors", "hybrid", None]
-        has_vector = overrides.get("retrievalMode") in ["vectors", "hybrid"]
 
         use_semantic_captions = True if overrides.get("semanticCaptions") else False
         top = overrides.get("top")
         exclude_category = overrides.get("excludeCategory") or None
         filter = "category ne '{}'".format(exclude_category.replace("'", "''")) if exclude_category else None
         semantic_ranker = overrides.get("semanticRanker")
-
-        if has_vector:
-            query_vector = (openai.Embedding.create(engine=self.embedding_deployment, input=query_text))["data"][0]["embedding"]
-        else:
-            query_vector = None
 
          # Only keep the text query if the retrieval mode uses text, otherwise drop it
         if not has_text:
@@ -116,17 +103,13 @@ source quesion: {user_question}
                                           query_speller="lexicon",
                                           semantic_configuration_name="default",
                                           top=top,
-                                          query_caption="extractive|highlight-false" if use_semantic_captions else None,
-                                          vector=query_vector,
-                                          top_k=50 if query_vector else None,
-                                          vector_fields="embedding" if query_vector else None)
+                                          query_caption="extractive|highlight-false" if use_semantic_captions else None
+                                          )
         else:
             r = self.search_client.search(query_text,
                                           filter=filter,
-                                          top=top,
-                                          vector=query_vector,
-                                          top_k=50 if query_vector else None,
-                                          vector_fields="embedding" if query_vector else None)
+                                          top=top
+                                          )
         if use_semantic_captions:
             results = [doc[self.sourcepage_field] + ": " + nonewlines(" . ".join([c.text for c in doc['@search.captions']])) for doc in r]
         else:
@@ -168,7 +151,6 @@ source quesion: {user_question}
         # logging
         input_text = history[-1]["user"]
         write_chatlog(ApproachType.DocSearch, user_name, total_tokens, input_text, response_text, query_text)
-        # await write_chatlog(self.container_log, ApproachType.DocSearch, user_name, total_tokens, input_text, response_text, query_text)
 
         msg_to_display = '\n\n'.join([str(message) for message in messages])
 
