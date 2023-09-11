@@ -1,5 +1,9 @@
 # 閉域網におけるデプロイ
 
+#### アーキテクチャ
+
+![閉域網におけるアーキテクチャ](./assets/private_endpoint_arch.png)
+
 #### リソース追加・変更内容
 
 - Virtual Machine
