@@ -33,8 +33,6 @@ AZURE_OPENAI_GPT_35_TURBO_16K_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_35_T
 AZURE_OPENAI_GPT_4_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_4_DEPLOYMENT")
 AZURE_OPENAI_GPT_4_32K_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_4_32K_DEPLOYMENT")
 
-AZURE_OPENAI_EMB_DEPLOYMENT = os.getenv("AZURE_OPENAI_EMB_DEPLOYMENT")
-
 gpt_models = {
     "gpt-3.5-turbo": {
         "deployment": AZURE_OPENAI_GPT_35_TURBO_DEPLOYMENT,
@@ -88,7 +86,6 @@ blob_container = blob_client.get_container_client(AZURE_STORAGE_CONTAINER)
 chat_approaches = {
     "rrr": ChatReadRetrieveReadApproach(
         search_client, 
-        AZURE_OPENAI_EMB_DEPLOYMENT,
         KB_FIELDS_SOURCEPAGE, 
         KB_FIELDS_CONTENT
     ),

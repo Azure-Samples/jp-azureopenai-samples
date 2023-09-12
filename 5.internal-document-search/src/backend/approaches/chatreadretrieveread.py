@@ -51,8 +51,7 @@ source quesion: {user_question}
         self.content_field = content_field
     
     def run(self, user_name: str, history: list[dict], overrides: dict) -> any:
-        # chat_model = overrides.get("gptModel")
-        chat_model = "gpt-3.5-turbo"
+        chat_model = overrides.get("gptModel")
         chat_gpt_model = get_gpt_model(chat_model)
         chat_deployment = chat_gpt_model.get("deployment")
 
