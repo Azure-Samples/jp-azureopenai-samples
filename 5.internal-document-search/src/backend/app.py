@@ -143,9 +143,6 @@ def chat():
     user_name = get_user_name(request)
     overrides = request.json.get("overrides")
 
-    selected_model_name = overrides.get("gptModel")
-    gpt_model = gpt_models.get(selected_model_name)
-
     try:
         impl = chat_approaches.get(approach)
         if not impl:
@@ -163,11 +160,6 @@ def docsearch():
     approach = request.json["approach"]
     user_name = get_user_name(request)
     overrides = request.json.get("overrides")
-
-    selected_model_name = overrides.get("gptModel")
-
-    gpt_chat_model = gpt_models.get("gpt-3.5-turbo")
-    gpt_completion_model = gpt_models.get(selected_model_name)
 
     try:
         impl = chat_approaches.get(approach)

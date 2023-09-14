@@ -1,4 +1,3 @@
-import json
 from text import nonewlines
 
 import openai
