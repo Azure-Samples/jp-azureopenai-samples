@@ -81,8 +81,6 @@ source quesion: {user_question}
         total_tokens = chat_completion.usage.total_tokens
 
         # STEP 2: Retrieve relevant documents from the search index with the GPT optimized query
-        has_text = overrides.get("retrievalMode") in ["text", "hybrid", None]
-
         use_semantic_captions = True if overrides.get("semanticCaptions") else False
         top = overrides.get("top")
         exclude_category = overrides.get("excludeCategory") or None
@@ -90,10 +88,7 @@ source quesion: {user_question}
         semantic_ranker = overrides.get("semanticRanker")
 
          # Only keep the text query if the retrieval mode uses text, otherwise drop it
-        if not has_text:
-            query_text = None
-
-        if semantic_ranker and has_text:
+        if semantic_ranker:
             r = self.search_client.search(query_text,
                                           filter=filter,
                                           query_type=QueryType.SEMANTIC,
