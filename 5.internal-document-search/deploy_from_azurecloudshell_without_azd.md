@@ -25,7 +25,7 @@ $ENV:SUB = "your-subscription-id"
 $ENV:USER_ID = "your-id" # 作業者のユーザープリンシパル名
 $Env:AZURE_PRINCIPAL_ID = az ad user show --id $ENV:USER_ID -o tsv --query id # 作業者のObjectId
 
-$ENV:LOC = "francecentral" # The location to store the deployment metadata and to deploy resources
+$ENV:LOC = "japaneast" # The location to store the deployment metadata and to deploy resources
 $ENV:DEP_NAME = "deployment-name" # The deployment name 
 $ENV:AZURE_ENV_NAME = "azureenvnametemp" # リソースグループ名のSuffix (rg-$ENV:AZURE_ENV_NAMEになる)
 ```
