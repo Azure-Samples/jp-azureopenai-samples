@@ -124,7 +124,7 @@ source quesion: {user_question}
         message_builder = MessageBuilder(self.system_message_chat_conversation)
         messages = message_builder.get_messages_from_history(
             history,
-            history[-1]["user"]+ "\n\nSources:\n" + content, # Model does not handle lengthy system messages well. Moving sources to latest user conversation to solve follow up questions prompt.
+            history[-1]["user"]+ "\n\nSources:\n" + content[:1024], # Model does not handle lengthy system messages well. Moving sources to latest user conversation to solve follow up questions prompt.
             )
 
         temaperature = float(overrides.get("temperature"))
@@ -135,7 +135,7 @@ source quesion: {user_question}
             engine=completion_deployment, 
             messages=messages,
             temperature=temaperature, 
-            max_tokens=max_tokens,
+            max_tokens=1024,
             n=1)
 
         response_text = response.choices[0]["message"]["content"]
@@ -148,4 +148,3 @@ source quesion: {user_question}
         msg_to_display = '\n\n'.join([str(message) for message in messages])
 
         return {"data_points": results, "answer": response_text, "thoughts": f"Searched for:<br>{query_text}<br><br>Conversations:<br>" + msg_to_display.replace('\n', '<br>')}
-    
