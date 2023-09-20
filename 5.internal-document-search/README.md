@@ -53,7 +53,7 @@
 1. このリポジトリをクローンし、フォルダをターミナルで開きます。(Windows の場合は pwsh ターミナルで実行する例です)
 1. `azd auth login` を実行します。
 1. `azd init` を実行します。
-    * 現在、このサンプルは必要な Azure Open AI のモデルは該当モデルをサポートしている**米国東部**もしくは**米国中南部**リージョンにデプロイすることが可能です。最新の情報は[こちら](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/concepts/models)を参考にしてください。
+    * 現在、このサンプルに必要な Azure Open AI のモデルは該当モデルをサポートしている**東日本**リージョンにデプロイすることが可能です。最新の情報は[こちら](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/concepts/models)を参考にしてください。
 
 #### スクラッチでの開始
 
