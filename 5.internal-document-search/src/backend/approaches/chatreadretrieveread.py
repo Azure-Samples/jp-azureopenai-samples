@@ -87,7 +87,6 @@ source quesion: {user_question}
         filter = "category ne '{}'".format(exclude_category.replace("'", "''")) if exclude_category else None
         semantic_ranker = overrides.get("semanticRanker")
 
-         # Only keep the text query if the retrieval mode uses text, otherwise drop it
         if semantic_ranker:
             r = self.search_client.search(query_text,
                                           filter=filter,

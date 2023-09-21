@@ -16,8 +16,6 @@ param appServicePlanName string = ''
 param backendServiceName string = ''
 param resourceGroupName string = ''
 
-param applicationInsightsName string = ''
-
 param searchServiceName string = ''
 param searchServiceResourceGroupName string = ''
 param searchServiceResourceGroupLocation string = location
@@ -69,9 +67,6 @@ param vmLoginPassword string
 @description('Id of the user or app to assign application roles')
 param principalId string = ''
 
-@description('Use Application Insights for monitoring and performance tracing')
-param useApplicationInsights bool = false
-
 var abbrs = loadJsonContent('abbreviations.json')
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
 var tags = { 'azd-env-name': environmentName }
@@ -109,17 +104,6 @@ module cosmosDb 'core/db/cosmosdb.bicep' = {
     cosmosDbDatabaseName: cosmosDbDatabaseName
     cosmosDbContainerName: cosmosDbContainerName
     publicNetworkAccess: isPrivateNetworkEnabled ? 'Disabled' : 'Enabled'
-  }
-}
-
-// Monitor application with Azure Monitor
-module monitoring 'core/monitor/monitoring.bicep' = if (useApplicationInsights) {
-  name: 'monitoring'
-  scope: resourceGroup
-  params: {
-    location: location
-    tags: tags
-    applicationInsightsName: !empty(applicationInsightsName) ? applicationInsightsName : '${abbrs.insightsComponents}${resourceToken}'
   }
 }
 
@@ -168,7 +152,6 @@ module backend 'core/host/appservice.bicep' = {
       AZURE_COSMOSDB_CONTAINER: cosmosDbContainerName
       AZURE_COSMOSDB_DATABASE: cosmosDbDatabaseName
       AZURE_COSMOSDB_ENDPOINT: cosmosDb.outputs.endpoint
-      APPLICATIONINSIGHTS_CONNECTION_STRING: useApplicationInsights ? monitoring.outputs.applicationInsightsConnectionString : ''
     }
   }
 }
