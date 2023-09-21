@@ -1,7 +1,7 @@
 from typing import Any
 
 import openai
-# TODO: To uncomment when enabling asynchronous support.
+# To uncomment when enabling asynchronous support.
 # from azure.cosmos.aio import ContainerProxy
 from approaches.approach import Approach
 from approaches.chatlogging import write_chatlog, ApproachType
@@ -30,7 +30,7 @@ class ChatReadApproach(Approach):
         max_tokens = get_max_token_from_messages(messages, chat_model)
 
         # Generate a contextual and content specific answer using chat history
-        # TODO: Change create type ChatCompletion.create → ChatCompletion.acreate when enabling asynchronous support.
+        # Change create type ChatCompletion.create → ChatCompletion.acreate when enabling asynchronous support.
         chat_completion = openai.ChatCompletion.create(
             engine=chat_deployment, 
             messages=messages,

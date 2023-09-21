@@ -66,7 +66,7 @@ source quesion: {user_question}
 
         max_tokens =  get_max_token_from_messages(messages, chat_model)
 
-        # TODO: Change create type ChatCompletion.create → ChatCompletion.acreate when enabling asynchronous support.
+        # Change create type ChatCompletion.create → ChatCompletion.acreate when enabling asynchronous support.
         chat_completion = openai.ChatCompletion.create(
             engine=chat_deployment, 
             messages=messages,
@@ -113,7 +113,7 @@ source quesion: {user_question}
         # GPT-3.5 Turbo (4k/16k)
         if "gpt-3.5-turbo" in chat_model:
             completion_model = chat_model
-            #completion_model = "gpt-35-turbo-instruct" # for future use
+            # completion_model = "gpt-35-turbo-instruct" # for future use
         # GPT-4 (8k/32k)
         else:
             completion_model = chat_model
@@ -130,7 +130,7 @@ source quesion: {user_question}
         temaperature = float(overrides.get("temperature"))
         max_tokens = get_max_token_from_messages(messages, completion_model)
 
-        # TODO: Change create type ChatCompletion.create → ChatCompletion.acreate when enabling asynchronous support.
+        # Change create type ChatCompletion.create → ChatCompletion.acreate when enabling asynchronous support.
         response = openai.ChatCompletion.create(
             engine=completion_deployment, 
             messages=messages,
