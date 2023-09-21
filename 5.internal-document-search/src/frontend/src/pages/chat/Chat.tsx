@@ -29,6 +29,7 @@ const Chat = () => {
 
     const gpt_models: IDropdownOption[] = [
         { key: "gpt-3.5-turbo", text: "gpt-3.5-turbo" },
+        { key: "gpt-3.5-turbo-16k", text: "gpt-3.5-turbo-16k" },
         { key: "gpt-4", text: "gpt-4" },
         { key: "gpt-4-32k", text: "gpt-4-32k" }
     ];
