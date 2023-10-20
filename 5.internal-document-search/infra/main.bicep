@@ -16,6 +16,9 @@ param appServicePlanName string = ''
 param backendServiceName string = ''
 param resourceGroupName string = ''
 
+param applicationInsightsName string = ''
+param workspaceName string = ''
+
 param searchServiceName string = ''
 param searchServiceResourceGroupName string = ''
 param searchServiceResourceGroupLocation string = location
@@ -66,6 +69,9 @@ param vmLoginPassword string
 
 @description('Id of the user or app to assign application roles')
 param principalId string = ''
+
+@description('Use Application Insights for monitoring and performance tracing')
+param useApplicationInsights bool = true
 
 var abbrs = loadJsonContent('abbreviations.json')
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
@@ -123,6 +129,18 @@ module appServicePlan 'core/host/appserviceplan.bicep' = {
   }
 }
 
+// Monitor application with Azure Monitor
+module monitoring './core/monitor/monitoring.bicep' = if (useApplicationInsights) {
+  name: 'monitoring'
+  scope: resourceGroup
+  params: {
+    workspaceName: !empty(workspaceName) ? workspaceName : '${abbrs.insightsComponents}${resourceToken}-workspace'
+    location: location
+    tags: tags
+    applicationInsightsName: !empty(applicationInsightsName) ? applicationInsightsName : '${abbrs.insightsComponents}${resourceToken}'
+  }
+}
+
 // The application frontend
 module backend 'core/host/appservice.bicep' = {
   name: 'web'
@@ -136,9 +154,10 @@ module backend 'core/host/appservice.bicep' = {
     runtimeVersion: '3.10'
     scmDoBuildDuringDeployment: true
     managedIdentity: true
-    applicationInsightsName: !empty(backendServiceName) ? backendServiceName : '${abbrs.webSitesAppService}backend-${resourceToken}'
+    applicationInsightsName: useApplicationInsights ? monitoring.outputs.applicationInsightsName : ''
     virtualNetworkSubnetId: isPrivateNetworkEnabled ? appServiceSubnet.outputs.id : ''
     appSettings: {
+      APPLICATIONINSIGHTS_CONNECTION_STRING: useApplicationInsights ? monitoring.outputs.applicationInsightsConnectionString : ''
       AZURE_STORAGE_ACCOUNT: storage.outputs.name
       AZURE_STORAGE_CONTAINER: storageContainerName
       AZURE_OPENAI_SERVICE: openAi.outputs.name
@@ -628,4 +647,3 @@ output AZURE_COSMOSDB_RESOURCE_GROUP string = resourceGroup.name
 
 output BACKEND_IDENTITY_PRINCIPAL_ID string = backend.outputs.identityPrincipalId
 output BACKEND_URI string = backend.outputs.uri
-output APPLICATIONINSIGHTS_CONNECTION_STRING string = backend.outputs.applicationInsightsConnectionString
