@@ -56,7 +56,7 @@ Azure OpenAIの利用申請を行い、Azure OpenAIがサブスクリプショ�
 | パラメータ名 | 投入する値 | 値の例 |
 |--|--|--|
 |environmentName|デプロイ時に指定するため編集不要です|-|
-|location|デプロイ時に指定するため編集不要です|-|
+|location|デプロイ時に指定するため編集不要です|japaneast|
 |corsOriginUrl|認証を行うシングルページアプリ（SPA）のドメインを指定します。シングルページアプリケーションのドメインが確定していない場合、デフォルトの"*"を指定することも可能ですが、確定次第具体的なドメインを指定することをおすすめします |*, example.com, yourapp.azurewebsites.net など|
 |audienceAppId|JWTを取得する対象となる登録アプリの登録アプリID|登録アプリID(UUID)|
 |scopeName|スコープ名|chat|
