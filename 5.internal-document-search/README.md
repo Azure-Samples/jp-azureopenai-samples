@@ -29,6 +29,8 @@
 |Azure Cosmos DB|プロビジョニング済みスループット||
 |Azure Form Recgonizer|S0||
 |Azure Blob Storage|汎用v2|ZRS|
+|Azure Application Insights||ワークスペース　ベース|
+|Azure Log Analytics|||
 
 #### ローカル開発環境
 このデモをデプロイするためには、ローカルに以下の開発環境が必要です。

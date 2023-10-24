@@ -46,6 +46,8 @@ IaCとして追加・更新したファイルは以下の通りです。
 |Azure Cosmos DB|プロビジョニング済みスループット||
 |Azure Form Recgonizer|S0||
 |Azure Blob Storage|汎用v2|ZRS|
+|Azure Application Insights||ワークスペース　ベース|
+|Azure Log Analytics|||
 
 ## デプロイ手順
 閉域網でのデプロイを実行するには、以下の手順でデプロイします。
