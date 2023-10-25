@@ -96,9 +96,10 @@ chat_approaches = {
     "r": ChatReadApproach()
 }
 
+configure_azure_monitor()
+
 app = Flask(__name__)
 FlaskInstrumentor().instrument_app(app)
-
 
 @app.route("/", defaults={"path": "index.html"})
 @app.route("/<path:path>")
@@ -185,6 +186,4 @@ def ensure_openai_token():
     # openai.api_key = os.environ.get("AZURE_OPENAI_KEY")
    
 if __name__ == "__main__":
-    if os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING"):
-        configure_azure_monitor()
     app.run(port=5000, host='0.0.0.0')
