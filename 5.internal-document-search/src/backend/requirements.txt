@@ -6,5 +6,5 @@ azure-storage-blob==12.14.1
 azure-cosmos==4.5.0
 opencensus-ext-azure==1.1.9
 tiktoken==0.4.0
-azure-monitor-opentelemetry
-opentelemetry-instrumentation-flask
+azure-monitor-opentelemetry==1.0.0b15
+opentelemetry-instrumentation-flask==0.40b0
