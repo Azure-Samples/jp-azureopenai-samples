@@ -14,6 +14,10 @@ from approaches.chatlogging import get_user_name, write_error
 from approaches.chatreadretrieveread import ChatReadRetrieveReadApproach
 from approaches.chatread import ChatReadApproach
 
+from azure.monitor.opentelemetry import configure_azure_monitor
+from opentelemetry.instrumentation.flask import FlaskInstrumentor
+
+
 # Replace these with your own values, either in environment variables or directly here
 AZURE_STORAGE_ACCOUNT = os.environ.get("AZURE_STORAGE_ACCOUNT")
 AZURE_STORAGE_CONTAINER = os.environ.get("AZURE_STORAGE_CONTAINER")
@@ -92,7 +96,10 @@ chat_approaches = {
     "r": ChatReadApproach()
 }
 
+configure_azure_monitor()
+
 app = Flask(__name__)
+FlaskInstrumentor().instrument_app(app)
 
 @app.route("/", defaults={"path": "index.html"})
 @app.route("/<path:path>")

@@ -39,15 +39,6 @@ param ftpsState string = 'FtpsOnly'
 param healthCheckPath string = ''
 param virtualNetworkSubnetId string
 
-resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
-  name: applicationInsightsName
-  location: location
-  kind: 'web'
-  properties: {
-    Application_Type: 'web'
-  }
-}
-
 resource appService 'Microsoft.Web/sites@2022-03-01' = {
   name: name
   location: location
@@ -87,9 +78,6 @@ resource appService 'Microsoft.Web/sites@2022-03-01' = {
       !empty(applicationInsightsName) ? { APPLICATIONINSIGHTS_CONNECTION_STRING: applicationInsights.properties.ConnectionString } : {},
       !empty(keyVaultName) ? { AZURE_KEY_VAULT_ENDPOINT: keyVault.properties.vaultUri } : {}
       )
-      dependsOn: [
-        applicationInsights
-      ]
   }
 
   resource configLogs 'config' = {
@@ -110,8 +98,12 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!(empty(
   name: keyVaultName
 }
 
+resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing = if (!empty(applicationInsightsName)) {
+  name: applicationInsightsName
+}
+
+
 output identityPrincipalId string = managedIdentity ? appService.identity.principalId : ''
 output name string = appService.name
 output id string = appService.id
 output uri string = 'https://${appService.properties.defaultHostName}'
-output applicationInsightsConnectionString string = applicationInsights.properties.ConnectionString
