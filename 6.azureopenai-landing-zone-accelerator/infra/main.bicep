@@ -32,10 +32,8 @@ param aoaiCapacity int = 10
 
 // Please provide these parameters if you need to create a new Azure OpenAI resource
 param openAiSkuName string = 'S0'
-param gptDeploymentName string = 'davinci'
-param gptModelName string = 'text-davinci-003'
-param chatGptDeploymentName string = 'chatgpt'
-param chatGptModelName string = 'gpt-35-turbo'
+param openAiGpt35TurboDeploymentName string = 'gpt-35-turbo-deploy'
+param openAiGpt35Turbo16kDeploymentName string = 'gpt-35-turbo-16k-deploy'
 
 // params for api policy settings
 @description('CORSオリジンとして許可するドメインを指定してください(*でも可)')
@@ -76,28 +74,27 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
     }
     deployments: [
       {
-        name: gptDeploymentName
+        name: openAiGpt35TurboDeploymentName
         model: {
           format: 'OpenAI'
-          name: gptModelName
-          version: '1'
+          name: 'gpt-35-turbo'
+          version: '0613'
         }
         sku: {
           name: 'Standard'
-          capacity: aoaiCapacity
+          capacity: 120
         }
       }
-
       {
-        name: chatGptDeploymentName
+        name: openAiGpt35Turbo16kDeploymentName
         model: {
           format: 'OpenAI'
-          name: chatGptModelName
-          version: '0301'
+          name: 'gpt-35-turbo-16k'
+          version: '0613'
         }
         sku: {
           name: 'Standard'
-          capacity: aoaiCapacity
+          capacity: 120
         }
       }
     ]
