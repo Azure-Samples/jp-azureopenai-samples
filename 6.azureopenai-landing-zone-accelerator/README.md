@@ -119,6 +119,8 @@ https://learn.microsoft.com/ja-jp/azure/app-service/configure-authentication-oau
 
 * また、既定ではAPI Managementのサブスクリプションキーの検証も有効になっているため、API Managment の「サブスクリプション」メニューで確認できるサブスクリプションキーを'Ocp-Apim-Subscription-Key' ヘッダに指定してください。
 
+![subscription](./assets/subscription.png)
+
 ## ログ出力の確認
 
 リクエストしたログはLog Analytics Workspace / Storage Accountの両方に保存されています
