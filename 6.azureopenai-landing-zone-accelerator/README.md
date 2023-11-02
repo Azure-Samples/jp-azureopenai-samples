@@ -188,3 +188,7 @@ Azure OpenAIでは各モデルごとにリクエスト回数の上限設定が�
 ```
  * backend-url-1, backend-url-2にそれぞれAzure OpenAIのエンドポイントを設定してください
  * 両方のAzure OpenAIに対してAPI ManagementのManaged Idが ``Cognitive Services OpenAI User`` 以上のロールを持っていることをご確認ください
+
+## Azure OpenAIのStreamモードとの併用について
+* API Management において Azure OpenAI のStreamモードでレスポンスを返す場合は、診断ログの設定など応答をバッファリングするポリシーの適用を避けてください。詳細は以下のリンクを参照してください。
+  * https://learn.microsoft.com/ja-jp/azure/api-management/how-to-server-sent-events
