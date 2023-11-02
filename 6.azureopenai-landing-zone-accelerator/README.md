@@ -113,9 +113,13 @@ https://YOURAPIMDOMAIN.azure-api.net/api/deployments/OPEN_AI_MODEL_NAME/chat/com
 
 * ご利用されるアプリで登録したスコープ(上記例では ``api://アプリID/chat`` )を対象としてOAuth2(OIDC)認証認可を行いJWTを取得し、``Authorization: Bearer (JWT)``という
 という形式でヘッダに付与し、APIリクエストを行ってください。
-  * App ServiceのEasy Authを使って認証を行う場合にはフロントエンドで  ``.auth/me`` にアクセスして取得できる ``X-MS-TOKEN-AAD-ACCESS-TOKEN`` がこのJWTに相当します）詳細は以下のリンクを参照してください。
+* App ServiceのEasy Authを使って認証を行う場合にはフロントエンドで  ``.auth/me`` にアクセスして取得できる ``X-MS-TOKEN-AAD-ACCESS-TOKEN`` がこのJWTに相当します）詳細は以下のリンクを参照してください。
 https://learn.microsoft.com/ja-jp/azure/app-service/configure-authentication-oauth-tokens
-
+* Micrsoft Authentication Library (MSAL) を使って認証を行い、JWTを取得することができます。詳細は以下のリンクを参照してください。
+  * ドキュメント
+    * https://learn.microsoft.com/ja-jp/entra/msal/python
+  * 実装例
+    * https://github.com/kazuki-komori/azure-entra-jwt-script
 
 * また、既定ではAPI Managementのサブスクリプションキーの検証も有効になっているため、API Managment の「サブスクリプション」メニューで確認できるサブスクリプションキーを'Ocp-Apim-Subscription-Key' ヘッダに指定してください。
 
