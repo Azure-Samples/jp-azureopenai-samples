@@ -115,7 +115,7 @@ https://YOURAPIMDOMAIN.azure-api.net/api/deployments/OPEN_AI_MODEL_NAME/chat/com
 という形式でヘッダに付与し、APIリクエストを行ってください。
 * App ServiceのEasy Authを使って認証を行う場合にはフロントエンドで  ``.auth/me`` にアクセスして取得できる ``X-MS-TOKEN-AAD-ACCESS-TOKEN`` がこのJWTに相当します）詳細は以下のリンクを参照してください。
 https://learn.microsoft.com/ja-jp/azure/app-service/configure-authentication-oauth-tokens
-* Micrsoft Authentication Library (MSAL) を使って認証を行い、JWTを取得することができます。詳細は以下のリンクを参照してください。
+* また別の方法としてMicrsoft Authentication Library (MSAL) を使って認証を行い、JWTを取得することもできます。詳細は以下のリンクを参照してください。
   * ドキュメント
     * https://learn.microsoft.com/ja-jp/entra/msal/python
   * 実装例
