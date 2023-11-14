@@ -105,7 +105,7 @@
 1. Debug Configuration で `Python file` を選択
 1. `.vscode` ディレクトリに追加された `launch.json` を開いて下記のように修正する
     - `"program": "${workspaceFolder}/src/backend/app.py"` に変更
-    - `"envFile": "${workspaceFolder}/.azure/aoai-sample/.env"` を追加
+    - `"envFile": "${workspaceFolder}/.azure/YOUR_ENVIRONMENT_NAME/.env"` を追加
 1. ターミナルで `src/backend` ディレクトリに移動し、`pip install -r requirements.txt` を実行
 1. ソースコードの適当な場所にブレークポイントを設置
 1. メニューから Run > Start Debugging を選択、または F5 キーを押下
