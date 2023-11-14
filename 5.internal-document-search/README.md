@@ -50,23 +50,37 @@
 
 ### インストール
 
+このリポジトリをクローンし、フォルダをターミナルで開きます。
+- Windows の場合は pwsh ターミナルで実行します。
+- Linux や Dev Container の場合は bash ターミナルで実行します
+
+#### ユーザーやサブスクリプションの確認
+
+1. `az login` を実行して Azure にログインします。
+1. `az account list -o table` を実行してデプロイに使用する サブスクリプション ID を控えておきます。
+1. `az account set -s YOUR_SUBSCRIPTION_ID` を実行して控えておいたサブスクリプション ID を既定値に設定します。
+1. `az ad signed-in-user show -o tsv --query id` を実行して、ログイン中のユーザの AAD アカウントのオブジェクトID を取得します。
+1. 取得したオブジェクトID を環境変数 `AZURE_PRINCIPAL_ID` にセットします。
+    - Windows 環境で実行している場合は、`$Env:AZURE_PRINCIPAL_ID="Your Object ID"`を実行します。
+    - Linux 環境で実行している場合は、`export AZURE_PRINCIPAL_ID="Your Object ID"`を実行します。
+
 #### プロジェクトの初期化
-
-1. このリポジトリをクローンし、フォルダをターミナルで開きます。(Windows の場合は pwsh ターミナルで実行する例です)
-1. `azd auth login` を実行します。
-1. `azd init` を実行します。
-    * 現在、このサンプルに必要な Azure Open AI のモデルは該当モデルをサポートしている**東日本**リージョンにデプロイすることが可能です。最新の情報は[こちら](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/concepts/models)を参考にしてください。
-
-#### スクラッチでの開始
 
 新規に環境をデプロイする場合は、以下のコマンドを実行してください。
 
-1. `az login`と`az account set -s YOUR_SUBSCRIPTION_ID`後に、`az ad user show --id your_account@your_tenant -o tsv --query id` を実行して、操作をするユーザの AAD アカウントのオブジェクトID を取得します。
-1. 取得したオブジェクトID を環境変数`AZURE_PRINCIPAL_ID`にセットします。
-    - Windows 環境で実行している場合は、`$Env:AZURE_PRINCIPAL_ID="Your Object ID"`を実行します。
-    - Linux 環境で実行している場合は、`export AZURE_PRINCIPAL_ID="Your Object ID"`を実行します。
-1. `azd up` を実行します。- このコマンドを実行すると、Azure上に必要なリソースをデプロイし、アプリケーションのビルドとデプロイが実行されます。また、`./data`配下の PDF を利用して Search Index を作成します。
+1. `azd auth login` を実行します。
+1. `azd init` を実行します。
+    - `? Enter a new environment name: ` というメッセージとともに、環境名を入力するように求められます。この環境名は、Azure 上にデプロイするリソースやリソースグループの名前の一部になります。１つの Azure サブスクリプションに複数の環境を構築する場合は名前が衝突しないように異なる名前を付けてください。
+    - 例） aoai-sample
+    - `.azure` ディレクトリおよび環境名のディレクトリとともに、各種の構成情報を格納するファイルが作成されます。
+1. `azd up` を実行します。
+    - `? Select an Azure Subscription to use:` というメッセージが表示されたら、上記で設定したサブスクリプションを選択してください。
+    - `? Select an Azure location to use:` というメッセージが表示されたら、デプロイしたい Azure リージョンを選択してください。
+        - 現在、このサンプルに必要な Azure Open AI のモデルは該当モデルをサポートしている**東日本**リージョンにデプロイすることが可能です。最新の情報は[こちら](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/concepts/models)を参考にしてください。
+    - その後 Azure 上に必要なリソースをデプロイし、アプリケーションのビルドとデプロイが実行されます。また、`./data`配下の PDF を利用して Search Index を作成します。
     - Linux 環境で実行している場合は、`chmod +x scripts/prepdocs.sh`
+    - しばらくすると `Enter a value for the 'vmLoginPassword' infrastructure parameter:` というメッセージが表示され仮想マシンのパスワードを求められますが、この手順では仮想マシンを利用しないためパスワードは入力せずに Enter を押してください。
+    - その後 `Save the value in the environment for future use (y/N) ` というメッセージが表示されますが、この手順では仮想マシンを利用しないため `N` を入力してください。
 1. コマンドの実行が終了すると、アプリケーションにアクセスする為の URL が表示されます。この URL をブラウザで開き、サンプルアプリケーションの利用を開始してください。  
 
 コマンド実行結果の例：
@@ -76,20 +90,46 @@
 > 注意: アプリケーションのデプロイ完了には数分かかることがあります。"Python Developer" のウェルカムスクリーンが表示される場合は、数分待ってアクセスし直してください。
 
 #### アプリケーションのローカル実行 {#run_app_locally}
+
 アプリケーションをローカルで実行する場合には、以下のコマンドを実行してください。`azd up`で既に Azure 上にリソースがデプロイされていることを前提にしています。
 
 1. `azd login` を実行する。
 2. `src` フォルダに移動する。
 3. `./start.ps1` もしくは `./start.sh` を実行します。
 
-##### VS Codeでのデバッグ実行
+#### VS Codeでのデバッグ実行
+
 1. `src\backend`フォルダに異動する
 2. `code .`でVS Codeを開く
-3. Run>Start Debugging または F5
+3. [Python Extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python) をインストール
+4. メニューから Run > Start Debugging または F5
 
 #### FrontendのJavaScriptのデバッグ
 1. src/frontend/vite.config.tsのbuildに`minify: false`を追加
 2. ブラウザのDeveloper tools > Sourceでブレイクポイントを設定して実行
+
+#### 修正したコードのデプロイ
+
+既に Azure リソースがデプロイ済みのため `azd deploy` コマンドを実行します。
+
+#### デプロイしたリソースの削除
+
+1. `azd down` コマンドを実行します。
+1. 削除処理の確認メッセージ `? Total resources to delete:N, are you sure you want to continue? (y/N)` が表示されたら、`y` を入力してください。
+1. 物理削除の確認メッセージ `? Would you like to permanently delete these resources instead allowing theiir names to be reused?` が表示されたら、`y` を入力してください。
+    - Azure OpenAI Service や Form Recognizer は論理削除状態のため、物理削除（Purge）して良いか確認されます。
+
+
+#### 複数の環境を構築したい場合
+
+2 つ目以降の環境を追加したい場合は以下のコマンドを実行します。
+
+```bash
+# 環境の追加（.azure ディレクトリ配下に新しい環境名のディレクトリとファイルが作成されます）
+azd env new AnotherEnvName
+# デプロイの実行
+azd up --environment AnotherEnvName
+```
 
 ### GPT-4モデルの利用
 2023年6月現在、GPT-4 モデルは申請することで利用可能な状態です。このサンプルは GPT-4 モデルのデプロイに対応していますが、GPT-4 モデルを利用する場合には、[こちら](https://learn.microsoft.com/ja-jp/azure/cognitive-services/openai/how-to/create-resource?pivots=web-portal#deploy-a-model)を参考に、GPT-4 モデルをデプロイしてください。また、GPT-4 モデルの利用申請は[こちらのフォーム](https://aka.ms/oai/get-gpt4)から可能です。
@@ -98,9 +138,10 @@ GPT-4 モデルのデプロイ後、以下の操作を実行してください�
 
 1. このサンプルをデプロイした際に、プロジェクトのディレクトリに `./${環境名}/.env` ファイルが作成されています。このファイルを任意のエディタで開きます。
 1. 以下の行を探して、デプロイした GPT-4 モデルのデプロイ名を指定してください。
-> AZURE_OPENAI_GPT_4_DEPLOYMENT="" # GPT-4モデルのデプロイ名
+```
+AZURE_OPENAI_GPT_4_DEPLOYMENT="" # GPT-4モデルのデプロイ名
 AZURE_OPENAI_GPT_4_32K_DEPLOYMENT="" # GPT-4-32Kモデルのデプロイ名
-
+```
 1. `azd up` を実行します。
 
 GPT-4 モデルは、チャット機能、文書検索機能のオプションで利用することができます。
