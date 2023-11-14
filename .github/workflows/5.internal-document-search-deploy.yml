@@ -1,6 +1,6 @@
 name: '5.internal-document-search-deployment'
 
-on: []
+on: [workflow_dispatch]
 
 jobs:
   deploy:
