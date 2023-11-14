@@ -99,10 +99,17 @@
 
 #### VS Codeでのデバッグ実行
 
-1. `src\backend`フォルダに異動する
-2. `code .`でVS Codeを開く
-3. [Python Extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python) をインストール
-4. メニューから Run > Start Debugging または F5
+1. [Python Extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python) をインストール
+1. メニューから `Run > Add Configuration...` を選択
+1. Select Debugger で `Python` を選択
+1. Debug Configuration で `Python file` を選択
+1. `.vscode` ディレクトリに追加された `launch.json` を開いて下記のように修正する
+    - `"program": "${workspaceFolder}/src/backend/app.py"` に変更
+    - `"envFile": "${workspaceFolder}/.azure/aoai-sample/.env"` を追加
+1. ターミナルで `src/backend` ディレクトリに移動し、`pip install -r requirements.txt` を実行
+1. ソースコードの適当な場所にブレークポイントを設置
+1. メニューから Run > Start Debugging を選択、または F5 キーを押下
+1. Web ブラウザで `http://localhost:5000` にアクセス
 
 #### FrontendのJavaScriptのデバッグ
 1. src/frontend/vite.config.tsのbuildに`minify: false`を追加
