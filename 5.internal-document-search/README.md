@@ -27,7 +27,7 @@
 |Azure OpenAI Service|S0|gpt-3.5-turbo gpt-3.5-turbo-16k|
 |Azure Cognitive Search|S1||
 |Azure Cosmos DB|プロビジョニング済みスループット||
-|Azure Form Recgonizer|S0||
+|Azure Form Recognizer|S0||
 |Azure Blob Storage|汎用v2|ZRS|
 |Azure Application Insights||ワークスペース　ベース|
 |Azure Log Analytics|||
