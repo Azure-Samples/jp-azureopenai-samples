@@ -31,9 +31,9 @@ Azure OpenAIの利用申請を行い、Azure OpenAIがサブスクリプショ�
 
 具体的には以下のような手順となります。
 
-1. Azure ADの「アプリの登録」からアプリを登録します。名前を適当に指定し、「サポートされているアカウントの種類」として「この組織のディレクトリのみに含まれるアカウント」を選択。リダイレクトURIは利用するアプリが決まっている場合にそれを指定してください。（後述の連携アプリサンプルを用いる場合には ``http://localhost:3000`` を指定してください）
+1. Azure ADの「アプリの登録」>「新規登録」からアプリを登録します。名前を適当に指定し、「サポートされているアカウントの種類」として「この組織のディレクトリのみに含まれるアカウント」を選択。リダイレクトURIは利用するアプリが決まっている場合にそれを指定してください。（後述の連携アプリサンプルを用いる場合には ``http://localhost:3000`` を指定してください）
 
-2. 作成されたアプリの「APIの公開」を選択し、スコープを追加します。スコープ名に適当な値（以下の例では「chat」とします）を指定し、同意できるのは「管理者とユーザー」、その他の項目は適宜投入し「スコープの追加」を押下します
+2. 作成されたアプリの「APIの公開」を選択し、「Scopeの追加」を選択します。スコープ名に適当な値（以下の例では「chat」とします）を指定し、同意できるのは「管理者とユーザー」、その他の項目は適宜投入し「スコープの追加」を押下します
 
 * Azure ADのテナントID (UUID)
 * 登録アプリのID (UUID)
@@ -56,7 +56,7 @@ Azure OpenAIの利用申請を行い、Azure OpenAIがサブスクリプショ�
 | パラメータ名 | 投入する値 | 値の例 |
 |--|--|--|
 |environmentName|デプロイ時に指定するため編集不要です|-|
-|location|デプロイ時に指定するため編集不要です|-|
+|location|デプロイ時に指定するため編集不要です|japaneast|
 |corsOriginUrl|認証を行うシングルページアプリ（SPA）のドメインを指定します。シングルページアプリケーションのドメインが確定していない場合、デフォルトの"*"を指定することも可能ですが、確定次第具体的なドメインを指定することをおすすめします |*, example.com, yourapp.azurewebsites.net など|
 |audienceAppId|JWTを取得する対象となる登録アプリの登録アプリID|登録アプリID(UUID)|
 |scopeName|スコープ名|chat|
@@ -113,11 +113,17 @@ https://YOURAPIMDOMAIN.azure-api.net/api/deployments/OPEN_AI_MODEL_NAME/chat/com
 
 * ご利用されるアプリで登録したスコープ(上記例では ``api://アプリID/chat`` )を対象としてOAuth2(OIDC)認証認可を行いJWTを取得し、``Authorization: Bearer (JWT)``という
 という形式でヘッダに付与し、APIリクエストを行ってください。
-  * App ServiceのEasy Authを使って認証を行う場合にはフロントエンドで  ``.auth/me`` にアクセスして取得できる ``X-MS-TOKEN-AAD-ACCESS-TOKEN`` がこのJWTに相当します）詳細は以下のリンクを参照してください。
+* App ServiceのEasy Authを使って認証を行う場合にはフロントエンドで  ``.auth/me`` にアクセスして取得できる ``X-MS-TOKEN-AAD-ACCESS-TOKEN`` がこのJWTに相当します）詳細は以下のリンクを参照してください。
 https://learn.microsoft.com/ja-jp/azure/app-service/configure-authentication-oauth-tokens
-
+* また別の方法としてMicrsoft Authentication Library (MSAL) を使って認証を行い、JWTを取得することもできます。詳細は以下のリンクを参照してください。
+  * ドキュメント
+    * https://learn.microsoft.com/ja-jp/entra/msal/python
+  * 実装例
+    * https://github.com/kazuki-komori/azure-entra-jwt-script
 
 * また、既定ではAPI Managementのサブスクリプションキーの検証も有効になっているため、API Managment の「サブスクリプション」メニューで確認できるサブスクリプションキーを'Ocp-Apim-Subscription-Key' ヘッダに指定してください。
+
+![subscription](./assets/subscription.png)
 
 ## ログ出力の確認
 
@@ -182,3 +188,7 @@ Azure OpenAIでは各モデルごとにリクエスト回数の上限設定が�
 ```
  * backend-url-1, backend-url-2にそれぞれAzure OpenAIのエンドポイントを設定してください
  * 両方のAzure OpenAIに対してAPI ManagementのManaged Idが ``Cognitive Services OpenAI User`` 以上のロールを持っていることをご確認ください
+
+## Azure OpenAIのStreamモードとの併用について
+* API Managementを介してStreamモードのAzure OpenAIからの応答を返す場合、診断ログの設定やポリシー適用に注意が必要で、Azure API ManagementにおけるSSE (Server Sent Events) 制約を考慮する必要があります。詳細は以下のリンクを参照してください。
+  * https://learn.microsoft.com/ja-jp/azure/api-management/how-to-server-sent-events

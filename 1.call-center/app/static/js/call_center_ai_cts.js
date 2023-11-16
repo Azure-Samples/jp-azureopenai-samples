@@ -20,7 +20,6 @@ var divTranslated = $('#divTranslated');
 var divOpenAICard = $('#divOpenAICard');
 var divOpenAI = $('#divOpenAI');
 var divOpenAISpinner = $('#divOepnAISpinner');
-var speakerId = 'Speaker0';
 
 // Update parameter selection
 $("select#speechLang").change(function() {
@@ -85,99 +84,37 @@ $(document).ready(function() {
             // Set recognition properties
             speechConfig.speechRecognitionLanguage = speechLang;
             speechConfig.addTargetLanguage(translateLang);
-            
-            // Set CTS properties
-            speechConfig.setProperty("f0f5debc-f8c9-4892-ac4b-90a7ab359fd2", "true");
-            speechConfig.setProperty("ConversationTranscriptionInRoomAndOnline", "true");
-            speechConfig.setProperty("DifferentiateGuestSpeakers", "true");
-            speechConfig.setProperty("TranscriptionService_SingleChannel", "true");
-            speechConfig.outputFormat = SpeechSDK.OutputFormat.Simple;
 
             // Audio config for Recognizer
             const audioConfig = SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
             
-            // Audio config for Transcriber
-            const audioConfigCTS = SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
-            
-            // CTS conversation and transcriber
-            var conversation = SpeechSDK.Conversation.createConversationAsync(speechConfig, "myConversation");
-            transcriber = new SpeechSDK.ConversationTranscriber(audioConfigCTS);
-            
-            // Initialize SpeechRecognizer
+            // Initialize TranslationRecognizer
             recognizer = new SpeechSDK.TranslationRecognizer(speechConfig, audioConfig);
             recognizer.startContinuousRecognitionAsync(console.log('Recognizer session started'));
-
-            // Initialize CTS transcriber
-            transcriber.joinConversationAsync(conversation,
-                function () {
-                    transcriber.transcribing = onRecognizing;
-                    transcriber.transcribed = onRecognized;
-                    transcriber.canceled = onCanceled;
-                    transcriber.sessionStarted = onSessionStarted;
-                    transcriber.sessionStopped = onSessionStopped;
-
-                    transcriber.startTranscribingAsync(
-                        function () {                                                            
-                        },
-                        function (err) {
-                            console.trace("err - starting transcription: " + err);
-                        }
-                    );
-                },
-            );
         }
         catch(err) {
             displaySpeech.text(err);
             return;
         }
 
-        // (1) Speech Recognizer (for all Recognizing events)
+        // Translation recognizing
         recognizer.recognizing = (s, e) => {
             var current_time = new Date();
             time_label = current_time.toLocaleString('en-US', { timeStyle: 'medium', hour12: false});
             
             // Update display window with in-progress recognition & translation
             displaySpeech.html(divRecognized.val() + '['+ time_label +'] ' +e.result.text);
+            displaySpeech.scrollTop(displaySpeech[0].scrollHeight - displaySpeech.height());
             displayTranslation.html(divTranslated.val() + '['+ time_label +'] ' + e.result.translations.get(translateLang));
+            displayTranslation.scrollTop(displayTranslation[0].scrollHeight - displayTranslation.height());
         };
 
-        // (2) CTS Transcriber (for Transcribed event only)
-        function onRecognizing(s, e) {
-            // Basically do nothing
-            // This is a placeholder
-        };
-
-        /***
-         * (3) CTS only works in centralus, eastasia, eastus and westeurope. if this will be available in all regions, we can use this instead of recognized event.
-         * https://learn.microsoft.com/ja-jp/azure/cognitive-services/speech-service/how-to-use-conversation-transcription?pivots=programming-language-javascript
-        ***/
-        function onRecognized(s, e) {                
-            /*
-            if (e.result.reason == SpeechSDK.ResultReason.RecognizedSpeech || e.result.reason == SpeechSDK.ResultReason.TranslatedSpeech) {
-                var current_time = new Date();
-                time_label = current_time.toLocaleString('en-US', { timeStyle: 'medium', hour12: false});
-
-                // append newly recognized phrase to the recognized list
-                if (e.result.text) {
-                    if (e.result.speakerId == 'Unidentified') {
-                        speakerId = 'Speaker0'
-                    }
-                    else {
-                        speakerId = e.result.speakerId.replace('Guest_','Speaker')
-                    }
-                    divRecognized.append('['+ speakerId +'] '+e.result.text+'\n');
-                    displaySpeech.html(divRecognized.val());
-                }
-            }
-            */
-        };
-
-        // (3') Speech Recognizer (for Translated event only)
+        // Translation recognized
         recognizer.recognized = (s, e) => {
             if (e.result.reason == SpeechSDK.ResultReason.RecognizedSpeech || e.result.reason == SpeechSDK.ResultReason.TranslatedSpeech) {
                 var current_time = new Date();
                 time_label = current_time.toLocaleString('en-US', { timeStyle: 'medium', hour12: false});
-                            
+
                 if (e.result.text) {
                     // Update display window with in-progress recognition & translation
                     divRecognized.append('['+ time_label +'] '+e.result.text+'\n');
@@ -189,7 +126,7 @@ $(document).ready(function() {
                     langCode = speechLang.substring(0, speechLang.indexOf('-'));
                     runSentimentAnalysis(e.result.text, langCode);
                 }
-                
+
                 // append newly translated phrase to the translated list
                 if (e.result.translations.get(translateLang)) {
                     divTranslated.append('['+ time_label +'] '+e.result.translations.get(translateLang)+'\n');
@@ -198,28 +135,6 @@ $(document).ready(function() {
                 }
             }
         };
-
-        
-        // CTS Event handlers
-        function onCanceled (s, e) {
-            console.log(`Transcriber CANCELED: Reason=${e.reason}`);
-            if (e.reason == sdk.CancellationReason.Error) {
-                console.log(`"Transcriber CANCELED: ErrorCode=${e.errorCode}`);
-                console.log(`"Transcriber CANCELED: ErrorDetails=${e.errorDetails}`);
-                console.log("Transcriber CANCELED: Did you set the speech resource key and region values?");
-            }
-            transcriber.close();
-            transcriber = undefined;
-        };
-
-        function onSessionStopped(s, e) {
-            console.log("Transcriber session stopped");
-            // transcriber.close();
-        };
-        
-        function onSessionStarted(s, e) {
-            console.log("Transcriber session started");
-        }
 
         // Recognizer event handlers
         recognizer.canceled = (s, e) => {
@@ -236,13 +151,10 @@ $(document).ready(function() {
             console.log("Recognizer session stopped");
             recognizer.stopContinuousRecognitionAsync();
         };
-            
         
         // Stop Button
         stopAsyncButton.on("click", function () {
             recognizer.stopContinuousRecognitionAsync();
-            transcriber.close();
-            transcriber = undefined;
             startAsyncButton.show();
             stopAsyncButton.hide();
             runGPT();

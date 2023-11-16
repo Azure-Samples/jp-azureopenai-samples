@@ -14,8 +14,28 @@ Azure OpenAIを活用したアプリケーション実装のリファレンス�
 | 6. 共通ガイド  | [Link](https://github.com/Azure-Samples/jp-azureopenai-samples/tree/main/6.azureopenai-landing-zone-accelerator/README.md)  |
 
 ## Getting Started
+### 前提知識
+- **Azureの基礎**: Azure Portalの使い方、Azure CLIの使い方、Azureリソースの概念、RBAC等のAzureの基礎が前提知識になります。自信がない場合は、[Microsoft Azure Virtual Training Day: Azureの基礎](https://www.microsoft.com/ja-jp/events/top/training-days/azure?activetab=pivot:azure%E3%81%AE%E5%9F%BA%E7%A4%8Etab)等の活用を推奨します。
+- **Azure OpenAI Serviceの基礎**: Azure OpenAI Serviceとは何かを理解している必要があります。[Azure OpenAI Developers セミナー](https://www.youtube.com/watch?v=ek3YWrHD76g)をご覧いただければ、最低限の基礎は身に付きます。
+- **PowerShellやBash等のコマンドラインツールの使い方の基礎**: 自信がない場合は、[Introduction to PowerShell](https://learn.microsoft.com/training/modules/introduction-to-powershell/)や[Introduction to Bash](https://learn.microsoft.com/training/modules/bash-introduction/)をご活用ください
+- **VS Code等のコードエディタの使い方の基礎**: 自信がない場合は、[Introduction to Visual Studio Code](https://learn.microsoft.com/training/modules/introduction-to-visual-studio-code/)をご活用ください
+ 
+### サンプルアプリケーションのデプロイ
 日本語: 各サンプルのREADMEをご参照ください。
 English: Please refer to the README for each of the samples.
+
+### 本番稼働を視野にいれる場合
+本番稼働（や本番に近い検証環境等）を視野にいれる場合、様々な考慮事項があります。考えられる考慮事項は[Cloud Adoption Framework](https://learn.microsoft.com/azure/cloud-adoption-framework/overview)や[Well-Architected Framework](https://learn.microsoft.com/azure/well-architected/)にまとめられていますが、考慮事項は多岐にわたるので、状況（例: シナリオ、企業の事情）に応じて重要度や緊急度等をもとにした優先順位付けが必要になります。例えば、社内文書検索シナリオではプライベートネットワークを考慮した設計が重要になることが多くなると推測される一方、料理メニューの提案シナリオにおいてはエンドユーザのニーズに合わせて柔軟にアプリケーションに機能追加をしていくことが重要になることが推測されます。
+
+### バージョン切り替え
+
+本サンプルでは、過去のバージョンを使用しているユーザがいることを想定し、タグでアプリケーションのバージョンを管理しています。
+各バージョンにおける詳しい内容については、[リリースノート](https://github.com/Azure-Samples/jp-azureopenai-samples/releases) をご確認ください。
+以下の手順で、特定のcommit時のバージョンを切り替えることができます。
+
+```sh
+git checkout -b <ブランチ名> refs/tags/<タグ名>
+```
 
 ## 制限事項
 本レポジトリの内容の使用においては、次の制限、制約をご理解の上、活用ください。

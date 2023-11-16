@@ -14,6 +14,10 @@ from approaches.chatlogging import get_user_name, write_error
 from approaches.chatreadretrieveread import ChatReadRetrieveReadApproach
 from approaches.chatread import ChatReadApproach
 
+from azure.monitor.opentelemetry import configure_azure_monitor
+from opentelemetry.instrumentation.flask import FlaskInstrumentor
+
+
 # Replace these with your own values, either in environment variables or directly here
 AZURE_STORAGE_ACCOUNT = os.environ.get("AZURE_STORAGE_ACCOUNT")
 AZURE_STORAGE_CONTAINER = os.environ.get("AZURE_STORAGE_CONTAINER")
@@ -28,20 +32,20 @@ KB_FIELDS_SOURCEPAGE = os.environ.get("KB_FIELDS_SOURCEPAGE") or "sourcepage"
 AZURE_OPENAI_SERVICE = os.environ.get("AZURE_OPENAI_SERVICE")
 AZURE_OPENAI_API_VERSION = os.environ.get("AZURE_OPENAI_API_VERSION")
 
-AZURE_OPENAI_DAVINCI_DEPLOYMENT = os.environ.get("AZURE_OPENAI_DAVINCI_DEPLOYMENT")
 AZURE_OPENAI_GPT_35_TURBO_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_35_TURBO_DEPLOYMENT")
+AZURE_OPENAI_GPT_35_TURBO_16K_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_35_TURBO_16K_DEPLOYMENT")
 AZURE_OPENAI_GPT_4_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_4_DEPLOYMENT")
 AZURE_OPENAI_GPT_4_32K_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_4_32K_DEPLOYMENT")
 
 gpt_models = {
-    "text-davinci-003": {
-        "deployment": AZURE_OPENAI_DAVINCI_DEPLOYMENT,
-        "max_tokens": 4097,
-        "encoding": tiktoken.encoding_for_model("text-davinci-003")
-    },
     "gpt-3.5-turbo": {
         "deployment": AZURE_OPENAI_GPT_35_TURBO_DEPLOYMENT,
         "max_tokens": 4096,
+        "encoding": tiktoken.encoding_for_model("gpt-3.5-turbo")
+    },
+    "gpt-3.5-turbo-16k": {
+        "deployment": AZURE_OPENAI_GPT_35_TURBO_16K_DEPLOYMENT,
+        "max_tokens": 16384,
         "encoding": tiktoken.encoding_for_model("gpt-3.5-turbo")
     },
     "gpt-4": {
@@ -84,11 +88,18 @@ blob_client = BlobServiceClient(
 blob_container = blob_client.get_container_client(AZURE_STORAGE_CONTAINER)
 
 chat_approaches = {
-    "rrr": ChatReadRetrieveReadApproach(search_client, KB_FIELDS_SOURCEPAGE, KB_FIELDS_CONTENT),
+    "rrr": ChatReadRetrieveReadApproach(
+        search_client, 
+        KB_FIELDS_SOURCEPAGE, 
+        KB_FIELDS_CONTENT
+    ),
     "r": ChatReadApproach()
 }
 
+configure_azure_monitor()
+
 app = Flask(__name__)
+FlaskInstrumentor().instrument_app(app)
 
 @app.route("/", defaults={"path": "index.html"})
 @app.route("/<path:path>")
@@ -139,14 +150,11 @@ def chat():
     user_name = get_user_name(request)
     overrides = request.json.get("overrides")
 
-    selected_model_name = overrides.get("gptModel")
-    gpt_model = gpt_models.get(selected_model_name)
-
     try:
         impl = chat_approaches.get(approach)
         if not impl:
             return jsonify({"error": "unknown approach"}), 400
-        r = impl.run(gpt_model, user_name, request.json["history"], overrides)
+        r = impl.run(user_name, request.json["history"], overrides)
         return jsonify(r)
     except Exception as e:
         write_error("chat", user_name, str(e))
@@ -160,16 +168,11 @@ def docsearch():
     user_name = get_user_name(request)
     overrides = request.json.get("overrides")
 
-    selected_model_name = overrides.get("gptModel")
-
-    gpt_chat_model = gpt_models.get("gpt-3.5-turbo")
-    gpt_completion_model = gpt_models.get(selected_model_name)
-
     try:
         impl = chat_approaches.get(approach)
         if not impl:
             return jsonify({"error": "unknown approach"}), 400
-        r = impl.run(selected_model_name, gpt_chat_model, gpt_completion_model, user_name, request.json["history"], overrides)
+        r = impl.run(user_name, request.json["history"], overrides)
         return jsonify(r)
     except Exception as e:
         write_error("docsearch", user_name, str(e))
@@ -183,4 +186,4 @@ def ensure_openai_token():
     # openai.api_key = os.environ.get("AZURE_OPENAI_KEY")
    
 if __name__ == "__main__":
-    app.run()
+    app.run(port=5000, host='0.0.0.0')

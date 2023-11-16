@@ -8,6 +8,12 @@
     "location": {
       "value": "${AZURE_LOCATION}"
     },
+    "resourceGroupName": {
+      "value": "${AZURE_RESOURCE_GROUP}"
+    },
+    "isPrivateNetworkEnabled": {
+      "value": false
+    },
     "principalId": {
       "value": "${AZURE_PRINCIPAL_ID}"
     },

@@ -76,7 +76,7 @@ resource diagnosticsSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-p
         enabled: true
         retentionPolicy: {
           enabled: true
-          days: 360
+          // days: 360
         }
       }
       {
@@ -84,7 +84,7 @@ resource diagnosticsSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-p
         enabled: true
         retentionPolicy: {
           enabled: true
-          days: 360
+          // days: 360
         }
       }
     ]
@@ -94,7 +94,7 @@ resource diagnosticsSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-p
         enabled: true
         retentionPolicy: {
           enabled: true
-          days: 360
+          // days: 360
         }
       }
     ]
