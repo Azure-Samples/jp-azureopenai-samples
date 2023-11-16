@@ -1,6 +1,6 @@
 name: '5.internal-document-search-deployment-azd'
 
-on: [push]
+on: [workflow_dispatch]
 # GitHub Actions workflow to deploy to Azure using azd
 # To configure required secrets for connecting to Azure, simply run `azd pipeline config`
 # Set up permissions for deploying with secretless Azure federated credentials
