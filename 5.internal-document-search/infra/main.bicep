@@ -12,6 +12,8 @@ param location string
 @description('Enable private network access to the backend service')
 param isPrivateNetworkEnabled bool
 
+param principalType string = ''
+
 param appServicePlanName string = ''
 param backendServiceName string = ''
 param resourceGroupName string = ''
