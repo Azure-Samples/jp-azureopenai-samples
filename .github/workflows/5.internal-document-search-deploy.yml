@@ -37,10 +37,10 @@ jobs:
             
             echo "$results"
 
-            if echo "$results" | grep "ERROR"; then
+            if ($results -contains "ERROR") {
               echo "Deployment failed"
-            exit 1
-            fi
+              exit 1
+            }
           azPSVersion: "latest"
 
       - name: Build frontend
