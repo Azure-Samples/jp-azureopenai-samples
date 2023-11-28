@@ -1,8 +1,6 @@
 name: '5.internal-document-search-deployment'
 
-on:
-  schedule:
-    - cron: '2 8 * * *'
+on: push
 
 jobs:
   deploy:
