@@ -2,8 +2,7 @@ name: '5.internal-document-search-deployment'
 
 on:
   schedule:
-    - cron: '58 7 * * *'
-  workflow_dispatch:
+    - cron: '2 8 * * *'
 
 jobs:
   deploy:
