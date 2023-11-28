@@ -33,7 +33,14 @@ jobs:
             $ENV:FORMRECOGNIZER_SERVICE_NAME = "cog-fr-${{ github.run_id }}"
 
             cd 5.internal-document-search/infra
-            az deployment sub create --name $ENV:DEP_NAME --location $ENV:LOC --template-file main.bicep --parameters principalId=$ENV:AZURE_PRINCIPAL_ID environmentName=$ENV:AZURE_ENV_NAME location=$ENV:LOC backendServiceName=$ENV:BACKEND_SERVICE_NAME appServicePlanName=$ENV:APP_SERVICE_PLAN_NAME storageAccountName=$ENV:STORAGE_ACCOUNT_NAME searchServiceName=$ENV:SEARCH_SERVICE_NAME formRecognizerServiceName=$ENV:FORMRECOGNIZER_SERVICE_NAME
+            $results = az deployment sub create --name $ENV:DEP_NAME --location $ENV:LOC --template-file main.bicep --parameters principalId=$ENV:AZURE_PRINCIPAL_ID environmentName=$ENV:AZURE_ENV_NAME location=$ENV:LOC backendServiceName=$ENV:BACKEND_SERVICE_NAME appServicePlanName=$ENV:APP_SERVICE_PLAN_NAME storageAccountName=$ENV:STORAGE_ACCOUNT_NAME searchServiceName=$ENV:SEARCH_SERVICE_NAME formRecognizerServiceName=$ENV:FORMRECOGNIZER_SERVICE_NAME vmLoginPassword=dummy isPrivateNetworkEnabled=false
+            
+            echo "$results"
+
+            if echo "$results" | grep "ERROR"; then
+              echo "Deployment failed"
+            exit 1
+            fi
           azPSVersion: "latest"
 
       - name: Build frontend
