@@ -41,6 +41,10 @@ jobs:
               echo "Deployment failed"
               exit 1
             }
+            if ($results -contains "InsufficientQuota") {
+              echo "fix AOAI quota!"
+              exit 1
+            }
           azPSVersion: "latest"
 
       - name: Build frontend
