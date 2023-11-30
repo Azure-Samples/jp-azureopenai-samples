@@ -15,6 +15,16 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }} 
           enable-AzPSSession: true
       
+      - name: what-if using Azure CLI
+        run: |
+          results=$(az deployment sub what-if --template-file "./5.internal-document-search/infra/main.bicep" --location JapanEast -p vmLoginPassword=dummy -p resourceGroupName=rg-${{ github.run_id }} -p isPrivateNetworkEnabled=false -p environmentName=${{ github.run_id }} -p location=japaneast)
+          echo "$results"
+          # Check if "Error" is present in $results
+          if echo "$results" | grep "Error"; then
+          echo "Error found in what-if results. Exiting..."
+          exit 1
+          fi
+      
       - name: Deploy Azure Resources
         uses: azure/powershell@v1
         with:
@@ -38,12 +48,12 @@ jobs:
             
             echo "$results"
 
-            if ($results -contains "ERROR") {
+            if ($results.Contains("ERROR")) {
               echo "Deployment failed"
               exit 1
             }
-            if ($results -contains "InsufficientQuota") {
-              echo "fix AOAI quota!"
+            if ($results.Contains("InsufficientQuota")) {
+              echo "Fix AOAI quota!"
               exit 1
             }
           azPSVersion: "latest"
@@ -71,7 +81,7 @@ jobs:
             
             echo "$results"
 
-            if ($results -contains "ERROR") {
+            if ($results.Contains("ERROR")) {
               echo "Deployment failed"
               exit 1
             }
