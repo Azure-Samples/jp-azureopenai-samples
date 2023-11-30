@@ -155,7 +155,6 @@ jobs:
             $ENV:LOC = "${{ secrets.AZURE_LOCATION }}"
             $ENV:COGNITIVE_SERVICES_NAME = "cog-${{ github.run_id }}"
 
-            cd 5.internal-document-search/infra
-            az deployment sub delete --name $ENV:DEP_NAME --yes
+            az group delete -n $ENV:RESOURCE_GROUP_NAME --yes
             az resource delete --ids /subscriptions/$ENV:SUB/providers/Microsoft.CognitiveServices/locations/$ENV:LOC/resourceGroups/$ENV:RESOURCE_GROUP_NAME/deletedAccounts/$ENV:COGNITIVE_SERVICES_NAME
           azPSVersion: "latest"
