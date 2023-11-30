@@ -1,6 +1,8 @@
 name: '5.internal-document-search-deployment'
 
-on: [workflow_dispatch]
+on:
+  schedule:
+    - cron: '0 23 * * *'
 
 jobs:
   deploy:
@@ -14,6 +16,16 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }} 
           enable-AzPSSession: true
+      
+      - name: what-if using Azure CLI
+        run: |
+          results=$(az deployment sub what-if --template-file "./5.internal-document-search/infra/main.bicep" --location JapanEast -p vmLoginPassword=dummy -p resourceGroupName=rg-${{ github.run_id }} -p isPrivateNetworkEnabled=false -p environmentName=${{ github.run_id }} -p location=japaneast)
+          echo "$results"
+          # Check if "Error" is present in $results
+          if echo "$results" | grep "Error"; then
+          echo "Error found in what-if results. Exiting..."
+          exit 1
+          fi
       
       - name: Deploy Azure Resources
         uses: azure/powershell@v1
@@ -31,9 +43,21 @@ jobs:
             $ENV:STORAGE_ACCOUNT_NAME = "st${{ github.run_id }}"
             $ENV:SEARCH_SERVICE_NAME = "gptkb-${{ github.run_id }}"
             $ENV:FORMRECOGNIZER_SERVICE_NAME = "cog-fr-${{ github.run_id }}"
+            $ENV:COGNITIVE_SERVICES_NAME = "cog-${{ github.run_id }}"
 
             cd 5.internal-document-search/infra
-            az deployment sub create --name $ENV:DEP_NAME --location $ENV:LOC --template-file main.bicep --parameters principalId=$ENV:AZURE_PRINCIPAL_ID environmentName=$ENV:AZURE_ENV_NAME location=$ENV:LOC backendServiceName=$ENV:BACKEND_SERVICE_NAME appServicePlanName=$ENV:APP_SERVICE_PLAN_NAME cosmosDbAccountName=$ENV:AZURE_COSMOSDB_ACCOUNT storageAccountName=$ENV:STORAGE_ACCOUNT_NAME searchServiceName=$ENV:SEARCH_SERVICE_NAME formRecognizerServiceName=$ENV:FORMRECOGNIZER_SERVICE_NAME
+            $results = az deployment sub create --name $ENV:DEP_NAME --location $ENV:LOC --template-file main.bicep --parameters principalId=$ENV:AZURE_PRINCIPAL_ID environmentName=$ENV:AZURE_ENV_NAME location=$ENV:LOC backendServiceName=$ENV:BACKEND_SERVICE_NAME appServicePlanName=$ENV:APP_SERVICE_PLAN_NAME storageAccountName=$ENV:STORAGE_ACCOUNT_NAME searchServiceName=$ENV:SEARCH_SERVICE_NAME formRecognizerServiceName=$ENV:FORMRECOGNIZER_SERVICE_NAME openAiServiceName=$ENV:COGNITIVE_SERVICES_NAME vmLoginPassword=dummy isPrivateNetworkEnabled=false
+            
+            echo "$results"
+
+            if ($results.Contains("ERROR")) {
+              echo "Deployment failed"
+              exit 1
+            }
+            if ($results.Contains("InsufficientQuota")) {
+              echo "Fix AOAI quota!"
+              exit 1
+            }
           azPSVersion: "latest"
 
       - name: Build frontend
@@ -55,7 +79,14 @@ jobs:
             $ENV:WEBAPP_NAME = "app-backend-${{ github.run_id }}"
 
             cd 5.internal-document-search/src/backend
-            az webapp deployment source config-zip --resource-group $ENV:AZURE_WEBAPP_RESOURCE_GROUP --name $ENV:WEBAPP_NAME --src ./app.zip
+            $results = az webapp deployment source config-zip --resource-group $ENV:AZURE_WEBAPP_RESOURCE_GROUP --name $ENV:WEBAPP_NAME --src ./app.zip
+            
+            echo "$results"
+
+            if ($results.Contains("ERROR")) {
+              echo "Deployment failed"
+              exit 1
+            }
           azPSVersion: "latest"
       
       - name: Assgin RBAC to CosmosDB
@@ -102,6 +133,9 @@ jobs:
             $key = az cognitiveservices account keys list -n $env:AZURE_FORMRECOGNIZER_SERVICE -g $env:RESOURCE_GROUP_NAME | ConvertFrom-Json
             $env:AZURE_FORMRECOGNIZER_KEY = $key.key1
 
+            $key = az storage account keys list -n $env:AZURE_STORAGE_ACCOUNT -g $env:RESOURCE_GROUP_NAME | ConvertFrom-Json
+            $env:AZURE_STORAGE_KEY = $key[0].value
+
             cd 5.internal-document-search
             az cosmosdb sql role assignment create --account-name $env:AZURE_COSMOSDB_ACCOUNT --resource-group $env:RESOURCE_GROUP_NAME --scope / --principal-id $env:AZURE_PRINCIPAL_ID --role-definition-id $roleId
 
@@ -121,46 +155,18 @@ jobs:
             Start-Process -FilePath $venvPythonPath -ArgumentList "-m pip install -r ./scripts/requirements.txt" -Wait -NoNewWindow
 
             $cwd = (Get-Location)
-            Start-Process -FilePath $venvPythonPath -ArgumentList "./scripts/prepdocs.py $cwd/data/* --storageaccount $env:AZURE_STORAGE_ACCOUNT --container $env:AZURE_STORAGE_CONTAINER --searchservice $env:AZURE_SEARCH_SERVICE --searchkey $env:AZURE_SEARCH_KEY --index $env:AZURE_SEARCH_INDEX --formrecognizerservice $env:AZURE_FORMRECOGNIZER_SERVICE --formrecognizerkey $env:AZURE_FORMRECOGNIZER_KEY -v --managedidentitycredential" -Wait -NoNewWindow
+            Start-Process -FilePath $venvPythonPath -ArgumentList "./scripts/prepdocs.py $cwd/data/* --storageaccount $env:AZURE_STORAGE_ACCOUNT --container $env:AZURE_STORAGE_CONTAINER --storagekey $env:AZURE_STORAGE_KEY --searchservice $env:AZURE_SEARCH_SERVICE --searchkey $env:AZURE_SEARCH_KEY --index $env:AZURE_SEARCH_INDEX --formrecognizerservice $env:AZURE_FORMRECOGNIZER_SERVICE --formrecognizerkey $env:AZURE_FORMRECOGNIZER_KEY -v --managedidentitycredential" -Wait -NoNewWindow
           azPSVersion: "latest"
-  
 
-  wait-for-2min:
-    needs: deploy
-    runs-on: ubuntu-latest
-    steps:
-      - name: Wait for 2 min
-        run: |
-          sleep 120
+      - name: Delete Azure Resources
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            $ENV:RESOURCE_GROUP_NAME = "rg-github-actions-test-${{ github.run_id }}"
+            $ENV:SUB = "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+            $ENV:LOC = "${{ secrets.AZURE_LOCATION }}"
+            $ENV:COGNITIVE_SERVICES_NAME = "cog-${{ github.run_id }}"
 
-
-  test-openai-status:
-    needs: wait-for-2min
-    runs-on: ubuntu-latest
-    steps:
-      - name: test /chat endpoint
-        id: test-openai-status
-        run: |
-          response=$(curl -X POST "https://app-backend-${{ github.run_id }}.azurewebsites.net/chat" \
-            -H "Content-Type: application/json" \
-            -d '{
-              "approach": "r",
-              "history": [
-                {
-                  "user": "test",
-                  "assistant": "This is a test response from an AI language model. How may I assist you?"
-                }
-              ],
-              "assistant": "This is a test response from an AI language model. How may I assist you?",
-              "user": "test",
-              "overrides": {
-                "gptModel": "gpt-3.5-turbo",
-                "temperature": "0.0",
-                "systemPrompt": ""
-              },
-              "gptModel": "gpt-3.5-turbo",
-              "systemPrompt": "",
-              "temperature": "0.0"
-            }')
-          
-          echo "$response"
+            az group delete -n $ENV:RESOURCE_GROUP_NAME --yes
+            az resource delete --ids /subscriptions/$ENV:SUB/providers/Microsoft.CognitiveServices/locations/$ENV:LOC/resourceGroups/$ENV:RESOURCE_GROUP_NAME/deletedAccounts/$ENV:COGNITIVE_SERVICES_NAME
+          azPSVersion: "latest"
