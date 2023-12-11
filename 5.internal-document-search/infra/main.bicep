@@ -651,3 +651,5 @@ output AZURE_COSMOSDB_RESOURCE_GROUP string = resourceGroup.name
 
 output BACKEND_IDENTITY_PRINCIPAL_ID string = backend.outputs.identityPrincipalId
 output BACKEND_URI string = backend.outputs.uri
+
+output APPLICATIONINSIGHTS_CONNECTION_STRING string = useApplicationInsights ? monitoring.outputs.applicationInsightsConnectionString : ''
