@@ -31,8 +31,8 @@
 **重要:** このサンプルをデプロイするには、
 - **Azureサブスクリプション**: Azure Open AI サービスが有効になっているサブスクリプションが必要です。Azure Open AI サービスへのアクセス申請は[こちら](https://aka.ms/oaiapply)から行ってください。
 - **Azure権限**: 
-  - Microsoft.Authorization/roleAssignments/write 権限が必要です。例えば、[Role Based Access Control Administrator](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#role-based-access-control-administrator-preview)、 [User Access Administrator](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#user-access-administrator)、 または [Owner]のような権限が必要です。
-  - Azure アカウントにはサブスクリプションレベルで Microsoft.Resources/deployments/write 権限も必要です。例えば、[Contributor](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#contributor)、または [Owner](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#owner)]のような権限が必要です。
+  - Microsoft.Authorization/roleAssignments/write 権限が必要です。例えば、[Role Based Access Control Administrator](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#role-based-access-control-administrator-preview)、 [User Access Administrator](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#user-access-administrator)、 または [Owner](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#owner)のような権限が必要です。
+  - Azure アカウントにはサブスクリプションレベルで Microsoft.Resources/deployments/write 権限も必要です。例えば、[Contributor](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#contributor)、または [Owner](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#owner)のような権限が必要です。
   - User Access AdministratorとContributor権限でテストしています
 
 #### ローカル開発環境
