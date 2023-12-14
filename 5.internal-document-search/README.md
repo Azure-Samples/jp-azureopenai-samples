@@ -7,20 +7,13 @@
 
 デモアプリは以下のように動作します。
 
-## Architecture
+### Architecture
 ![RAG Architecture](assets/appcomponents.png)
 
-## UI
+### UI
 ![Chat screen](assets/chatscreen.png)
 
-## セットアップガイド
-
-> **重要:** このサンプルをデプロイするには、**Azure Open AI サービスが有効になっているサブスクリプションが必要です**。Azure Open AI サービスへのアクセス申請は[こちら](https://aka.ms/oaiapply)から行ってください。
-> Microsoft.Authorization/roleAssignments/write 権限が必要です。例えば、[Role Based Access Control Administrator](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#role-based-access-control-administrator-preview)、 [User Access Administrator](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#user-access-administrator)、 または [Owner]のような権限が必要です。また、Azure アカウントにはサブスクリプションレベルで Microsoft.Resources/deployments/write 権限も必要です。例えば、[Contributor](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#contributor)、または [Owner]のような権限が必要です。
-
-### 事前準備
-
-#### クラウド実行環境
+### クラウド実行環境
 このデモをデプロイすると以下のリソースが Azure サブスクリプション上に作成されます。
 | サービス名 | SKU | Note |
 | --- | --- | --- |
@@ -32,6 +25,13 @@
 |Azure Blob Storage|汎用v2|ZRS|
 |Azure Application Insights||ワークスペース　ベース|
 |Azure Log Analytics|||
+
+## セットアップガイド
+### 事前準備
+**重要:** このサンプルをデプロイするには、
+* **Azure Open AI サービスが有効になっているサブスクリプションが必要です**。Azure Open AI サービスへのアクセス申請は[こちら](https://aka.ms/oaiapply)から行ってください。
+* Microsoft.Authorization/roleAssignments/write 権限が必要です。例えば、[Role Based Access Control Administrator](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#role-based-access-control-administrator-preview)、 [User Access Administrator](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#user-access-administrator)、 または [Owner]のような権限が必要です。
+* Azure アカウントにはサブスクリプションレベルで Microsoft.Resources/deployments/write 権限も必要です。例えば、[Contributor](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#contributor)、または [Owner]のような権限が必要です。
 
 #### ローカル開発環境
 このデモをデプロイするためには、ローカルに以下の開発環境が必要です。
