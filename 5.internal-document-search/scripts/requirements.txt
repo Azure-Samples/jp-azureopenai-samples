@@ -4,4 +4,4 @@ azure-search-documents==11.4.0b6
 azure-ai-formrecognizer==3.2.1
 azure-storage-blob==12.14.1
 typing==3.7.4.3
-pycryptodome==3.18.0
+pycryptodome==3.19.1
