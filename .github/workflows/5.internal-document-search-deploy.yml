@@ -1,9 +1,6 @@
 name: '5.internal-document-search-deployment'
 
-on:
-  workflow_dispatch:
-  schedule:
-    - cron: '0 23 * * *'
+on: push
 
 jobs:
   deploy:
