@@ -46,7 +46,7 @@ jobs:
             $ENV:COGNITIVE_SERVICES_NAME = "cog-${{ github.run_id }}"
 
             cd 5.internal-document-search/infra
-            $results = az deployment sub create --name $ENV:DEP_NAME --location $ENV:LOC --template-file main.bicep --parameters principalId=$ENV:AZURE_PRINCIPAL_ID environmentName=$ENV:AZURE_ENV_NAME location=$ENV:LOC backendServiceName=$ENV:BACKEND_SERVICE_NAME appServicePlanName=$ENV:APP_SERVICE_PLAN_NAME storageAccountName=$ENV:STORAGE_ACCOUNT_NAME searchServiceName=$ENV:SEARCH_SERVICE_NAME formRecognizerServiceName=$ENV:FORMRECOGNIZER_SERVICE_NAME openAiServiceName=$ENV:COGNITIVE_SERVICES_NAME vmLoginPassword=dummy isPrivateNetworkEnabled=false
+            $results = az deployment sub create --name $ENV:DEP_NAME --location $ENV:LOC --template-file main.bicep --parameters principalId=$ENV:AZURE_PRINCIPAL_ID environmentName=$ENV:AZURE_ENV_NAME location=$ENV:LOC backendServiceName=$ENV:BACKEND_SERVICE_NAME appServicePlanName=$ENV:APP_SERVICE_PLAN_NAME storageAccountName=$ENV:STORAGE_ACCOUNT_NAME searchServiceName=$ENV:SEARCH_SERVICE_NAME formRecognizerServiceName=$ENV:FORMRECOGNIZER_SERVICE_NAME openAiServiceName=$ENV:COGNITIVE_SERVICES_NAME vmLoginPassword=dummy isPrivateNetworkEnabled=false cosmosDBAccountName=$ENV:AZURE_COSMOSDB_ACCOUNT
             
             echo "$results"
 
