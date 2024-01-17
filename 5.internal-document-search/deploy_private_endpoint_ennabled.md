@@ -42,7 +42,7 @@ IaCとして追加・更新したファイルは以下の通りです。
 |NNetwork Interface||Private Endpoint用の5つ|
 |Azure App Service|S1||
 |Azure OpenAI Service|S0|gpt-3.5-turbo gpt-3.5-turbo-16k|
-|Azure Cognitive Search|S1||
+|Azure AI Search|S1||
 |Azure Cosmos DB|プロビジョニング済みスループット||
 |Azure Form Recognizer|S0||
 |Azure Blob Storage|汎用v2|ZRS|
@@ -65,7 +65,7 @@ azd up
 - Azure Cosmos DB
 - Azure Storage Account
 - Azure App Service
-- Azure Cognitive Search
+- Azure AI Search
 
 
 4. デプロイされているApp Serviceの `既定のドメイン` をブラウザから開き、以下のようにアクセス制限がかかっていることを確認します。
