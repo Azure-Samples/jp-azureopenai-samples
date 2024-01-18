@@ -22,6 +22,7 @@ jobs:
           # Check if "Error" is present in $results
           if echo "$results" | grep -i "Error"; then
             echo "Error found in what-if results. Exiting..."
+            exit 1
           fi
       
       - name: Deploy Azure Resources
