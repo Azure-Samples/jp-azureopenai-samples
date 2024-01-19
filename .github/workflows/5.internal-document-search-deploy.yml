@@ -19,10 +19,11 @@ jobs:
       
       - name: what-if using Azure CLI
         run: |
-          results=$(az deployment sub what-if --template-file "./5.internal-document-search/infra/main.bicep" --location JapanEast -p vmLoginPassword=dummy -p resourceGroupName=rg-${{ github.run_id }} -p isPrivateNetworkEnabled=false -p environmentName=${{ github.run_id }} -p location=japaneast)
+          set +e
+          results=$(az deployment sub what-if --template-file "./5.internal-document-search/infra/main.bicep" --location JapanEast -p vmLoginPassword=dummy -p resourceGroupName=rg-${{ github.run_id }} -p isPrivateNetworkEnabled=false -p environmentName=${{ github.run_id }} -p location=japaneast 2>&1)
           echo "$results"
           # Check if "Error" is present in $results
-          if echo "$results" | grep "Error"; then
+          if echo "$results" | grep -i "Error"; then
           echo "Error found in what-if results. Exiting..."
           exit 1
           fi
@@ -46,7 +47,7 @@ jobs:
             $ENV:COGNITIVE_SERVICES_NAME = "cog-${{ github.run_id }}"
 
             cd 5.internal-document-search/infra
-            $results = az deployment sub create --name $ENV:DEP_NAME --location $ENV:LOC --template-file main.bicep --parameters principalId=$ENV:AZURE_PRINCIPAL_ID environmentName=$ENV:AZURE_ENV_NAME location=$ENV:LOC backendServiceName=$ENV:BACKEND_SERVICE_NAME appServicePlanName=$ENV:APP_SERVICE_PLAN_NAME storageAccountName=$ENV:STORAGE_ACCOUNT_NAME searchServiceName=$ENV:SEARCH_SERVICE_NAME formRecognizerServiceName=$ENV:FORMRECOGNIZER_SERVICE_NAME openAiServiceName=$ENV:COGNITIVE_SERVICES_NAME vmLoginPassword=dummy isPrivateNetworkEnabled=false
+            $results = az deployment sub create --name $ENV:DEP_NAME --location $ENV:LOC --template-file main.bicep --parameters principalId=$ENV:AZURE_PRINCIPAL_ID environmentName=$ENV:AZURE_ENV_NAME location=$ENV:LOC backendServiceName=$ENV:BACKEND_SERVICE_NAME appServicePlanName=$ENV:APP_SERVICE_PLAN_NAME storageAccountName=$ENV:STORAGE_ACCOUNT_NAME searchServiceName=$ENV:SEARCH_SERVICE_NAME formRecognizerServiceName=$ENV:FORMRECOGNIZER_SERVICE_NAME openAiServiceName=$ENV:COGNITIVE_SERVICES_NAME vmLoginPassword=dummy isPrivateNetworkEnabled=false cosmosDBAccountName=$ENV:AZURE_COSMOSDB_ACCOUNT 2>&1 | Out-String
             
             echo "$results"
 

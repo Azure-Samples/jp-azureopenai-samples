@@ -52,6 +52,7 @@ param formRecognizerResourceGroupLocation string = location
 
 param formRecognizerSkuName string = 'S0'
 
+param cosmosDBAccountName string = ''
 param cosmosDbDatabaseName string = 'ChatHistory'
 param cosmosDbContainerName string = 'Prompts'
 
@@ -108,7 +109,7 @@ module cosmosDb 'core/db/cosmosdb.bicep' = {
   name: 'cosmosdb'
   scope: resourceGroup
   params: {
-    name: '${abbrs.documentDBDatabaseAccounts}${resourceToken}'
+    name: !empty(cosmosDBAccountName) ? cosmosDBAccountName : '${abbrs.documentDBDatabaseAccounts}${resourceToken}'
     location: location
     tags: union(tags, { 'azd-service-name': 'cosmosdb' })
     cosmosDbDatabaseName: cosmosDbDatabaseName

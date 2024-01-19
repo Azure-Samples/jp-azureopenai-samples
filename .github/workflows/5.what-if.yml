@@ -17,11 +17,11 @@ jobs:
 
       - name: what-if using Azure CLI
         run: |
-          results=$(az deployment sub what-if --template-file "./5.internal-document-search/infra/main.bicep" --location JapanEast -p vmLoginPassword=dummy -p resourceGroupName=rg-${{ github.run_id }} -p isPrivateNetworkEnabled=false -p environmentName=${{ github.run_id }} -p location=japaneast)
+          set +e
+          results=$(az deployment sub what-if --template-file "./5.internal-document-search/infra/main.bicep" --location JapanEast -p vmLoginPassword=dummy -p resourceGroupName=rg-${{ github.run_id }} -p isPrivateNetworkEnabled=false -p environmentName=${{ github.run_id }} -p location=japaneast 2>&1)
           echo "$results"
-
           # Check if "Error" is present in $results
-          if echo "$results" | grep "Error"; then
+          if echo "$results" | grep -i "Error"; then
           echo "Error found in what-if results. Exiting..."
           exit 1
           fi
