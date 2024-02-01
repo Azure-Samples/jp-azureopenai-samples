@@ -52,6 +52,7 @@ param formRecognizerResourceGroupLocation string = location
 
 param formRecognizerSkuName string = 'S0'
 
+param cosmosDBAccountName string = ''
 param cosmosDbDatabaseName string = 'ChatHistory'
 param cosmosDbContainerName string = 'Prompts'
 
@@ -108,7 +109,7 @@ module cosmosDb 'core/db/cosmosdb.bicep' = {
   name: 'cosmosdb'
   scope: resourceGroup
   params: {
-    name: '${abbrs.documentDBDatabaseAccounts}${resourceToken}'
+    name: !empty(cosmosDBAccountName) ? cosmosDBAccountName : '${abbrs.documentDBDatabaseAccounts}${resourceToken}'
     location: location
     tags: union(tags, { 'azd-service-name': 'cosmosdb' })
     cosmosDbDatabaseName: cosmosDbDatabaseName
@@ -651,3 +652,4 @@ output AZURE_COSMOSDB_RESOURCE_GROUP string = resourceGroup.name
 
 output BACKEND_IDENTITY_PRINCIPAL_ID string = backend.outputs.identityPrincipalId
 output BACKEND_URI string = backend.outputs.uri
+output APPLICATIONINSIGHTS_CONNECTION_STRING string = useApplicationInsights ? monitoring.outputs.applicationInsightsConnectionString : ''
