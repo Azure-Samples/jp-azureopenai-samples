@@ -2,7 +2,7 @@
 
 ## 概要
 
-このプロジェクトは、Azure Open AIを使用して、アドバイザー/メンターのように目標達成までの道筋をガイドするアプリケーションのためのサンプルアーキテクチャを提供します。
+このプロジェクトは、Azure OpenAI を使用して、アドバイザー/メンターのように目標達成までの道筋をガイドするアプリケーションのためのサンプルアーキテクチャを提供します。
 また、目標達成のプランニングに必要な情報を収集し、体系的な形でまとめてくれるアプリケーションを作成することができます。​
 
 ### 主な機能
@@ -69,7 +69,7 @@ az deployment sub create \
 	--template-file ./main.bicep
 ```
 
-YOUR-PRINCIPAL-IDの取得方法例: `Azure Portal > Azure AD > Users > 自分の名前で検索 > Object ID` をコピーしてください。
+YOUR-PRINCIPAL-ID の取得方法例: `Azure Portal > Azure AD > Users > 自分の名前で検索 > Object ID` をコピーしてください。
 
 #### 手動でのプロビジョニング・設定
 
