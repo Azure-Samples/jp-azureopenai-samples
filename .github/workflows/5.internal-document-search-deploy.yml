@@ -80,7 +80,7 @@ jobs:
             $ENV:WEBAPP_NAME = "app-backend-${{ github.run_id }}"
 
             cd 5.internal-document-search/src/backend
-            $results = az webapp deployment source config-zip --resource-group $ENV:AZURE_WEBAPP_RESOURCE_GROUP --name $ENV:WEBAPP_NAME --src ./app.zip
+            $results = az webapp deployment source config-zip --resource-group $ENV:AZURE_WEBAPP_RESOURCE_GROUP --name $ENV:WEBAPP_NAME --src ./app.zip 2>&1 | Out-String
             
             echo "$results"
 
