@@ -5,7 +5,7 @@
 
 このリポジトリでは、サンプルデータに[厚生労働省のモデル就業規則](https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudoukijun/zigyonushi/model/index.html)を使用しています。
 
-### 本サンプル
+### 本サンプル以外の実装について
 本サンプルは、Microsoft米国本社中心に開発と公開をしている[ChatGPT + Enterprise data with Azure OpenAI and AI Search](https://github.com/Azure-Samples/azure-search-openai-demo)を参考にしてしたものです。日本の開発者とって使いやすいように、日本語のREADME、日本語のサンプルデータ、プロンプトや設定の日本語対応をしていますが、こちらのサンプルを使い始める前に是非[ChatGPT + Enterprise data with Azure OpenAI and AI Search](https://github.com/Azure-Samples/azure-search-openai-demo)の活用もご検討ください。
 
 また、2024年1月時点では、Public Preview状態ではありますが、(Azure OpenAI on your data)[https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/use-your-data?tabs=ai-search]を使ってChat+社内文書検索を実現することが可能なのでそちらのご活用もご検討ください。
