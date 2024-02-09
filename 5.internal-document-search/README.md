@@ -8,10 +8,6 @@
 ### 本サンプル以外の実装について
 本サンプルは、Microsoft米国本社中心に開発と公開をしている[ChatGPT + Enterprise data with Azure OpenAI and AI Search](https://github.com/Azure-Samples/azure-search-openai-demo)を参考にしたものです。日本の開発者に使いやすいように、日本語のREADME、日本語のサンプルデータ、Azureの日本リージョン活用のデフォルト化、プライベートネットワーク構成含む考慮事項等を追加しています。こちらのサンプルとあわせて、、是非[ChatGPT + Enterprise data with Azure OpenAI and AI Search](https://github.com/Azure-Samples/azure-search-openai-demo)の活用もご検討ください。
 
-Public Preview状態(2024年１月時点)ではありますが、[Azure OpenAI on your data](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/use-your-data?tabs=ai-search)を使ってChat+社内文書検索を実現することが可能です。
-
-そちらのご活用もご検討ください。
-
 ### Architecture
 ![RAG Architecture](assets/appcomponents.png)
 
