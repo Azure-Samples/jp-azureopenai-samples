@@ -6,7 +6,7 @@
 このリポジトリでは、サンプルデータに[厚生労働省のモデル就業規則](https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudoukijun/zigyonushi/model/index.html)を使用しています。
 
 ### 本サンプル以外の実装について
-本サンプルは、Microsoft米国本社中心に開発と公開をしている[ChatGPT + Enterprise data with Azure OpenAI and AI Search](https://github.com/Azure-Samples/azure-search-openai-demo)を参考にしたものです。日本の開発者に使いやすいように、日本語のREADME、日本語のサンプルデータ、Azureの日本リージョン活用のデフォルト化、プライベートネットワーク構成含む考慮事項等を追加しています。こちらのサンプルとあわせて、、是非[ChatGPT + Enterprise data with Azure OpenAI and AI Search](https://github.com/Azure-Samples/azure-search-openai-demo)の活用もご検討ください。
+本サンプルは、Microsoft米国本社中心に開発と公開をしている[ChatGPT + Enterprise data with Azure OpenAI and AI Search](https://github.com/Azure-Samples/azure-search-openai-demo)を参考にしたものです。日本の開発者に使いやすいように、日本語のREADME、日本語のサンプルデータ、Azureの日本リージョン活用のデフォルト化、プライベートネットワーク構成含む考慮事項等を追加しています。こちらのサンプルとあわせて、是非[ChatGPT + Enterprise data with Azure OpenAI and AI Search](https://github.com/Azure-Samples/azure-search-openai-demo)の活用もご検討ください。
 
 ### Architecture
 ![RAG Architecture](assets/appcomponents.png)
