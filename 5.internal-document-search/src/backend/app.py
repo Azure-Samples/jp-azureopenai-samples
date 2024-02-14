@@ -5,7 +5,7 @@ import urllib.parse
 from flask import Flask, request, jsonify
 
 import tiktoken
-import openai
+from openai import AzureOpenAI
 
 from azure.identity import DefaultAzureCredential
 from azure.search.documents import SearchClient
@@ -65,17 +65,13 @@ gpt_models = {
 # keys for each service
 # If you encounter a blocking error during a DefaultAzureCredntial resolution, you can exclude the problematic credential by using a parameter (ex. exclude_shared_token_cache_credential=True)
 azure_credential = DefaultAzureCredential()
-
-# Used by the OpenAI SDK
-openai.api_type = "azure"
-openai.api_base = f"https://{AZURE_OPENAI_SERVICE}.openai.azure.com"
-openai.api_version = AZURE_OPENAI_API_VERSION
-
-# Comment these two lines out if using keys, set your API key in the OPENAI_API_KEY environment variable instead
-openai.api_type = "azure_ad"
 openai_token = azure_credential.get_token("https://cognitiveservices.azure.com/.default")
-openai.api_key = openai_token.token
-# openai.api_key = os.environ.get("AZURE_OPENAI_KEY")
+
+openai_client = AzureOpenAI(
+    azure_endpoint = f"https://{AZURE_OPENAI_SERVICE}.openai.azure.com",
+    api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
+    api_key = openai_token.token
+)
 
 # Set up clients for Cognitive Search and Storage
 search_client = SearchClient(
@@ -154,7 +150,7 @@ def chat():
         impl = chat_approaches.get(approach)
         if not impl:
             return jsonify({"error": "unknown approach"}), 400
-        r = impl.run(user_name, request.json["history"], overrides)
+        r = impl.run(openai_client, user_name, request.json["history"], overrides)
         return jsonify(r)
     except Exception as e:
         write_error("chat", user_name, str(e))
@@ -172,7 +168,7 @@ def docsearch():
         impl = chat_approaches.get(approach)
         if not impl:
             return jsonify({"error": "unknown approach"}), 400
-        r = impl.run(user_name, request.json["history"], overrides)
+        r = impl.run(openai_client, user_name, request.json["history"], overrides)
         return jsonify(r)
     except Exception as e:
         write_error("docsearch", user_name, str(e))
@@ -182,7 +178,7 @@ def ensure_openai_token():
     global openai_token
     if openai_token.expires_on < int(time.time()) - 60:
         openai_token = azure_credential.get_token("https://cognitiveservices.azure.com/.default")
-        openai.api_key = openai_token.token
+        api_key = openai_token.token
     # openai.api_key = os.environ.get("AZURE_OPENAI_KEY")
    
 if __name__ == "__main__":

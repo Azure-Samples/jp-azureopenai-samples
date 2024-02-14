@@ -1,6 +1,7 @@
 from typing import Any
 
-import openai
+from openai import OpenAI
+
 # To uncomment when enabling asynchronous support.
 # from azure.cosmos.aio import ContainerProxy
 from approaches.approach import Approach
@@ -12,7 +13,7 @@ from core.modelhelper import get_gpt_model, get_max_token_from_messages
 # (answer) with that prompt.
 class ChatReadApproach(Approach):
 
-    def run(self, user_name: str, history: list[dict[str, str]], overrides: dict[str, Any]) -> Any:
+    def run(self, openai_client: OpenAI, user_name: str, history: list[dict[str, str]], overrides: dict[str, Any]) -> Any:
         chat_model = overrides.get("gptModel")
         chat_gpt_model = get_gpt_model(chat_model)
         chat_deployment = chat_gpt_model.get("deployment")
@@ -31,14 +32,15 @@ class ChatReadApproach(Approach):
 
         # Generate a contextual and content specific answer using chat history
         # Change create type ChatCompletion.create → ChatCompletion.acreate when enabling asynchronous support.
-        chat_completion = openai.ChatCompletion.create(
-            engine=chat_deployment, 
+        chat_completion = openai_client.chat.completions.create(
+            model=chat_deployment,
             messages=messages,
-            temperature=temaperature, 
+            temperature=temaperature,
             max_tokens=max_tokens,
-            n=1)
+            n=1
+        )
 
-        response_text = chat_completion.choices[0]["message"]["content"]
+        response_text = chat_completion.choices[0].message.content
         total_tokens = chat_completion.usage.total_tokens
 
         # logging

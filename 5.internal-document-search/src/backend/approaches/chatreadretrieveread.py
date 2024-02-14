@@ -1,6 +1,7 @@
 from text import nonewlines
 
-import openai
+from openai import OpenAI
+
 from azure.search.documents import SearchClient
 from azure.search.documents.models import QueryType
 from approaches.approach import Approach
@@ -49,7 +50,7 @@ source quesion: {user_question}
         self.sourcepage_field = sourcepage_field
         self.content_field = content_field
     
-    def run(self, user_name: str, history: list[dict], overrides: dict) -> any:
+    def run(self, openai_client: OpenAI, user_name: str, history: list[dict], overrides: dict) -> any:
         chat_model = overrides.get("gptModel")
         chat_gpt_model = get_gpt_model(chat_model)
         chat_deployment = chat_gpt_model.get("deployment")
@@ -67,12 +68,13 @@ source quesion: {user_question}
         max_tokens =  get_max_token_from_messages(messages, chat_model)
 
         # Change create type ChatCompletion.create → ChatCompletion.acreate when enabling asynchronous support.
-        chat_completion = openai.ChatCompletion.create(
-            engine=chat_deployment, 
+        chat_completion = openai_client.chat.completions.create(
+            model=chat_deployment,
             messages=messages,
             temperature=0.0,
             max_tokens=max_tokens,
-            n=1)
+            n=1
+        )
 
         query_text = chat_completion.choices[0].message.content
         if query_text.strip() == "0":
@@ -130,14 +132,15 @@ source quesion: {user_question}
         max_tokens = get_max_token_from_messages(messages, completion_model)
 
         # Change create type ChatCompletion.create → ChatCompletion.acreate when enabling asynchronous support.
-        response = openai.ChatCompletion.create(
-            engine=completion_deployment, 
+        response = openai_client.chat.completions.create(
+            model=completion_deployment,
             messages=messages,
-            temperature=temaperature, 
+            temperature=temaperature,
             max_tokens=1024,
-            n=1)
+            n=1
+        )
 
-        response_text = response.choices[0]["message"]["content"]
+        response_text = response.choices[0].message.content
         total_tokens += response.usage.total_tokens
 
         # logging
