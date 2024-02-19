@@ -1,6 +1,6 @@
 from text import nonewlines
 
-from openai import OpenAI
+from openai import AzureOpenAI
 
 from azure.search.documents import SearchClient
 from azure.search.documents.models import QueryType
@@ -50,7 +50,7 @@ source quesion: {user_question}
         self.sourcepage_field = sourcepage_field
         self.content_field = content_field
     
-    def run(self, openai_client: OpenAI, user_name: str, history: list[dict], overrides: dict) -> any:
+    def run(self, openai_client: AzureOpenAI, user_name: str, history: list[dict], overrides: dict) -> any:
         chat_model = overrides.get("gptModel")
         chat_gpt_model = get_gpt_model(chat_model)
         chat_deployment = chat_gpt_model.get("deployment")

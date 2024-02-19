@@ -1,6 +1,6 @@
 from typing import Any
 
-from openai import OpenAI
+from openai import AzureOpenAI
 
 # To uncomment when enabling asynchronous support.
 # from azure.cosmos.aio import ContainerProxy
@@ -13,7 +13,7 @@ from core.modelhelper import get_gpt_model, get_max_token_from_messages
 # (answer) with that prompt.
 class ChatReadApproach(Approach):
 
-    def run(self, openai_client: OpenAI, user_name: str, history: list[dict[str, str]], overrides: dict[str, Any]) -> Any:
+    def run(self, openai_client: AzureOpenAI, user_name: str, history: list[dict[str, str]], overrides: dict[str, Any]) -> Any:
         chat_model = overrides.get("gptModel")
         chat_gpt_model = get_gpt_model(chat_model)
         chat_deployment = chat_gpt_model.get("deployment")
