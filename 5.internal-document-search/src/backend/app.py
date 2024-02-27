@@ -4,7 +4,6 @@ import mimetypes
 import urllib.parse
 from flask import Flask, request, jsonify
 
-import tiktoken
 import openai
 
 from azure.identity import DefaultAzureCredential
@@ -37,28 +36,6 @@ AZURE_OPENAI_GPT_35_TURBO_16K_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_35_T
 AZURE_OPENAI_GPT_4_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_4_DEPLOYMENT")
 AZURE_OPENAI_GPT_4_32K_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_4_32K_DEPLOYMENT")
 
-gpt_models = {
-    "gpt-3.5-turbo": {
-        "deployment": AZURE_OPENAI_GPT_35_TURBO_DEPLOYMENT,
-        "max_tokens": 4096,
-        "encoding": tiktoken.encoding_for_model("gpt-3.5-turbo")
-    },
-    "gpt-3.5-turbo-16k": {
-        "deployment": AZURE_OPENAI_GPT_35_TURBO_16K_DEPLOYMENT,
-        "max_tokens": 16384,
-        "encoding": tiktoken.encoding_for_model("gpt-3.5-turbo")
-    },
-    "gpt-4": {
-        "deployment": AZURE_OPENAI_GPT_4_DEPLOYMENT,
-        "max_tokens": 8192,
-        "encoding": tiktoken.encoding_for_model("gpt-4")
-    },
-    "gpt-4-32k": {
-        "deployment": AZURE_OPENAI_GPT_4_32K_DEPLOYMENT,
-        "max_tokens": 32768,
-        "encoding": tiktoken.encoding_for_model("gpt-4-32k")
-    }
-}
 
 # Use the current user identity to authenticate with Azure OpenAI, Cognitive Search and Blob Storage (no secrets needed, 
 # just use 'az login' locally, and managed identity when deployed on Azure). If you need to use keys, use separate AzureKeyCredential instances with the 
