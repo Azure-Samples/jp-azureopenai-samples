@@ -29,7 +29,7 @@ resource redisEnterpriseDatabase 'Microsoft.Cache/redisEnterprise/databases@2022
         name: 'RediSearch'
       }
     ]
-    evictionPolicy: 'AllKeysLRU'
+    evictionPolicy: 'NoEviction'
     clusteringPolicy: 'EnterpriseCluster'
     persistence: {
       aofEnabled: false

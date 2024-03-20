@@ -27,7 +27,7 @@ param openAiResourceGroupLocation string = location
 param openAiSkuName string = 'S0'
 
 param gptDeploymentName string = 'davinci'
-param gptModelName string = 'text-davinci-003'
+param gptModelName string = 'gpt-35-turbo'
 param embeddingDeploymentName string = 'embedding'
 param embeddingModelName string = 'text-embedding-ada-002'
 param chatGptDeploymentName string = 'chat'
@@ -119,7 +119,11 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
         model: {
           format: 'OpenAI'
           name: gptModelName
-          version: '1'
+          version: '0301'
+        }
+        sku: {
+          name: 'Standard'
+          capacity: 1
         }
         scaleSettings: {
           scaleType: 'Standard'
@@ -131,6 +135,10 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
           format: 'OpenAI'
           name: chatGptModelName
           version: '0301'
+        }
+        sku: {
+          name: 'Standard'
+          capacity: 1
         }
         scaleSettings: {
           scaleType: 'Standard'
