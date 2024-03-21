@@ -1,4 +1,5 @@
 from text import nonewlines
+from typing import Union
 
 from openai import AzureOpenAI
 
@@ -8,6 +9,7 @@ from approaches.approach import Approach
 from approaches.chatlogging import write_chatlog, ApproachType
 from core.messagebuilder import MessageBuilder
 from core.modelhelper import get_gpt_model, get_max_token_from_messages
+from core.requestapim import RequestAPIM
 
 # Simple retrieve-then-read implementation, using the Cognitive Search and OpenAI APIs directly. It first retrieves
 # top documents from search, then constructs a prompt with them, and then uses OpenAI to generate an completion 
@@ -45,12 +47,14 @@ source quesion: {user_question}
         {'role' : ASSISTANT, 'content' : 'Health plan cardio coverage' }
     ]
 
+    request_apim = RequestAPIM()
+
     def __init__(self, search_client: SearchClient, sourcepage_field: str, content_field: str):
         self.search_client = search_client
         self.sourcepage_field = sourcepage_field
         self.content_field = content_field
     
-    def run(self, openai_client: AzureOpenAI, user_name: str, history: list[dict], overrides: dict) -> any:
+    def run(self, openai_client: Union[AzureOpenAI, str], user_name: str, history: list[dict], overrides: dict, jwt: str) -> any:
         chat_model = overrides.get("gptModel")
         chat_gpt_model = get_gpt_model(chat_model)
         chat_deployment = chat_gpt_model.get("deployment")
@@ -67,14 +71,26 @@ source quesion: {user_question}
 
         max_tokens =  get_max_token_from_messages(messages, chat_model)
 
-        # Change create type ChatCompletion.create → ChatCompletion.acreate when enabling asynchronous support.
-        chat_completion = openai_client.chat.completions.create(
-            model=chat_deployment,
-            messages=messages,
-            temperature=0.0,
-            max_tokens=max_tokens,
-            n=1
-        )
+        use_api_management = not isinstance(openai_client, AzureOpenAI)
+
+        if use_api_management:
+            body = {
+                "model": chat_deployment,
+                "messages": messages,
+                "temperature": 0.0,
+                "max_tokens": max_tokens,
+                "n": 1
+            }
+            chat_completion = self.request_apim.post_chat_completion(body, jwt)
+        else:
+            # Change create type ChatCompletion.create → ChatCompletion.acreate when enabling asynchronous support.
+            chat_completion = openai_client.chat.completions.create(
+                model=chat_deployment,
+                messages=messages,
+                temperature=0.0,
+                max_tokens=max_tokens,
+                n=1
+            )
 
         query_text = chat_completion.choices[0].message.content
         if query_text.strip() == "0":
@@ -128,17 +144,27 @@ source quesion: {user_question}
             history[-1]["user"]+ "\n\nSources:\n" + content[:1024], # Model does not handle lengthy system messages well. Moving sources to latest user conversation to solve follow up questions prompt.
             )
 
-        temaperature = float(overrides.get("temperature"))
+        temperature = float(overrides.get("temperature"))
         max_tokens = get_max_token_from_messages(messages, completion_model)
 
         # Change create type ChatCompletion.create → ChatCompletion.acreate when enabling asynchronous support.
-        response = openai_client.chat.completions.create(
-            model=completion_deployment,
-            messages=messages,
-            temperature=temaperature,
-            max_tokens=1024,
-            n=1
-        )
+        if use_api_management:
+            body = {
+                "model": completion_deployment,
+                "messages": messages,
+                "temperature": temperature,
+                "max_tokens": 1024,
+                "n": 1
+            }
+            response = self.request_apim.post_chat_completion(body, jwt)
+        else:
+            response = openai_client.chat.completions.create(
+                model=completion_deployment,
+                messages=messages,
+                temperature=temperature,
+                max_tokens=1024,
+                n=1
+            )
 
         response_text = response.choices[0].message.content
         total_tokens += response.usage.total_tokens
