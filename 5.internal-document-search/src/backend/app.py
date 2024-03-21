@@ -10,7 +10,7 @@ from openai import AzureOpenAI
 from azure.identity import DefaultAzureCredential
 from azure.search.documents import SearchClient
 from azure.storage.blob import BlobServiceClient
-from approaches.chatlogging import get_user_name, write_error
+from approaches.chatlogging import get_user_name, get_token, write_error
 from approaches.chatreadretrieveread import ChatReadRetrieveReadApproach
 from approaches.chatread import ChatReadApproach
 
@@ -36,6 +36,8 @@ AZURE_OPENAI_GPT_35_TURBO_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_35_TURBO
 AZURE_OPENAI_GPT_35_TURBO_16K_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_35_TURBO_16K_DEPLOYMENT")
 AZURE_OPENAI_GPT_4_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_4_DEPLOYMENT")
 AZURE_OPENAI_GPT_4_32K_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_4_32K_DEPLOYMENT")
+
+API_MANAGEMENT_ENDPOINT = os.environ.get("API_MANAGEMENT_ENDPOINT")
 
 gpt_models = {
     "gpt-3.5-turbo": {
@@ -67,11 +69,13 @@ gpt_models = {
 azure_credential = DefaultAzureCredential()
 openai_token = azure_credential.get_token("https://cognitiveservices.azure.com/.default")
 
+use_api_management = False
+
 openai_client = AzureOpenAI(
     azure_endpoint = f"https://{AZURE_OPENAI_SERVICE}.openai.azure.com",
     api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
     api_key = openai_token.token
-)
+) if not use_api_management else ""
 
 # Set up clients for Cognitive Search and Storage
 search_client = SearchClient(
@@ -144,13 +148,14 @@ def chat():
     ensure_openai_token()
     approach = request.json["approach"]
     user_name = get_user_name(request)
+    jwt = get_token(request)
     overrides = request.json.get("overrides")
 
     try:
         impl = chat_approaches.get(approach)
         if not impl:
             return jsonify({"error": "unknown approach"}), 400
-        r = impl.run(openai_client, user_name, request.json["history"], overrides)
+        r = impl.run(openai_client, user_name, request.json["history"], overrides, jwt)
         return jsonify(r)
     except Exception as e:
         write_error("chat", user_name, str(e))
@@ -162,13 +167,14 @@ def docsearch():
     ensure_openai_token()
     approach = request.json["approach"]
     user_name = get_user_name(request)
+    jwt = get_token(request)
     overrides = request.json.get("overrides")
 
     try:
         impl = chat_approaches.get(approach)
         if not impl:
             return jsonify({"error": "unknown approach"}), 400
-        r = impl.run(openai_client, user_name, request.json["history"], overrides)
+        r = impl.run(openai_client, user_name, request.json["history"], overrides, jwt)
         return jsonify(r)
     except Exception as e:
         write_error("docsearch", user_name, str(e))
