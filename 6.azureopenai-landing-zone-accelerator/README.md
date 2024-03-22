@@ -103,6 +103,73 @@ azd up
 
 ## 認証・リクエストの確認
 
+### API Management からの接続/認証/リクエスト方法の例
+
+ここでは、Azure API Management を使った方法を紹介します。まず、API リクエストを送信するために必要な　`deployment-id` と `api-version` と `JWT` を取得します。
+
+#### `deployment-id` の取得方法
+Azure OpenAI Studio > デプロイから、表示されるリストからデプロイ名を取得することができます。(下図の赤枠)
+
+![deployment-id](assets/deployment-id.png)
+
+#### `api-version` の取得方法
+Azure OpenAI Service の API バージョンを取得します。これは、[Azure OpenAI Service の REST API リファレンス](https://learn.microsoft.com/ja-jp/azure/ai-services/openai/reference) で確認できます。(API バージョンの例：`2023-05-15`)
+
+#### `JWT` の取得方法
+ここでは、[サンプルアプリ](https://github.com/kazuki-komori/azure-entra-jwt-script) を使った JWT の取得方法の手順を簡単にまとめます。
+
+サンプルアプリのクローン
+```
+$ git clone https://github.com/kazuki-komori/azure-entra-jwt-script.git
+```
+
+必要なライブラリのインストール
+```
+$ pip install -r requirements.txt
+```
+
+`.env` の作成
+
+アプリケーション ID とテナント ID は Azure ポータルから取得してください。
+```
+CLIENT_ID=<Entra ID で登録されているアプリケーション ID>
+AUTHORITY=https://login.microsoftonline.com/<Entra ID のテナント ID>
+```
+
+Azure ポータルで API Management の画面にて、「認証」>「+ プラットフォームを追加」> 「モバイルアプリケーションとデスクトップアプリケーション」を選択。
+
+![jwt-get-step1](assets/jwt-get-step1.png)
+
+カスタムリダイレクト URI に `http://localhost` を入力。
+
+![jwt-get-step2](assets/jwt-get-step2.png)
+
+パブリッククライアントフローを許可するを 「はい」 に選択。変更を保存する。
+
+![jwt-get-step3](assets/jwt-get-step3.png)
+
+JWT を取得する。
+
+```
+$ python generate_jwt.py
+```
+
+![jwt-get-step4](assets/jwt-get-step4.png)
+
+#### Azure API Management のテスト画面の開き方
+Azure API Management の Azure ポータル画面 > API > Azure OpenAI API > Creates a comple... > Test の順に選択します。
+
+![apim-howto-test](assets/apim-howto-test.png)
+
+#### API リクエストのテスト送信
+先ほど取得した `deployment-id` と `api-version` をそれぞれ、Template parameters に入力します。また、Headers の追加をするために 「+ Add header」 ボタンを押して 3 つ入力欄を準備した後、Authorization には、先に紹介したサンプルアプリなどの手段などで取得した JWT を入力し、Ocp-Apim-Subscription-Key にはサブスクリプションキーを入力します。(サブスクリプションキーの取得方法については後で紹介します。) 入力が完了したら、Send ボタンを押します。
+
+![apim-settings](assets/apim-settings.png)
+
+以下のように 200 OK が返されればテスト成功です。
+
+![apim-test-result](assets/apim-test-result.png)
+
 ### アプリからの接続/認証/リクエスト
 
 * APIリクエストのエンドポイントを以下のように設定してください。リクエスト先のURL例は以下のようになります
@@ -124,32 +191,6 @@ https://learn.microsoft.com/ja-jp/azure/app-service/configure-authentication-oau
 * また、既定ではAPI Managementのサブスクリプションキーの検証も有効になっているため、API Managment の「サブスクリプション」メニューで確認できるサブスクリプションキーを'Ocp-Apim-Subscription-Key' ヘッダに指定してください。
 
 ![subscription](./assets/subscription.png)
-
-### API Management からの接続/認証/リクエスト方法の例
-
-ここでは、Azure API Management を使った方法を紹介します。まず、API リクエストを送信するために必要な　`deployment-id` と `api-version` を取得します。
-
-#### `deployment-id` の取得方法
-Azure OpenAI Studio > デプロイから、表示されるリストからデプロイ名を取得することができます。(下図の赤枠)
-
-![deployment-id](assets/deployment-id.png)
-
-#### `api-version` の取得方法
-Azure OpenAI Service の API バージョンを取得します。これは、[Azure OpenAI Service の REST API リファレンス](https://learn.microsoft.com/ja-jp/azure/ai-services/openai/reference) で確認できます。(API バージョンの例：`2023-05-15`)
-
-#### Azure API Management のテスト画面の開き方
-Azure API Management の Azure ポータル画面 > API > Azure OpenAI API > Creates a comple... > Test の順に選択します。
-
-![apim-howto-test](assets/apim-howto-test.png)
-
-#### API リクエストのテスト送信
-先ほど取得した `deployment-id` と `api-version` をそれぞれ、Template parameters に入力します。また、Headers の追加をするために + Add header ボタンを押して 3 つ入力欄を準備した後、Authorization には、サンプルアプリもしくは App Service の Easy Auth などの手段などで取得した JWT を入力し、Ocp-Apim-Subscription-Key にはサブスクリプションキーを入力します。(それぞれの取得方法については解説済みです。) 入力が完了したら、Send ボタンを押します。
-
-![apim-settings](assets/apim-settings.png)
-
-以下のように 200 OK が返されればテスト成功です。
-
-![apim-test-result](assets/apim-test-result.png)
 
 ## ログ出力の確認
 
