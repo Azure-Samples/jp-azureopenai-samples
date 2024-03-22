@@ -103,6 +103,28 @@ azd up
 
 ## 認証・リクエストの確認
 
+### アプリからの接続/認証/リクエスト
+
+* APIリクエストのエンドポイントを以下のように設定してください。リクエスト先のURL例は以下のようになります
+
+```bash
+https://YOURAPIMDOMAIN.azure-api.net/api/deployments/OPEN_AI_MODEL_NAME/chat/completions?api-version=APIVERSION
+```
+
+* ご利用されるアプリで登録したスコープ(上記例では ``api://アプリID/chat`` )を対象としてOAuth2(OIDC)認証認可を行いJWTを取得し、``Authorization: Bearer (JWT)``という
+という形式でヘッダに付与し、APIリクエストを行ってください。
+* App ServiceのEasy Authを使って認証を行う場合にはフロントエンドで  ``.auth/me`` にアクセスして取得できる ``X-MS-TOKEN-AAD-ACCESS-TOKEN`` がこのJWTに相当します）詳細は以下のリンクを参照してください。
+https://learn.microsoft.com/ja-jp/azure/app-service/configure-authentication-oauth-tokens
+* また別の方法としてMicrsoft Authentication Library (MSAL) を使って認証を行い、JWTを取得することもできます。詳細は以下のリンクを参照してください。
+  * ドキュメント
+    * https://learn.microsoft.com/ja-jp/entra/msal/python
+  * 実装例
+    * https://github.com/kazuki-komori/azure-entra-jwt-script
+
+* また、既定ではAPI Managementのサブスクリプションキーの検証も有効になっているため、API Managment の「サブスクリプション」メニューで確認できるサブスクリプションキーを'Ocp-Apim-Subscription-Key' ヘッダに指定してください。
+
+![subscription](./assets/subscription.png)
+
 ### API Management からの接続/認証/リクエスト方法の例
 
 ここでは、Azure API Management を使った方法を紹介します。まず、API リクエストを送信するために必要な　`deployment-id` と `api-version` を取得します。
@@ -128,28 +150,6 @@ Azure API Management の Azure ポータル画面 > API > Azure OpenAI API > Cre
 以下のように 200 OK が返されればテスト成功です。
 
 ![apim-test-result](assets/apim-test-result.png)
-
-### アプリからの接続/認証/リクエスト
-
-* APIリクエストのエンドポイントを以下のように設定してください。リクエスト先のURL例は以下のようになります
-
-```bash
-https://YOURAPIMDOMAIN.azure-api.net/api/deployments/OPEN_AI_MODEL_NAME/chat/completions?api-version=APIVERSION
-```
-
-* ご利用されるアプリで登録したスコープ(上記例では ``api://アプリID/chat`` )を対象としてOAuth2(OIDC)認証認可を行いJWTを取得し、``Authorization: Bearer (JWT)``という
-という形式でヘッダに付与し、APIリクエストを行ってください。
-* App ServiceのEasy Authを使って認証を行う場合にはフロントエンドで  ``.auth/me`` にアクセスして取得できる ``X-MS-TOKEN-AAD-ACCESS-TOKEN`` がこのJWTに相当します）詳細は以下のリンクを参照してください。
-https://learn.microsoft.com/ja-jp/azure/app-service/configure-authentication-oauth-tokens
-* また別の方法としてMicrsoft Authentication Library (MSAL) を使って認証を行い、JWTを取得することもできます。詳細は以下のリンクを参照してください。
-  * ドキュメント
-    * https://learn.microsoft.com/ja-jp/entra/msal/python
-  * 実装例
-    * https://github.com/kazuki-komori/azure-entra-jwt-script
-
-* また、既定ではAPI Managementのサブスクリプションキーの検証も有効になっているため、API Managment の「サブスクリプション」メニューで確認できるサブスクリプションキーを'Ocp-Apim-Subscription-Key' ヘッダに指定してください。
-
-![subscription](./assets/subscription.png)
 
 ## ログ出力の確認
 
