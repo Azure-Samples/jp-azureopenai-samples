@@ -57,3 +57,9 @@ Entra ID に登録されているアプリ画面から、「API の公開」>「
 > ApiManagementGatewayLogs | where TimeGenerated > ago(2d)
 
 ![APIM によるログの確認](./assets/apim_arch_deploy_step4.png)
+
+> **注意事項１**：[Azure API Management の従量課金レベルでは rate-limit-by-key と quota-by-key のポリシーが使用できないため](https://learn.microsoft.com/ja-jp/azure/api-management/api-management-sample-flexible-throttling#custom-key-based-throttling) SKU は従量課金プランではなく Standard でデプロイしています。
+
+> **注意事項２**：Standard プランのデプロイには約 40 分かかります。
+
+
