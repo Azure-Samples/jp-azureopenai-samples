@@ -70,12 +70,14 @@ azure_credential = DefaultAzureCredential()
 openai_token = azure_credential.get_token("https://cognitiveservices.azure.com/.default")
 
 use_api_management = False
+api_management_url = API_MANAGEMENT_ENDPOINT + "/deployments/gpt-35-turbo-deploy/chat/completions?api-version=2023-05-15"
+azure_endpoint = f"https://{AZURE_OPENAI_SERVICE}.openai.azure.com" if not use_api_management else api_management_url
 
 openai_client = AzureOpenAI(
-    azure_endpoint = f"https://{AZURE_OPENAI_SERVICE}.openai.azure.com",
+    azure_endpoint = azure_endpoint,
     api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
     api_key = openai_token.token
-) if not use_api_management else ""
+)
 
 # Set up clients for Cognitive Search and Storage
 search_client = SearchClient(
@@ -146,16 +148,16 @@ def content_file(path):
 @app.route("/chat", methods=["POST"])
 def chat():
     ensure_openai_token()
+    set_aoai_token(openai_client, get_token(request))
     approach = request.json["approach"]
     user_name = get_user_name(request)
-    jwt = get_token(request)
     overrides = request.json.get("overrides")
 
     try:
         impl = chat_approaches.get(approach)
         if not impl:
             return jsonify({"error": "unknown approach"}), 400
-        r = impl.run(openai_client, user_name, request.json["history"], overrides, jwt)
+        r = impl.run(openai_client, user_name, request.json["history"], overrides)
         return jsonify(r)
     except Exception as e:
         write_error("chat", user_name, str(e))
@@ -165,16 +167,16 @@ def chat():
 @app.route("/docsearch", methods=["POST"])
 def docsearch():
     ensure_openai_token()
+    set_aoai_token(openai_client, get_token(request))
     approach = request.json["approach"]
     user_name = get_user_name(request)
-    jwt = get_token(request)
     overrides = request.json.get("overrides")
 
     try:
         impl = chat_approaches.get(approach)
         if not impl:
             return jsonify({"error": "unknown approach"}), 400
-        r = impl.run(openai_client, user_name, request.json["history"], overrides, jwt)
+        r = impl.run(openai_client, user_name, request.json["history"], overrides)
         return jsonify(r)
     except Exception as e:
         write_error("docsearch", user_name, str(e))
@@ -187,5 +189,9 @@ def ensure_openai_token():
         api_key = openai_token.token
     # openai.api_key = os.environ.get("AZURE_OPENAI_KEY")
    
+def set_aoai_token(openai_client : AzureOpenAI, jwt: str):
+    if openai_client._azure_ad_token is None:
+        openai_client._azure_ad_token = jwt
+
 if __name__ == "__main__":
     app.run(port=5000, host='0.0.0.0')

@@ -16,7 +16,7 @@ class ChatReadApproach(Approach):
 
     request_apim = RequestAPIM()
 
-    def run(self, openai_client: AzureOpenAI, user_name: str, history: list[dict[str, str]], overrides: dict[str, Any], jwt: str) -> Any:
+    def run(self, openai_client: AzureOpenAI, user_name: str, history: list[dict[str, str]], overrides: dict[str, Any]) -> Any:
         chat_model = overrides.get("gptModel")
         chat_gpt_model = get_gpt_model(chat_model)
         chat_deployment = chat_gpt_model.get("deployment")
@@ -33,27 +33,13 @@ class ChatReadApproach(Approach):
 
         max_tokens = get_max_token_from_messages(messages, chat_model)
 
-        use_api_management = not isinstance(openai_client, AzureOpenAI)
-
-        if use_api_management:
-            body = {
-                "model": chat_deployment,
-                "messages": messages,
-                "temperature": temperature,
-                "max_tokens": max_tokens,
-                "n": 1
-            }
-            chat_completion = self.request_apim.post_chat_completion(body, jwt)
-        else:
-            # Generate a contextual and content specific answer using chat history
-            # Change create type ChatCompletion.create → ChatCompletion.acreate when enabling asynchronous support.
-            chat_completion = openai_client.chat.completions.create(
-                model=chat_deployment,
-                messages=messages,
-                temperature=temperature,
-                max_tokens=max_tokens,
-                n=1
-            )
+        chat_completion = openai_client.chat.completions.create(
+            model=chat_deployment,
+            messages=messages,
+            temperature=temperature,
+            max_tokens=max_tokens,
+            n=1
+        )
 
         response_text = chat_completion.choices[0].message.content
         total_tokens = chat_completion.usage.total_tokens
