@@ -652,15 +652,15 @@ module searchContribRoleUser 'core/security/role.bicep' = {
   }
 }
 
-module openAiUser 'core/security/role.bicep' = if (useApiManagement) {
-  scope: apiManagementResourceGroup
-  name: 'cognitive-services-openai-user'
-  params: {
-    principalId: principalId
-    roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
-    principalType: !empty(principalType) ? principalType : 'User'
-  }
-}
+// module openAiUser 'core/security/role.bicep' = if (useApiManagement) {
+//   scope: apiManagementResourceGroup
+//   name: 'cognitive-services-openai-user'
+//   params: {
+//     principalId: principalId
+//     roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
+//     principalType: !empty(principalType) ? principalType : 'User'
+//   }
+// }
 
 // ================================================================================================
 // SYSTEM IDENTITIES
@@ -670,6 +670,16 @@ module openAiRoleBackend 'core/security/role.bicep' = {
   name: 'openai-role-backend'
   params: {
     principalId: backend.outputs.identityPrincipalId
+    roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
+    principalType: 'ServicePrincipal'
+  }
+}
+
+module openAiRoleApiManagement 'core/security/role.bicep' = if (useApiManagement) {
+  scope: apiManagementResourceGroup
+  name: 'openai-role-api-management'
+  params: {
+    principalId: apim.outputs.identityPrincipalId
     roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
     principalType: 'ServicePrincipal'
   }
