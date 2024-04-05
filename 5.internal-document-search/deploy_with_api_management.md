@@ -14,8 +14,8 @@ API Management を利用するために、以下ができている前提で説�
 1. main.bicep の変更
 1. app.py の変更
 1. main.parameters.json の変更
-1. API Management のデプロイ
 1. API のスコープ追加
+1. API Management のデプロイ
 
 ### main.bicep の変更
 main.bicep における以下の行を見つけて、`true` に変更する。
@@ -43,13 +43,13 @@ main.parameters.json の以下の xxxx の部分に対し、コピーした ID �
     "value": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 },
 
-### API Management のデプロイ
-`azd up' を実行する。
-
 ### API のスコープ追加
 Entra ID に登録されているアプリ画面から、「API の公開」>「+ Scope の追加」を選択し、スコープ名を「chat」、同意できるのを「管理者とユーザー」とし、同意の表示名と説明を入力したあとスコープの追加を行う。
 
 ![API のスコープ追加](./assets/apim_arch_deploy_step3.png)
+
+### API Management のデプロイ
+`azd up' を実行する。
 
 ## API Management によるログの確認
 上記の利用手順を踏むことで、Chat や 社内文書検索で Azure OpenAI Service にリクエストを送る際に、API Management が利用されるようになる。実際に利用されているかどうかを確認するために、API Management のログを確認する。Azure ポータルの画面の「ログ」で以下のコマンドを実行した実行結果から、リクエストの送信時間、ユーザープロンプト、Azure OpenAI Service からの回答、等の情報が出力されていることが確認できる。
