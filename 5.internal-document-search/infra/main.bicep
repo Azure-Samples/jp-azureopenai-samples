@@ -97,7 +97,7 @@ param scopeName string = 'chat'
 param tenantId string = ''
 
 var abbrs = loadJsonContent('abbreviations.json')
-var resourceToken = toLower(uniqueString(subscription().id, environmentName, location, 'abc'))
+var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
 var tags = { 'azd-env-name': environmentName }
 
 // Organize resources in a resource group
@@ -304,13 +304,14 @@ module storage 'core/storage/storage-account.bicep' = {
 // ================================================================================================
 // API Management
 // ================================================================================================
-module apim './core/gateway/apim.bicep' = if (useApiManagement) {
+module apim './core/gateway/apim.bicep' = {
   name: 'apim'
   scope: apiManagementResourceGroup
   params: {
     name: !empty(apimServiceName) ? apimServiceName : '${abbrs.apiManagementService}${resourceToken}'
     location: location
     tags: tags
+    useApiManagement: useApiManagement
     sku: 'Standard'
     skuCount: 1
     applicationInsightsName: monitoring.outputs.applicationInsightsName
@@ -320,14 +321,15 @@ module apim './core/gateway/apim.bicep' = if (useApiManagement) {
 }
 
 // Configures the API in the Azure API Management (APIM) service
-module apimApi './app/apim-api.bicep' = if (useApiManagement) {
+module apimApi './app/apim-api.bicep' = {
   name: 'apimapi'
   scope: apiManagementResourceGroup
   dependsOn: [
     apim
   ]
   params: {
-    name: apim.outputs.apimServiceName
+    name: !empty(apimServiceName) ? apimServiceName : '${abbrs.apiManagementService}${resourceToken}'
+    useApiManagement: useApiManagement
     apiName: 'azure-openai-api'
     apiDisplayName: 'Azure OpenAI API'
     apiDescription: 'This is proxy endpoints for Azure OpenAI API'

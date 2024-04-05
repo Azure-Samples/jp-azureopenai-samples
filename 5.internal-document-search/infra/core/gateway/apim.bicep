@@ -2,6 +2,8 @@ param name string
 param location string = resourceGroup().location
 param tags object = {}
 
+param useApiManagement bool
+
 @description('The email address of the owner of the service')
 @minLength(1)
 param publisherEmail string = 'noreply@microsoft.com'
@@ -28,7 +30,7 @@ param applicationInsightsName string
 param workspaceId string
 param storageAccountId string
 
-resource apimService 'Microsoft.ApiManagement/service@2021-08-01' = {
+resource apimService 'Microsoft.ApiManagement/service@2021-08-01' = if (useApiManagement) {
   name: name
   location: location
   tags: union(tags, { 'azd-service-name': name })
@@ -63,7 +65,7 @@ resource apimService 'Microsoft.ApiManagement/service@2021-08-01' = {
 }
 
 // 診断設定
-resource diagnosticsSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+resource diagnosticsSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (useApiManagement) {
   name: '${apimService.name}-diagnosticsSetting'
   scope: apimService
   properties: {
@@ -102,7 +104,7 @@ resource diagnosticsSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-p
 }
 
 // Azure Monitorを用いる診断設定
-resource apimLogger 'Microsoft.ApiManagement/service/loggers@2022-08-01' = {
+resource apimLogger 'Microsoft.ApiManagement/service/loggers@2022-08-01' = if (useApiManagement) {
   parent: apimService
   name: 'azuremonitor'
   properties: {
@@ -112,7 +114,7 @@ resource apimLogger 'Microsoft.ApiManagement/service/loggers@2022-08-01' = {
 }
 
 
-resource apiDiagnostics 'Microsoft.ApiManagement/service/diagnostics@2022-08-01' = {
+resource apiDiagnostics 'Microsoft.ApiManagement/service/diagnostics@2022-08-01' = if (useApiManagement) {
   name: 'azuremonitor'
   parent: apimService
   properties: {
@@ -157,7 +159,7 @@ resource apiDiagnostics 'Microsoft.ApiManagement/service/diagnostics@2022-08-01'
 
 
 // application insights
-resource appInsightsComponents 'Microsoft.Insights/components@2020-02-02' = {
+resource appInsightsComponents 'Microsoft.Insights/components@2020-02-02' = if (useApiManagement) {
   name: applicationInsightsName
   location: location
   kind: 'other'
@@ -167,7 +169,7 @@ resource appInsightsComponents 'Microsoft.Insights/components@2020-02-02' = {
 }
 
 // Application Insightsを用いる診断設定
-resource apiManagement_logger_appInsights 'Microsoft.ApiManagement/service/loggers@2019-01-01' = {
+resource apiManagement_logger_appInsights 'Microsoft.ApiManagement/service/loggers@2019-01-01' = if (useApiManagement) {
   parent: apimService
   name: 'applicationInsights'
   properties: {
@@ -178,7 +180,7 @@ resource apiManagement_logger_appInsights 'Microsoft.ApiManagement/service/logge
   }
 }
 
-resource apiManagement_diagnostics_appInsights 'Microsoft.ApiManagement/service/diagnostics@2019-01-01' = {
+resource apiManagement_diagnostics_appInsights 'Microsoft.ApiManagement/service/diagnostics@2019-01-01' = if (useApiManagement) {
   parent: apimService
   name: 'applicationinsights'
   properties: {
@@ -191,6 +193,4 @@ resource apiManagement_diagnostics_appInsights 'Microsoft.ApiManagement/service/
   }
 }
 
-output apimServiceName string = apimService.name
-output identityPrincipalId string = apimService.identity.principalId
-// output subscriptionKey string = apimService.properties.
+output identityPrincipalId string = useApiManagement ? apimService.identity.principalId : ''

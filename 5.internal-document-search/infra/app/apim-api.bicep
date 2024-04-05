@@ -1,5 +1,7 @@
 param name string
 
+param useApiManagement bool
+
 @description('Resource name to uniquely identify this API within the API Management service instance')
 @minLength(1)
 param apiName string
@@ -34,11 +36,11 @@ var policy_template4 = replace(policy_template3 ,'{scope-name}', scopeName)
 var policy_template5 = replace(policy_template4 ,'{backend-url}', apiBackendUrl)
 var apiPolicyContent = replace(policy_template5 ,'{tenant-id}', tenantId)
 
-resource apimService 'Microsoft.ApiManagement/service@2021-08-01' existing = {
+resource apimService 'Microsoft.ApiManagement/service@2021-08-01' existing = if (useApiManagement) {
   name: name
 }
 
-resource aoaiApi 'Microsoft.ApiManagement/service/apis@2021-12-01-preview' = {
+resource aoaiApi 'Microsoft.ApiManagement/service/apis@2021-12-01-preview' = if (useApiManagement) {
   name: apiName
   parent: apimService
   properties: {
@@ -55,7 +57,7 @@ resource aoaiApi 'Microsoft.ApiManagement/service/apis@2021-12-01-preview' = {
   }
 }
 
-resource apiPolicy 'Microsoft.ApiManagement/service/apis/policies@2021-12-01-preview' = {
+resource apiPolicy 'Microsoft.ApiManagement/service/apis/policies@2021-12-01-preview' = if (useApiManagement) {
   name: 'policy'
   parent: aoaiApi
   properties: {
@@ -64,4 +66,4 @@ resource apiPolicy 'Microsoft.ApiManagement/service/apis/policies@2021-12-01-pre
   }
 }
 
-output apiManagementEndpoint string = '${apimService.properties.gatewayUrl}/${apiPath}'
+output apiManagementEndpoint string = useApiManagement? '${apimService.properties.gatewayUrl}/${apiPath}': ''
