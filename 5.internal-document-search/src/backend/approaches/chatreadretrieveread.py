@@ -71,7 +71,6 @@ source quesion: {user_question}
 
         max_tokens =  get_max_token_from_messages(messages, chat_model)
 
-        use_api_management = not isinstance(openai_client, AzureOpenAI)
 
         # Change create type ChatCompletion.create → ChatCompletion.acreate when enabling asynchronous support.
         chat_completion = openai_client.chat.completions.create(

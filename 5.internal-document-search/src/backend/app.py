@@ -190,7 +190,7 @@ def ensure_openai_token():
     # openai.api_key = os.environ.get("AZURE_OPENAI_KEY")
    
 def set_aoai_token(openai_client : AzureOpenAI, jwt: str):
-    if openai_client._azure_ad_token is None:
+    if use_api_management and openai_client._azure_ad_token is None:
         openai_client._azure_ad_token = jwt
 
 if __name__ == "__main__":
