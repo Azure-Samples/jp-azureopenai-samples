@@ -38,6 +38,7 @@ AZURE_OPENAI_GPT_4_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_4_DEPLOYMENT")
 AZURE_OPENAI_GPT_4_32K_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_4_32K_DEPLOYMENT")
 
 API_MANAGEMENT_ENDPOINT = os.environ.get("API_MANAGEMENT_ENDPOINT")
+ENTRA_CLIENT_ID = os.environ.get("ENTRA_CLIENT_ID")
 
 gpt_models = {
     "gpt-3.5-turbo": {
@@ -75,9 +76,13 @@ azure_endpoint = f"https://{AZURE_OPENAI_SERVICE}.openai.azure.com" if not use_a
 
 openai_client = AzureOpenAI(
     azure_endpoint = azure_endpoint,
-    api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
+    api_version=AZURE_OPENAI_API_VERSION,
     api_key = openai_token.token
 )
+
+if use_api_management:
+    apim_token = azure_credential.get_token(f"{ENTRA_CLIENT_ID}/.default")
+    openai_client._azure_ad_token = apim_token.token
 
 # Set up clients for Cognitive Search and Storage
 search_client = SearchClient(
@@ -148,7 +153,6 @@ def content_file(path):
 @app.route("/chat", methods=["POST"])
 def chat():
     ensure_openai_token()
-    set_aoai_token(openai_client, get_token(request))
     approach = request.json["approach"]
     user_name = get_user_name(request)
     overrides = request.json.get("overrides")
@@ -167,7 +171,6 @@ def chat():
 @app.route("/docsearch", methods=["POST"])
 def docsearch():
     ensure_openai_token()
-    set_aoai_token(openai_client, get_token(request))
     approach = request.json["approach"]
     user_name = get_user_name(request)
     overrides = request.json.get("overrides")
@@ -188,10 +191,6 @@ def ensure_openai_token():
         openai_token = azure_credential.get_token("https://cognitiveservices.azure.com/.default")
         api_key = openai_token.token
     # openai.api_key = os.environ.get("AZURE_OPENAI_KEY")
-   
-def set_aoai_token(openai_client : AzureOpenAI, jwt: str):
-    if use_api_management and openai_client._azure_ad_token is None:
-        openai_client._azure_ad_token = jwt
 
 if __name__ == "__main__":
     app.run(port=5000, host='0.0.0.0')
