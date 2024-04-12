@@ -657,16 +657,6 @@ module searchContribRoleUser 'core/security/role.bicep' = {
   }
 }
 
-// module openAiUser 'core/security/role.bicep' = if (useApiManagement) {
-//   scope: apiManagementResourceGroup
-//   name: 'cognitive-services-openai-user'
-//   params: {
-//     principalId: principalId
-//     roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
-//     principalType: !empty(principalType) ? principalType : 'User'
-//   }
-// }
-
 // ================================================================================================
 // SYSTEM IDENTITIES
 // ================================================================================================
