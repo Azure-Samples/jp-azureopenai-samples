@@ -211,7 +211,7 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
   scope: openAiResourceGroup
   params: {
     name: !empty(openAiServiceName) ? openAiServiceName : '${abbrs.cognitiveServicesAccounts}${resourceToken}'
-    location: 'australiaeast'
+    location: openAiResourceGroupLocation
     tags: tags
     sku: {
       name: openAiSkuName
@@ -226,7 +226,7 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
         }
         sku: {
           name: 'Standard'
-          capacity: 30
+          capacity: 120
         }
       }
       {
@@ -238,7 +238,7 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
         }
         sku: {
           name: 'Standard'
-          capacity: 30
+          capacity: 120
         }
       }
     ]
