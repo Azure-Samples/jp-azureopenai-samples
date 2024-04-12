@@ -31,20 +31,21 @@
         </cors>
         <validate-azure-ad-token tenant-id="{tenant-id}" header-name="Authorization" failed-validation-httpcode="401" failed-validation-error-message="認証に失敗しました" output-token-variable-name="jwt-variables">
             <client-application-ids>
-                <application-id>{aud-app-id}</application-id>
+                <application-id>{aud-client-app-id}</application-id>
+                <application-id>{aud-web-app-id}</application-id>
             </client-application-ids>
             <required-claims>
-                <claim name="unique_name" />
+                <claim name="oid" />
             </required-claims>
         </validate-azure-ad-token>
 
-        <set-header name="unique_name" exists-action="override">
-            <value>@(((Jwt)context.Variables["jwt-variables"]).Claims.GetValueOrDefault("unique_name"))</value>
+        <set-header name="oid" exists-action="override">
+            <value>@(((Jwt)context.Variables["jwt-variables"]).Claims.GetValueOrDefault("oid"))</value>
         </set-header>
         <trace source="jwt" severity="information">
-            <message>@(((Jwt)context.Variables["jwt-variables"]).Claims.GetValueOrDefault("unique_name"))</message>
+            <message>@(((Jwt)context.Variables["jwt-variables"]).Claims.GetValueOrDefault("oid"))</message>
         </trace>
-        <quota-by-key calls="300" renewal-period="86400" counter-key="@(((Jwt)context.Variables["jwt-variables"]).Claims.GetValueOrDefault("unique_name"))" increment-condition="@(context.Response.StatusCode >= 200 && context.Response.StatusCode < 300)" />
+        <quota-by-key calls="300" renewal-period="86400" counter-key="@(((Jwt)context.Variables["jwt-variables"]).Claims.GetValueOrDefault("oid"))" increment-condition="@(context.Response.StatusCode >= 200 && context.Response.StatusCode < 300)" />
         <authentication-managed-identity resource="https://cognitiveservices.azure.com" />
     </inbound>
     <backend>
