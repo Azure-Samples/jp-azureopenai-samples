@@ -8,13 +8,10 @@ from approaches.approach import Approach
 from approaches.chatlogging import write_chatlog, ApproachType
 from core.messagebuilder import MessageBuilder
 from core.modelhelper import get_gpt_model, get_max_token_from_messages
-from core.requestapim import RequestAPIM
 
 # Simple read implementation, using the OpenAI APIs directly. It uses OpenAI to generate an completion 
 # (answer) with that prompt.
 class ChatReadApproach(Approach):
-
-    request_apim = RequestAPIM()
 
     def run(self, openai_client: AzureOpenAI, user_name: str, history: list[dict[str, str]], overrides: dict[str, Any]) -> Any:
         chat_model = overrides.get("gptModel")

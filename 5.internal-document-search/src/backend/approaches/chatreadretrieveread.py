@@ -9,7 +9,6 @@ from approaches.approach import Approach
 from approaches.chatlogging import write_chatlog, ApproachType
 from core.messagebuilder import MessageBuilder
 from core.modelhelper import get_gpt_model, get_max_token_from_messages
-from core.requestapim import RequestAPIM
 
 # Simple retrieve-then-read implementation, using the Cognitive Search and OpenAI APIs directly. It first retrieves
 # top documents from search, then constructs a prompt with them, and then uses OpenAI to generate an completion 
@@ -47,14 +46,12 @@ source quesion: {user_question}
         {'role' : ASSISTANT, 'content' : 'Health plan cardio coverage' }
     ]
 
-    request_apim = RequestAPIM()
-
     def __init__(self, search_client: SearchClient, sourcepage_field: str, content_field: str):
         self.search_client = search_client
         self.sourcepage_field = sourcepage_field
         self.content_field = content_field
     
-    def run(self, openai_client: Union[AzureOpenAI, str], user_name: str, history: list[dict], overrides: dict) -> any:
+    def run(self, openai_client: AzureOpenAI, user_name: str, history: list[dict], overrides: dict) -> any:
         chat_model = overrides.get("gptModel")
         chat_gpt_model = get_gpt_model(chat_model)
         chat_deployment = chat_gpt_model.get("deployment")
