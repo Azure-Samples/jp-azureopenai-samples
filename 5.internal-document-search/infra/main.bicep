@@ -88,7 +88,8 @@ param apimServiceName string = ''
 param corsOriginUrl string = '*'
 
 @description('Provide the ID of the registered app in the Azure AD that is authorized')
-param audienceAppId string = ''
+param audienceClientAppId string = ''
+param audienceWebAppId string = ''
 
 @description('Specify the scope name of the registered app in Azure AD that is authorized')
 param scopeName string = 'chat'
@@ -200,6 +201,7 @@ module backend 'core/host/appservice.bicep' = {
       AZURE_COSMOSDB_DATABASE: cosmosDbDatabaseName
       AZURE_COSMOSDB_ENDPOINT: cosmosDb.outputs.endpoint
       API_MANAGEMENT_ENDPOINT: useApiManagement ? apimApi.outputs.apiManagementEndpoint : ''
+      ENTRA_CLIENT_ID: audienceClientAppId
     }
   }
 }
@@ -209,7 +211,7 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
   scope: openAiResourceGroup
   params: {
     name: !empty(openAiServiceName) ? openAiServiceName : '${abbrs.cognitiveServicesAccounts}${resourceToken}'
-    location: openAiResourceGroupLocation
+    location: 'australiaeast'
     tags: tags
     sku: {
       name: openAiSkuName
@@ -224,7 +226,7 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
         }
         sku: {
           name: 'Standard'
-          capacity: 120
+          capacity: 30
         }
       }
       {
@@ -236,7 +238,7 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
         }
         sku: {
           name: 'Standard'
-          capacity: 120
+          capacity: 30
         }
       }
     ]
@@ -337,7 +339,8 @@ module apimApi './app/apim-api.bicep' = {
 
     //API Policy parameters
     corsOriginUrl: corsOriginUrl
-    audienceAppId: audienceAppId
+    audienceClientAppId: audienceClientAppId
+    audienceWebAppId: audienceWebAppId
     scopeName: scopeName
     apiBackendUrl: 'https://${openAi.outputs.name}.openai.azure.com/openai'
     tenantId: tenantId

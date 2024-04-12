@@ -59,7 +59,10 @@
     "corsOriginUrl": {
       "value": "*"
     },
-    "audienceAppId": {
+    "audienceClientAppId": {
+      "value": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    },
+    "audienceWebAppId": {
       "value": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
     },
     "scopeName": {
