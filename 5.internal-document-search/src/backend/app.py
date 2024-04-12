@@ -10,7 +10,7 @@ from openai import AzureOpenAI
 from azure.identity import DefaultAzureCredential
 from azure.search.documents import SearchClient
 from azure.storage.blob import BlobServiceClient
-from approaches.chatlogging import get_user_name, get_token, write_error
+from approaches.chatlogging import get_user_name, write_error
 from approaches.chatreadretrieveread import ChatReadRetrieveReadApproach
 from approaches.chatread import ChatReadApproach
 
