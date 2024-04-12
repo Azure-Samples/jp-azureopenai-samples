@@ -46,18 +46,6 @@ def get_user_name(req: request):
 
     return user_name
 
-def get_token(req: request):
-    # for local
-    # jwt = "<your access token here>"
-    # return jwt
-    # for production
-    try:
-        token = req.headers["X-MS-TOKEN-AAD-ACCESS-TOKEN"]
-        jwt = token
-    except Exception:
-        jwt = ""
-    return jwt
-
 def write_chatlog(approach: ApproachType, user_name: str, total_tokens: int, input: str, response: str, query: str=""):
     properties = {
         "approach" : approach.value,
