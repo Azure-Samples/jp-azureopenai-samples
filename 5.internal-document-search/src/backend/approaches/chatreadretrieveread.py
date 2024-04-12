@@ -1,6 +1,4 @@
 from text import nonewlines
-from typing import Union
-
 from openai import AzureOpenAI
 
 from azure.search.documents import SearchClient
