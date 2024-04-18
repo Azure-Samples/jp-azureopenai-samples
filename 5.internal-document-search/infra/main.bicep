@@ -314,7 +314,7 @@ module apim './core/gateway/apim.bicep' = {
     location: location
     tags: tags
     useApiManagement: useApiManagement
-    sku: 'Standard'
+    sku: 'StandardV2'
     skuCount: 1
     applicationInsightsName: monitoring.outputs.applicationInsightsName
     workspaceId: monitoring.outputs.logAnalyticsWorkspaceId

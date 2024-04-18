@@ -17,6 +17,7 @@ param publisherName string = 'n/a'
   'Consumption'
   'Developer'
   'Standard'
+  'StandardV2'
   'Premium'
 ])
 param sku string = 'Consumption'
@@ -30,7 +31,7 @@ param applicationInsightsName string
 param workspaceId string
 param storageAccountId string
 
-resource apimService 'Microsoft.ApiManagement/service@2021-08-01' = if (useApiManagement) {
+resource apimService 'Microsoft.ApiManagement/service@2023-05-01-preview' = if (useApiManagement) {
   name: name
   location: location
   tags: union(tags, { 'azd-service-name': name })
