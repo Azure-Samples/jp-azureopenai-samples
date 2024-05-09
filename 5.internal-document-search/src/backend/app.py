@@ -40,6 +40,8 @@ AZURE_OPENAI_GPT_4_32K_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_4_32K_DEPLO
 API_MANAGEMENT_ENDPOINT = os.environ.get("API_MANAGEMENT_ENDPOINT")
 ENTRA_CLIENT_ID = os.environ.get("ENTRA_CLIENT_ID")
 
+USE_API_MANAGEMENT = True if os.environ.get("USE_API_MANAGEMENT").lower() == "true" else False
+
 gpt_models = {
     "gpt-3.5-turbo": {
         "deployment": AZURE_OPENAI_GPT_35_TURBO_DEPLOYMENT,
@@ -70,9 +72,8 @@ gpt_models = {
 azure_credential = DefaultAzureCredential()
 openai_token = azure_credential.get_token("https://cognitiveservices.azure.com/.default")
 
-use_api_management = False
 api_management_url = API_MANAGEMENT_ENDPOINT + "/deployments/gpt-35-turbo-deploy/chat/completions?api-version=2023-05-15"
-azure_endpoint = f"https://{AZURE_OPENAI_SERVICE}.openai.azure.com" if not use_api_management else api_management_url
+azure_endpoint = f"https://{AZURE_OPENAI_SERVICE}.openai.azure.com" if not USE_API_MANAGEMENT else api_management_url
 
 openai_client = AzureOpenAI(
     azure_endpoint = azure_endpoint,
@@ -80,7 +81,7 @@ openai_client = AzureOpenAI(
     api_key = openai_token.token
 )
 
-if use_api_management:
+if USE_API_MANAGEMENT:
     apim_token = azure_credential.get_token(f"{ENTRA_CLIENT_ID}/.default")
     openai_client._azure_ad_token = apim_token.token
 

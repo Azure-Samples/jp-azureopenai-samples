@@ -73,6 +73,9 @@
     },
     "aoaiCapacity": {
       "value": 30
+    },
+    "useApiManagement": {
+      "value": false
     }
   }
 }

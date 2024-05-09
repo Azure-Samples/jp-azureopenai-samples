@@ -79,7 +79,7 @@ param principalId string = ''
 param useApplicationInsights bool = true
 
 @description('Use API Management for protect Azure OpenAI service API endpoints')
-param useApiManagement bool = false
+param useApiManagement bool
 
 param apimServiceName string = ''
 
@@ -202,6 +202,7 @@ module backend 'core/host/appservice.bicep' = {
       AZURE_COSMOSDB_ENDPOINT: cosmosDb.outputs.endpoint
       API_MANAGEMENT_ENDPOINT: useApiManagement ? apimApi.outputs.apiManagementEndpoint : ''
       ENTRA_CLIENT_ID: audienceClientAppId
+      USE_API_MANAGEMENT: useApiManagement
     }
   }
 }
@@ -314,7 +315,7 @@ module apim './core/gateway/apim.bicep' = {
     location: location
     tags: tags
     useApiManagement: useApiManagement
-    sku: 'StandardV2'
+    sku: 'Standard'
     skuCount: 1
     applicationInsightsName: monitoring.outputs.applicationInsightsName
     workspaceId: monitoring.outputs.logAnalyticsWorkspaceId
