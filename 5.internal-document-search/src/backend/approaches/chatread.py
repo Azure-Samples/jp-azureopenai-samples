@@ -13,10 +13,12 @@ from core.modelhelper import get_gpt_model, get_max_token_from_messages
 # (answer) with that prompt.
 class ChatReadApproach(Approach):
 
-    def run(self, openai_client: AzureOpenAI, user_name: str, history: list[dict[str, str]], overrides: dict[str, Any]) -> Any:
+    def run(self, openai_clients: AzureOpenAI, user_name: str, history: list[dict[str, str]], overrides: dict[str, Any]) -> Any:
         chat_model = overrides.get("gptModel")
         chat_gpt_model = get_gpt_model(chat_model)
         chat_deployment = chat_gpt_model.get("deployment")
+
+        openai_client = openai_clients.get(chat_model)
 
         systemPrompt =  overrides.get("systemPrompt")
         temperature = float(overrides.get("temperature"))

@@ -4,15 +4,13 @@ import mimetypes
 import urllib.parse
 from flask import Flask, request, jsonify
 
-import tiktoken
-from openai import AzureOpenAI
-
 from azure.identity import DefaultAzureCredential
 from azure.search.documents import SearchClient
 from azure.storage.blob import BlobServiceClient
 from approaches.chatlogging import get_user_name, write_error
 from approaches.chatreadretrieveread import ChatReadRetrieveReadApproach
 from approaches.chatread import ChatReadApproach
+from core.openaiclienthelper import get_openai_clients
 
 from azure.monitor.opentelemetry import configure_azure_monitor
 from opentelemetry.instrumentation.flask import FlaskInstrumentor
@@ -30,40 +28,6 @@ KB_FIELDS_CATEGORY = os.environ.get("KB_FIELDS_CATEGORY") or "category"
 KB_FIELDS_SOURCEPAGE = os.environ.get("KB_FIELDS_SOURCEPAGE") or "sourcepage"
 
 AZURE_OPENAI_SERVICE = os.environ.get("AZURE_OPENAI_SERVICE")
-AZURE_OPENAI_API_VERSION = os.environ.get("AZURE_OPENAI_API_VERSION")
-
-AZURE_OPENAI_GPT_35_TURBO_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_35_TURBO_DEPLOYMENT")
-AZURE_OPENAI_GPT_35_TURBO_16K_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_35_TURBO_16K_DEPLOYMENT")
-AZURE_OPENAI_GPT_4_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_4_DEPLOYMENT")
-AZURE_OPENAI_GPT_4_32K_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_4_32K_DEPLOYMENT")
-
-API_MANAGEMENT_ENDPOINT = os.environ.get("API_MANAGEMENT_ENDPOINT")
-ENTRA_CLIENT_ID = os.environ.get("ENTRA_CLIENT_ID")
-
-USE_API_MANAGEMENT = True if os.environ.get("USE_API_MANAGEMENT").lower() == "true" else False
-
-gpt_models = {
-    "gpt-3.5-turbo": {
-        "deployment": AZURE_OPENAI_GPT_35_TURBO_DEPLOYMENT,
-        "max_tokens": 4096,
-        "encoding": tiktoken.encoding_for_model("gpt-3.5-turbo")
-    },
-    "gpt-3.5-turbo-16k": {
-        "deployment": AZURE_OPENAI_GPT_35_TURBO_16K_DEPLOYMENT,
-        "max_tokens": 16384,
-        "encoding": tiktoken.encoding_for_model("gpt-3.5-turbo")
-    },
-    "gpt-4": {
-        "deployment": AZURE_OPENAI_GPT_4_DEPLOYMENT,
-        "max_tokens": 8192,
-        "encoding": tiktoken.encoding_for_model("gpt-4")
-    },
-    "gpt-4-32k": {
-        "deployment": AZURE_OPENAI_GPT_4_32K_DEPLOYMENT,
-        "max_tokens": 32768,
-        "encoding": tiktoken.encoding_for_model("gpt-4-32k")
-    }
-}
 
 # Use the current user identity to authenticate with Azure OpenAI, Cognitive Search and Blob Storage (no secrets needed, 
 # just use 'az login' locally, and managed identity when deployed on Azure). If you need to use keys, use separate AzureKeyCredential instances with the 
@@ -72,18 +36,7 @@ gpt_models = {
 azure_credential = DefaultAzureCredential()
 openai_token = azure_credential.get_token("https://cognitiveservices.azure.com/.default")
 
-api_management_url = API_MANAGEMENT_ENDPOINT + "/deployments/gpt-35-turbo-deploy/chat/completions?api-version=2023-05-15"
-azure_endpoint = f"https://{AZURE_OPENAI_SERVICE}.openai.azure.com" if not USE_API_MANAGEMENT else api_management_url
-
-openai_client = AzureOpenAI(
-    azure_endpoint = azure_endpoint,
-    api_version=AZURE_OPENAI_API_VERSION,
-    api_key = openai_token.token
-)
-
-if USE_API_MANAGEMENT:
-    apim_token = azure_credential.get_token(f"{ENTRA_CLIENT_ID}/.default")
-    openai_client._azure_ad_token = apim_token.token
+openai_clients = get_openai_clients(openai_token.token, azure_credential)
 
 # Set up clients for Cognitive Search and Storage
 search_client = SearchClient(
@@ -162,7 +115,7 @@ def chat():
         impl = chat_approaches.get(approach)
         if not impl:
             return jsonify({"error": "unknown approach"}), 400
-        r = impl.run(openai_client, user_name, request.json["history"], overrides)
+        r = impl.run(openai_clients, user_name, request.json["history"], overrides)
         return jsonify(r)
     except Exception as e:
         write_error("chat", user_name, str(e))
@@ -180,7 +133,7 @@ def docsearch():
         impl = chat_approaches.get(approach)
         if not impl:
             return jsonify({"error": "unknown approach"}), 400
-        r = impl.run(openai_client, user_name, request.json["history"], overrides)
+        r = impl.run(openai_clients, user_name, request.json["history"], overrides)
         return jsonify(r)
     except Exception as e:
         write_error("docsearch", user_name, str(e))
@@ -190,7 +143,8 @@ def ensure_openai_token():
     global openai_token
     if openai_token.expires_on < int(time.time()) - 60:
         openai_token = azure_credential.get_token("https://cognitiveservices.azure.com/.default")
-        openai_client.api_key = openai_token.token
+        for openai_client in list(openai_clients.keys()):
+            openai_client.api_key = openai_token.token
 
 if __name__ == "__main__":
     app.run(port=5000, host='0.0.0.0')

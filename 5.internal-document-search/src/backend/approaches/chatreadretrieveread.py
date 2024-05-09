@@ -49,10 +49,12 @@ source quesion: {user_question}
         self.sourcepage_field = sourcepage_field
         self.content_field = content_field
     
-    def run(self, openai_client: AzureOpenAI, user_name: str, history: list[dict], overrides: dict) -> any:
+    def run(self, openai_clients: AzureOpenAI, user_name: str, history: list[dict], overrides: dict) -> any:
         chat_model = overrides.get("gptModel")
         chat_gpt_model = get_gpt_model(chat_model)
         chat_deployment = chat_gpt_model.get("deployment")
+
+        openai_client = openai_clients.get(chat_model)
 
         # STEP 1: Generate an optimized keyword search query based on the chat history and the last question
         user_q = 'Generate search query for: ' + history[-1]["user"]
@@ -64,8 +66,7 @@ source quesion: {user_question}
             self.query_prompt_few_shots
             )
 
-        max_tokens =  get_max_token_from_messages(messages, chat_model)
-
+        max_tokens = get_max_token_from_messages(messages, chat_model)
 
         # Change create type ChatCompletion.create → ChatCompletion.acreate when enabling asynchronous support.
         chat_completion = openai_client.chat.completions.create(
