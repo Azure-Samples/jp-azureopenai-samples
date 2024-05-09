@@ -13,21 +13,19 @@ API Management を利用するために、以下ができている前提で説�
 > Easy Auth の設定の際に、既存のアプリを登録する場合は Entra ID アプリの「認証」で以下のように設定してください。![Entra ID アプリの登録](./assets/entra-id-app-settings.png)
 
 ## 利用手順
-1. main.bicep の変更
-1. app.py の変更
 1. main.parameters.json の変更
 1. API のスコープ追加
 1. API Management のデプロイ
 
-### main.bicep の変更
-main.bicep における以下の行を見つけて、`true` に変更する。
-> param useApiManagement bool = false
-
-### app.py の変更
-app.py における以下の行を見つけて、`True` に変更する。
-> use_api_management = False
-
 ### main.parameters.json の変更
+
+#### API Management の有効化
+main.parameters.json にある以下の false の部分を true に書き変える。
+> "useApiManagement": {
+    "value": false
+}
+
+#### アプリケーション ID とテナント ID の登録
 Azure ポータルからデプロイ済み App Service の画面から、「認証」>「ID プロバイダー」>「Microsoft (<アプリ名>)」を選択。
 
 ![Entra ID アプリの ID 確認](./assets/apim_arch_deploy_step1.png)
@@ -45,6 +43,7 @@ main.parameters.json の以下の xxxx の部分に対し、コピーした ID �
     "value": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 },
 
+#### サービスプリンシパルのアプリケーション ID の登録
 Azure ポータルの検索窓から、App Service 名を入力して表示されるサービスプリンシパルを選択する。
 
 ![Web App アプリの ID 確認](./assets/apim_arch_deploy_step3.png)
