@@ -38,11 +38,11 @@ var policy_template5 = replace(policy_template4 ,'{scope-name}', scopeName)
 var policy_template6 = replace(policy_template5 ,'{backend-url}', apiBackendUrl)
 var apiPolicyContent = replace(policy_template6 ,'{tenant-id}', tenantId)
 
-resource apimService 'Microsoft.ApiManagement/service@2021-08-01' existing = if (useApiManagement) {
+resource apimService 'Microsoft.ApiManagement/service@2022-08-01' existing = if (useApiManagement) {
   name: name
 }
 
-resource aoaiApi 'Microsoft.ApiManagement/service/apis@2021-12-01-preview' = if (useApiManagement) {
+resource aoaiApi 'Microsoft.ApiManagement/service/apis@2022-08-01' = if (useApiManagement) {
   name: apiName
   parent: apimService
   properties: {
@@ -59,7 +59,7 @@ resource aoaiApi 'Microsoft.ApiManagement/service/apis@2021-12-01-preview' = if 
   }
 }
 
-resource apiPolicy 'Microsoft.ApiManagement/service/apis/policies@2021-12-01-preview' = if (useApiManagement) {
+resource apiPolicy 'Microsoft.ApiManagement/service/apis/policies@2022-08-01' = if (useApiManagement) {
   name: 'policy'
   parent: aoaiApi
   properties: {

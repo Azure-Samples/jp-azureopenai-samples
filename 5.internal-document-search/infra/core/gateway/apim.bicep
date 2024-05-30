@@ -31,7 +31,7 @@ param applicationInsightsName string
 param workspaceId string
 param storageAccountId string
 
-resource apimService 'Microsoft.ApiManagement/service@2023-05-01-preview' = if (useApiManagement) {
+resource apimService 'Microsoft.ApiManagement/service@2022-08-01' = if (useApiManagement) {
   name: name
   location: location
   tags: union(tags, { 'azd-service-name': name })
@@ -170,7 +170,7 @@ resource appInsightsComponents 'Microsoft.Insights/components@2020-02-02' = if (
 }
 
 // Application Insightsを用いる診断設定
-resource apiManagement_logger_appInsights 'Microsoft.ApiManagement/service/loggers@2019-01-01' = if (useApiManagement) {
+resource apiManagement_logger_appInsights 'Microsoft.ApiManagement/service/loggers@2022-08-01' = if (useApiManagement) {
   parent: apimService
   name: 'applicationInsights'
   properties: {
@@ -181,7 +181,7 @@ resource apiManagement_logger_appInsights 'Microsoft.ApiManagement/service/logge
   }
 }
 
-resource apiManagement_diagnostics_appInsights 'Microsoft.ApiManagement/service/diagnostics@2019-01-01' = if (useApiManagement) {
+resource apiManagement_diagnostics_appInsights 'Microsoft.ApiManagement/service/diagnostics@2022-08-01' = if (useApiManagement) {
   parent: apimService
   name: 'applicationinsights'
   properties: {
