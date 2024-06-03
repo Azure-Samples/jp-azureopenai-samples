@@ -56,7 +56,7 @@ param cosmosDBAccountName string = ''
 param cosmosDbDatabaseName string = 'ChatHistory'
 param cosmosDbContainerName string = 'Prompts'
 
-
+param apiManagementResourceGroupName string = ''
 
 param vnetLocation string = location
 param vnetAddressPrefix string = '10.0.0.0/16'
@@ -77,6 +77,25 @@ param principalId string = ''
 
 @description('Use Application Insights for monitoring and performance tracing')
 param useApplicationInsights bool = true
+
+@description('Use API Management for protect Azure OpenAI service API endpoints')
+param useApiManagement bool
+
+param apimServiceName string = ''
+
+// params for api policy settings
+@description('Specify the domains allowed as CORS origins')
+param corsOriginUrl string = '*'
+
+@description('Provide the ID of the registered app in the Azure AD that is authorized')
+param audienceClientAppId string = ''
+param audienceWebAppId string = ''
+
+@description('Specify the scope name of the registered app in Azure AD that is authorized')
+param scopeName string = 'chat'
+
+@description('Provide the Tenant ID of the Azure AD for authentication purposes')
+param tenantId string = ''
 
 var abbrs = loadJsonContent('abbreviations.json')
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
@@ -103,6 +122,10 @@ resource searchServiceResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-
 
 resource storageResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(storageResourceGroupName)) {
   name: !empty(storageResourceGroupName) ? storageResourceGroupName : resourceGroup.name
+}
+
+resource apiManagementResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(apiManagementResourceGroupName)) {
+  name: !empty(apiManagementResourceGroupName) ? apiManagementResourceGroupName : resourceGroup.name
 }
 
 module cosmosDb 'core/db/cosmosdb.bicep' = {
@@ -163,6 +186,7 @@ module backend 'core/host/appservice.bicep' = {
     virtualNetworkSubnetId: isPrivateNetworkEnabled ? appServiceSubnet.outputs.id : ''
     appSettings: {
       APPLICATIONINSIGHTS_CONNECTION_STRING: useApplicationInsights ? monitoring.outputs.applicationInsightsConnectionString : ''
+      AZURE_APP_SERVICE_ENDPOINT: !empty(backendServiceName) ? backendServiceName : '${abbrs.webSitesAppService}backend-${resourceToken}'
       AZURE_STORAGE_ACCOUNT: storage.outputs.name
       AZURE_STORAGE_CONTAINER: storageContainerName
       AZURE_OPENAI_SERVICE: openAi.outputs.name
@@ -176,6 +200,9 @@ module backend 'core/host/appservice.bicep' = {
       AZURE_COSMOSDB_CONTAINER: cosmosDbContainerName
       AZURE_COSMOSDB_DATABASE: cosmosDbDatabaseName
       AZURE_COSMOSDB_ENDPOINT: cosmosDb.outputs.endpoint
+      API_MANAGEMENT_ENDPOINT: useApiManagement ? apimApi.outputs.apiManagementEndpoint : ''
+      ENTRA_CLIENT_ID: audienceClientAppId
+      USE_API_MANAGEMENT: useApiManagement
     }
   }
 }
@@ -298,6 +325,50 @@ module storage 'core/storage/storage-account.bicep' = {
       }
     ]
     publicNetworkAccess: 'Enabled'
+  }
+}
+
+// ================================================================================================
+// API Management
+// ================================================================================================
+module apim './core/gateway/apim.bicep' = {
+  name: 'apim'
+  scope: apiManagementResourceGroup
+  params: {
+    name: !empty(apimServiceName) ? apimServiceName : '${abbrs.apiManagementService}${resourceToken}'
+    location: location
+    tags: tags
+    useApiManagement: useApiManagement
+    sku: 'Standard'
+    skuCount: 1
+    applicationInsightsName: monitoring.outputs.applicationInsightsName
+    workspaceId: monitoring.outputs.logAnalyticsWorkspaceId
+    storageAccountId: storage.outputs.id
+  }
+}
+
+// Configures the API in the Azure API Management (APIM) service
+module apimApi './app/apim-api.bicep' = {
+  name: 'apimapi'
+  scope: apiManagementResourceGroup
+  dependsOn: [
+    apim
+  ]
+  params: {
+    name: !empty(apimServiceName) ? apimServiceName : '${abbrs.apiManagementService}${resourceToken}'
+    useApiManagement: useApiManagement
+    apiName: 'azure-openai-api'
+    apiDisplayName: 'Azure OpenAI API'
+    apiDescription: 'This is proxy endpoints for Azure OpenAI API'
+    apiPath: 'api'
+
+    //API Policy parameters
+    corsOriginUrl: corsOriginUrl
+    audienceClientAppId: audienceClientAppId
+    audienceWebAppId: audienceWebAppId
+    scopeName: scopeName
+    apiBackendUrl: 'https://${openAi.outputs.name}.openai.azure.com/openai'
+    tenantId: tenantId
   }
 }
 
@@ -624,6 +695,16 @@ module openAiRoleBackend 'core/security/role.bicep' = {
   }
 }
 
+module openAiRoleApiManagement 'core/security/role.bicep' = if (useApiManagement) {
+  scope: apiManagementResourceGroup
+  name: 'openai-role-api-management'
+  params: {
+    principalId: apim.outputs.identityPrincipalId
+    roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
+    principalType: 'ServicePrincipal'
+  }
+}
+
 module storageRoleBackend 'core/security/role.bicep' = {
   scope: storageResourceGroup
   name: 'storage-role-backend'
@@ -677,3 +758,4 @@ output AZURE_COSMOSDB_RESOURCE_GROUP string = resourceGroup.name
 output BACKEND_IDENTITY_PRINCIPAL_ID string = backend.outputs.identityPrincipalId
 output BACKEND_URI string = backend.outputs.uri
 output APPLICATIONINSIGHTS_CONNECTION_STRING string = useApplicationInsights ? monitoring.outputs.applicationInsightsConnectionString : ''
+output API_MANAGEMENT_ENDPOINT string =  useApiManagement ? apimApi.outputs.apiManagementEndpoint : ''

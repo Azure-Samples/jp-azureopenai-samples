@@ -4,14 +4,13 @@ import mimetypes
 import urllib.parse
 from flask import Flask, request, jsonify
 
-import openai
-
 from azure.identity import DefaultAzureCredential
 from azure.search.documents import SearchClient
 from azure.storage.blob import BlobServiceClient
 from approaches.chatlogging import get_user_name, write_error
 from approaches.chatreadretrieveread import ChatReadRetrieveReadApproach
 from approaches.chatread import ChatReadApproach
+from core.openaiclienthelper import get_openai_clients
 
 from azure.monitor.opentelemetry import configure_azure_monitor
 from opentelemetry.instrumentation.flask import FlaskInstrumentor
@@ -29,24 +28,15 @@ KB_FIELDS_CATEGORY = os.environ.get("KB_FIELDS_CATEGORY") or "category"
 KB_FIELDS_SOURCEPAGE = os.environ.get("KB_FIELDS_SOURCEPAGE") or "sourcepage"
 
 AZURE_OPENAI_SERVICE = os.environ.get("AZURE_OPENAI_SERVICE")
-AZURE_OPENAI_API_VERSION = os.environ.get("AZURE_OPENAI_API_VERSION")
 
 # Use the current user identity to authenticate with Azure OpenAI, Cognitive Search and Blob Storage (no secrets needed, 
 # just use 'az login' locally, and managed identity when deployed on Azure). If you need to use keys, use separate AzureKeyCredential instances with the 
 # keys for each service
 # If you encounter a blocking error during a DefaultAzureCredntial resolution, you can exclude the problematic credential by using a parameter (ex. exclude_shared_token_cache_credential=True)
 azure_credential = DefaultAzureCredential()
-
-# Used by the OpenAI SDK
-openai.api_type = "azure"
-openai.api_base = f"https://{AZURE_OPENAI_SERVICE}.openai.azure.com"
-openai.api_version = AZURE_OPENAI_API_VERSION
-
-# Comment these two lines out if using keys, set your API key in the OPENAI_API_KEY environment variable instead
-openai.api_type = "azure_ad"
 openai_token = azure_credential.get_token("https://cognitiveservices.azure.com/.default")
-openai.api_key = openai_token.token
-# openai.api_key = os.environ.get("AZURE_OPENAI_KEY")
+
+openai_clients = get_openai_clients(openai_token.token, azure_credential)
 
 # Set up clients for Cognitive Search and Storage
 search_client = SearchClient(
@@ -125,7 +115,7 @@ def chat():
         impl = chat_approaches.get(approach)
         if not impl:
             return jsonify({"error": "unknown approach"}), 400
-        r = impl.run(user_name, request.json["history"], overrides)
+        r = impl.run(openai_clients, user_name, request.json["history"], overrides)
         return jsonify(r)
     except Exception as e:
         write_error("chat", user_name, str(e))
@@ -143,7 +133,7 @@ def docsearch():
         impl = chat_approaches.get(approach)
         if not impl:
             return jsonify({"error": "unknown approach"}), 400
-        r = impl.run(user_name, request.json["history"], overrides)
+        r = impl.run(openai_clients, user_name, request.json["history"], overrides)
         return jsonify(r)
     except Exception as e:
         write_error("docsearch", user_name, str(e))
@@ -153,8 +143,8 @@ def ensure_openai_token():
     global openai_token
     if openai_token.expires_on < int(time.time()) - 60:
         openai_token = azure_credential.get_token("https://cognitiveservices.azure.com/.default")
-        openai.api_key = openai_token.token
-    # openai.api_key = os.environ.get("AZURE_OPENAI_KEY")
-   
+        for openai_client in list(openai_clients.keys()):
+            openai_client.api_key = openai_token.token
+
 if __name__ == "__main__":
     app.run(port=5000, host='0.0.0.0')

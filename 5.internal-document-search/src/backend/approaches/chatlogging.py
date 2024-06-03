@@ -12,11 +12,12 @@ from azure.identity import DefaultAzureCredential
 
 # CosmosDB
 endpoint = os.environ.get("AZURE_COSMOSDB_ENDPOINT")
-key = os.environ.get("COSMOSDB_KEY")
+key = os.environ.get("AZURE_COSMOSDB_KEY")
 database_name = os.environ.get("AZURE_COSMOSDB_DATABASE")
 container_name = os.environ.get("AZURE_COSMOSDB_CONTAINER")
 # CosmosDB Initialization
-credential = DefaultAzureCredential()
+credential = DefaultAzureCredential() # for production
+# credential = key # for local
 database = CosmosClient(endpoint, credential).get_database_client(database_name)
 container = database.get_container_client(container_name)
 
