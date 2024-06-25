@@ -35,14 +35,7 @@ param storageContainerName string = 'content'
 
 param openAiServiceName string = ''
 param openAiResourceGroupName string = ''
-
-@allowed([
-  'australiaeast'
-  'canadaeast'
-  'swedencentral'
-  'switzerlandnorth'
-])
-param openAiResourceGroupLocation string
+param openAiResourceGroupLocation string = location
 
 param openAiSkuName string = 'S0'
 
@@ -258,7 +251,7 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
         }
         sku: {
           name: 'Standard'
-          capacity: 40
+          capacity: 120
         }
       }
       {
@@ -270,7 +263,7 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
         }
         sku: {
           name: 'Standard'
-          capacity: 40
+          capacity: 120
         }
       }
     ]
@@ -735,7 +728,6 @@ module searchRoleBackend 'core/security/role.bicep' = {
 output AZURE_LOCATION string = location
 output AZURE_TENANT_ID string = tenant().tenantId
 output AZURE_RESOURCE_GROUP string = resourceGroup.name
-output AZURE_OPENAI_RESOURCE_GROUP_LOCATION string = openAiResourceGroupLocation
 
 output AZURE_OPENAI_SERVICE string = openAi.outputs.name
 output AZURE_OPENAI_RESOURCE_GROUP string = openAiResourceGroup.name
