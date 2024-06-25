@@ -11,6 +11,9 @@
     "resourceGroupName": {
       "value": "${AZURE_RESOURCE_GROUP}"
     },
+    "openAiResourceGroupLocation": {
+      "value": "${AZURE_OPENAI_RESOURCE_GROUP_LOCATION}"
+    },
     "isPrivateNetworkEnabled": {
       "value": false
     },

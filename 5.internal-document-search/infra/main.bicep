@@ -35,7 +35,14 @@ param storageContainerName string = 'content'
 
 param openAiServiceName string = ''
 param openAiResourceGroupName string = ''
-param openAiResourceGroupLocation string = location
+
+@allowed([
+  'australiaeast'
+  'canadaeast'
+  'swedencentral'
+  'switzerlandnorth'
+])
+param openAiResourceGroupLocation string
 
 param openAiSkuName string = 'S0'
 
@@ -102,29 +109,29 @@ var resourceToken = toLower(uniqueString(subscription().id, environmentName, loc
 var tags = { 'azd-env-name': environmentName }
 
 // Organize resources in a resource group
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   name: !empty(resourceGroupName) ? resourceGroupName : '${abbrs.resourcesResourceGroups}${environmentName}'
   location: location
   tags: tags
 }
 
-resource openAiResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(openAiResourceGroupName)) {
+resource openAiResourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' existing = if (!empty(openAiResourceGroupName)) {
   name: !empty(openAiResourceGroupName) ? openAiResourceGroupName : resourceGroup.name
 }
 
-resource formRecognizerResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(formRecognizerResourceGroupName)) {
+resource formRecognizerResourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' existing = if (!empty(formRecognizerResourceGroupName)) {
   name: !empty(formRecognizerResourceGroupName) ? formRecognizerResourceGroupName : resourceGroup.name
 }
 
-resource searchServiceResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(searchServiceResourceGroupName)) {
+resource searchServiceResourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' existing = if (!empty(searchServiceResourceGroupName)) {
   name: !empty(searchServiceResourceGroupName) ? searchServiceResourceGroupName : resourceGroup.name
 }
 
-resource storageResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(storageResourceGroupName)) {
+resource storageResourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' existing = if (!empty(storageResourceGroupName)) {
   name: !empty(storageResourceGroupName) ? storageResourceGroupName : resourceGroup.name
 }
 
-resource apiManagementResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(apiManagementResourceGroupName)) {
+resource apiManagementResourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' existing = if (!empty(apiManagementResourceGroupName)) {
   name: !empty(apiManagementResourceGroupName) ? apiManagementResourceGroupName : resourceGroup.name
 }
 
@@ -251,7 +258,7 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
         }
         sku: {
           name: 'Standard'
-          capacity: 120
+          capacity: 40
         }
       }
       {
@@ -263,7 +270,7 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
         }
         sku: {
           name: 'Standard'
-          capacity: 120
+          capacity: 40
         }
       }
     ]
@@ -728,6 +735,7 @@ module searchRoleBackend 'core/security/role.bicep' = {
 output AZURE_LOCATION string = location
 output AZURE_TENANT_ID string = tenant().tenantId
 output AZURE_RESOURCE_GROUP string = resourceGroup.name
+output AZURE_OPENAI_RESOURCE_GROUP_LOCATION string = openAiResourceGroupLocation
 
 output AZURE_OPENAI_SERVICE string = openAi.outputs.name
 output AZURE_OPENAI_RESOURCE_GROUP string = openAiResourceGroup.name
