@@ -35,8 +35,14 @@ param storageContainerName string = 'content'
 
 param openAiServiceName string = ''
 param openAiResourceGroupName string = ''
-param openAiResourceGroupLocation string = location
 
+@allowed([
+  'australiaeast'
+  'canadaeast'
+  'swedencentral'
+  'switzerlandnorth'
+])
+param openAiResourceGroupLocation string
 param openAiSkuName string = 'S0'
 
 param openAiGpt35TurboDeploymentName string = 'gpt-35-turbo-deploy'
@@ -251,7 +257,7 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
         }
         sku: {
           name: 'Standard'
-          capacity: 120
+          capacity: 40
         }
       }
       {
@@ -263,7 +269,7 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
         }
         sku: {
           name: 'Standard'
-          capacity: 120
+          capacity: 40
         }
       }
     ]
@@ -736,6 +742,7 @@ output AZURE_OPENAI_GPT_35_TURBO_16K_DEPLOYMENT string = openAiGpt35Turbo16kDepl
 output AZURE_OPENAI_GPT_4_DEPLOYMENT string = openAiGpt4DeploymentName
 output AZURE_OPENAI_GPT_4_32K_DEPLOYMENT string = openAiGpt432kDeploymentName
 output AZURE_OPENAI_API_VERSION string = openAiApiVersion
+output AZURE_OPENAI_RESOURCE_GROUP_LOCATION string = openAiResourceGroupLocation
 
 output AZURE_FORMRECOGNIZER_SERVICE string = formRecognizer.outputs.name
 output AZURE_FORMRECOGNIZER_RESOURCE_GROUP string = formRecognizerResourceGroup.name
