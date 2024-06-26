@@ -2,7 +2,7 @@
 
 ## 概要
 
-このデモは、ChatGPT ライクなインターフェースを使用して企業の社内文書を検索するアプリケーションの実装パターンです。デモアプリを利用するためには、Azure Open AI の ChatGPT(gpt-35-turbo) モデルと、Azure AI Search、他にいくつかのリソースの作成が必要です。
+このデモは、ChatGPT ライクなインターフェースを使用して企業の社内文書を検索するアプリケーションの実装パターンです。デモアプリを利用するためには、Azure Open AI の ChatGPT モデルと、Azure AI Search、他にいくつかのリソースの作成が必要です。
 
 このリポジトリでは、サンプルデータに[厚生労働省のモデル就業規則](https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudoukijun/zigyonushi/model/index.html)を使用しています。
 
@@ -49,7 +49,7 @@
 | サービス名 | SKU | Note |
 | --- | --- | --- |
 |Azure App Service|S1||
-|Azure OpenAI Service|S0|gpt-3.5-turbo gpt-3.5-turbo-16k|
+|Azure OpenAI Service|S0|gpt-3.5-turbo gpt-3.5-turbo-16k gpt-4 gpt-4-32k|
 |Azure AI Search|S1||
 |Azure Cosmos DB|プロビジョニング済みスループット||
 |Azure Form Recognizer|S0||
