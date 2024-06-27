@@ -22,7 +22,7 @@ SECTION_OVERLAP = 100
 parser = argparse.ArgumentParser(
     description="Prepare documents by extracting content from PDFs, splitting content into sections, uploading to blob storage, and indexing in a search index.",
     epilog="Example: prepdocs.py '..\data\*' --storageaccount myaccount --container mycontainer --searchservice mysearch --index myindex -v"
-    )
+)
 parser.add_argument("files", help="Files to be processed")
 parser.add_argument("--category", help="Value for the category field in the search index for all sections indexed in this run")
 parser.add_argument("--skipblobs", action="store_true", help="Skip uploading individual pages to Azure Blob Storage")
@@ -59,11 +59,13 @@ if not args.localpdfparser:
         exit(1)
     formrecognizer_creds = default_creds if args.formrecognizerkey is None else AzureKeyCredential(args.formrecognizerkey)
 
-def blob_name_from_file_page(filename, page = 0):
+
+def blob_name_from_file_page(filename, page=0):
     if os.path.splitext(filename)[1].lower() == ".pdf":
         return os.path.splitext(os.path.basename(filename))[0] + f"-{page}" + ".pdf"
     else:
         return os.path.basename(filename)
+
 
 def upload_blobs(filename):
     blob_service = BlobServiceClient(account_url=f"https://{args.storageaccount}.blob.core.windows.net", credential=storage_creds)
@@ -77,7 +79,8 @@ def upload_blobs(filename):
         pages = reader.pages
         for i in range(len(pages)):
             blob_name = blob_name_from_file_page(filename, i)
-            if args.verbose: print(f"\tUploading blob for page {i} -> {blob_name}")
+            if args.verbose:
+                print(f"\tUploading blob for page {i} -> {blob_name}")
             f = io.BytesIO()
             writer = PdfWriter()
             writer.add_page(pages[i])
@@ -86,11 +89,13 @@ def upload_blobs(filename):
             blob_container.upload_blob(blob_name, f, overwrite=True)
     else:
         blob_name = blob_name_from_file_page(filename)
-        with open(filename,"rb") as data:
+        with open(filename, "rb") as data:
             blob_container.upload_blob(blob_name, data, overwrite=True)
 
+
 def remove_blobs(filename):
-    if args.verbose: print(f"Removing blobs for '{filename or '<all>'}'")
+    if args.verbose:
+        print(f"Removing blobs for '{filename or '<all>'}'")
     blob_service = BlobServiceClient(account_url=f"https://{args.storageaccount}.blob.core.windows.net", credential=storage_creds)
     blob_container = blob_service.get_container_client(args.container)
     if blob_container.exists():
@@ -100,8 +105,10 @@ def remove_blobs(filename):
             prefix = os.path.splitext(os.path.basename(filename))[0]
             blobs = filter(lambda b: re.match(f"{prefix}-\d+\.pdf", b), blob_container.list_blob_names(name_starts_with=os.path.splitext(os.path.basename(prefix))[0]))
         for b in blobs:
-            if args.verbose: print(f"\tRemoving blob {b}")
+            if args.verbose:
+                print(f"\tRemoving blob {b}")
             blob_container.delete_blob(b)
+
 
 def table_to_html(table):
     table_html = "<table>"
@@ -111,14 +118,30 @@ def table_to_html(table):
         for cell in row_cells:
             tag = "th" if (cell.kind == "columnHeader" or cell.kind == "rowHeader") else "td"
             cell_spans = ""
-            if cell.column_span > 1: cell_spans += f" colSpan={cell.column_span}"
-            if cell.row_span > 1: cell_spans += f" rowSpan={cell.row_span}"
+            if cell.column_span > 1:
+                cell_spans += f" colSpan={cell.column_span}"
+            if cell.row_span > 1:
+                cell_spans += f" rowSpan={cell.row_span}"
             table_html += f"<{tag}{cell_spans}>{html.escape(cell.content)}</{tag}>"
-        table_html +="</tr>"
+        table_html += "</tr>"
     table_html += "</table>"
     return table_html
 
+
 def get_document_text(filename):
+    file_extensions = os.path.splitext(filename)[1].lower()
+    match file_extensions:
+        case str(".pdf"):
+            print("pdf")
+            page_map = _parse_pdf(filename)
+        case str(".txt"):
+            print("txt")
+            page_map = _parse_txt(filename)
+
+    return page_map
+
+
+def _parse_pdf(filename: str) -> list:
     offset = 0
     page_map = []
     if args.localpdfparser:
@@ -129,10 +152,11 @@ def get_document_text(filename):
             page_map.append((page_num, offset, page_text))
             offset += len(page_text)
     else:
-        if args.verbose: print(f"Extracting text from '{filename}' using Azure Form Recognizer")
+        if args.verbose:
+            print(f"Extracting text from '{filename}' using Azure Form Recognizer")
         form_recognizer_client = DocumentAnalysisClient(endpoint=f"https://{args.formrecognizerservice}.cognitiveservices.azure.com/", credential=formrecognizer_creds, headers={"x-ms-useragent": "azure-search-chat-demo/1.0.0"})
         with open(filename, "rb") as f:
-            poller = form_recognizer_client.begin_analyze_document("prebuilt-layout", document = f)
+            poller = form_recognizer_client.begin_analyze_document("prebuilt-layout", document=f)  # ここでエラー
         form_recognizer_results = poller.result()
 
         for page_num, page in enumerate(form_recognizer_results.pages):
@@ -141,13 +165,13 @@ def get_document_text(filename):
             # mark all positions of the table spans in the page
             page_offset = page.spans[0].offset
             page_length = page.spans[0].length
-            table_chars = [-1]*page_length
+            table_chars = [-1] * page_length
             for table_id, table in enumerate(tables_on_page):
                 for span in table.spans:
                     # replace all table spans with "table_id" in table_chars array
                     for i in range(span.length):
                         idx = span.offset - page_offset + i
-                        if idx >=0 and idx < page_length:
+                        if idx >= 0 and idx < page_length:
                             table_chars[idx] = table_id
 
             # build page text by replacing charcters in table spans with table html
@@ -163,13 +187,39 @@ def get_document_text(filename):
             page_text += " "
             page_map.append((page_num, offset, page_text))
             offset += len(page_text)
-
     return page_map
+
+
+def _parse_txt(filename: str) -> list:
+    page_text = ""
+    page_num = 0
+    offset = 0
+    page_map = []
+    if args.verbose:
+        print(f"Extracting text from '{filename}' using ")
+    # check file encoding format
+    with open(filename, 'rb') as f:
+        raw_data = f.read()
+        result = chardet.detect(raw_data)
+        encoding = result['encoding']
+    with open(filename, 'r', encoding=encoding) as f:
+        pages = f.readlines()
+        for i, line in enumerate(pages):
+            page_text += line
+            # 20 lines are considered a page.
+            if i % 20 == 0:
+                page_map.append((page_num, offset, page_text))
+                page_num += 1
+                offset += len(page_text)
+                page_text = ""
+    return page_map
+
 
 def split_text(page_map):
     SENTENCE_ENDINGS = [".", "!", "?"]
     WORDS_BREAKS = [",", ";", ":", " ", "(", ")", "[", "]", "{", "}", "\t", "\n"]
-    if args.verbose: print(f"Splitting '{filename}' into sections")
+    if args.verbose:
+        print(f"Splitting '{filename}' into sections")
 
     def find_page(offset):
         l = len(page_map)
@@ -195,7 +245,7 @@ def split_text(page_map):
                     last_word = end
                 end += 1
             if end < length and all_text[end] not in SENTENCE_ENDINGS and last_word > 0:
-                end = last_word # Fall back to at least keeping a whole word
+                end = last_word  # Fall back to at least keeping a whole word
         if end < length:
             end += 1
 
@@ -218,26 +268,30 @@ def split_text(page_map):
             # If the section ends with an unclosed table, we need to start the next section with the table.
             # If table starts inside SENTENCE_SEARCH_LIMIT, we ignore it, as that will cause an infinite loop for tables longer than MAX_SECTION_LENGTH
             # If last table starts inside SECTION_OVERLAP, keep overlapping
-            if args.verbose: print(f"Section ends with unclosed table, starting next section with the table at page {find_page(start)} offset {start} table start {last_table_start}")
+            if args.verbose:
+                print(f"Section ends with unclosed table, starting next section with the table at page {find_page(start)} offset {start} table start {last_table_start}")
             start = min(end - SECTION_OVERLAP, start + last_table_start)
         else:
             start = end - SECTION_OVERLAP
-        
+
     if start + SECTION_OVERLAP < end:
         yield (all_text[start:end], find_page(start))
+
 
 def create_sections(filename, page_map):
     for i, (section, pagenum) in enumerate(split_text(page_map)):
         yield {
-            "id": re.sub("[^0-9a-zA-Z_-]","_",f"{filename}-{i}"),
+            "id": re.sub("[^0-9a-zA-Z_-]", "_", f"{filename}-{i}"),
             "content": section,
             "category": args.category,
             "sourcepage": blob_name_from_file_page(filename, pagenum),
             "sourcefile": filename
         }
 
+
 def create_search_index():
-    if args.verbose: print(f"Ensuring search index {args.index} exists")
+    if args.verbose:
+        print(f"Ensuring search index {args.index} exists")
     index_client = SearchIndexClient(endpoint=f"https://{args.searchservice}.search.windows.net/",
                                      credential=search_creds)
     if args.index not in index_client.list_index_names():
@@ -256,16 +310,20 @@ def create_search_index():
                     prioritized_fields=PrioritizedFields(
                         title_field=None, prioritized_content_fields=[SemanticField(field_name='content')]))])
         )
-        if args.verbose: print(f"Creating {args.index} search index")
+        if args.verbose:
+            print(f"Creating {args.index} search index")
         index_client.create_index(index)
     else:
-        if args.verbose: print(f"Search index {args.index} already exists")
+        if args.verbose:
+            print(f"Search index {args.index} already exists")
+
 
 def index_sections(filename, sections):
-    if args.verbose: print(f"Indexing sections from '{filename}' into search index '{args.index}'")
+    if args.verbose:
+        print(f"Indexing sections from '{filename}' into search index '{args.index}'")
     search_client = SearchClient(endpoint=f"https://{args.searchservice}.search.windows.net/",
-                                    index_name=args.index,
-                                    credential=search_creds)
+                                 index_name=args.index,
+                                 credential=search_creds)
     i = 0
     batch = []
     for s in sections:
@@ -274,28 +332,34 @@ def index_sections(filename, sections):
         if i % 1000 == 0:
             results = search_client.upload_documents(documents=batch)
             succeeded = sum([1 for r in results if r.succeeded])
-            if args.verbose: print(f"\tIndexed {len(results)} sections, {succeeded} succeeded")
+            if args.verbose:
+                print(f"\tIndexed {len(results)} sections, {succeeded} succeeded")
             batch = []
 
     if len(batch) > 0:
         results = search_client.upload_documents(documents=batch)
         succeeded = sum([1 for r in results if r.succeeded])
-        if args.verbose: print(f"\tIndexed {len(results)} sections, {succeeded} succeeded")
+        if args.verbose:
+            print(f"\tIndexed {len(results)} sections, {succeeded} succeeded")
+
 
 def remove_from_index(filename):
-    if args.verbose: print(f"Removing sections from '{filename or '<all>'}' from search index '{args.index}'")
+    if args.verbose:
+        print(f"Removing sections from '{filename or '<all>'}' from search index '{args.index}'")
     search_client = SearchClient(endpoint=f"https://{args.searchservice}.search.windows.net/",
-                                    index_name=args.index,
-                                    credential=search_creds)
+                                 index_name=args.index,
+                                 credential=search_creds)
     while True:
         filter = None if filename is None else f"sourcefile eq '{os.path.basename(filename)}'"
         r = search_client.search("", filter=filter, top=1000, include_total_count=True)
         if r.get_count() == 0:
             break
-        r = search_client.delete_documents(documents=[{ "id": d["id"] } for d in r])
-        if args.verbose: print(f"\tRemoved {len(r)} sections from index")
+        r = search_client.delete_documents(documents=[{"id": d["id"]} for d in r])
+        if args.verbose:
+            print(f"\tRemoved {len(r)} sections from index")
         # It can take a few seconds for search results to reflect changes, so wait a bit
         time.sleep(2)
+
 
 if args.removeall:
     remove_blobs(None)
@@ -303,10 +367,11 @@ if args.removeall:
 else:
     if not args.remove:
         create_search_index()
-    
+
     print("Processing files...")
     for filename in glob.glob(args.files):
-        if args.verbose: print(f"Processing '{filename}'")
+        if args.verbose:
+            print(f"Processing '{filename}'")
         if args.remove:
             remove_blobs(filename)
             remove_from_index(filename)
