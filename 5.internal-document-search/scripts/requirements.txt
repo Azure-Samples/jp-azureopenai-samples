@@ -6,3 +6,5 @@ azure-storage-blob==12.14.1
 typing==3.7.4.3
 pycryptodome==3.19.1
 chardet==4.0.0
+markdown==3.6.0
+beautifulsoup4==4.10.0

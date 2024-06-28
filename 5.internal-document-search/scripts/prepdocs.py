@@ -1,5 +1,8 @@
 import os
 import argparse
+import chardet
+import markdown
+from bs4 import BeautifulSoup
 import glob
 import html
 import io
@@ -137,11 +140,23 @@ def get_document_text(filename):
         case str(".txt"):
             print("txt")
             page_map = _parse_txt(filename)
+        case str(".md") | str(".html") | str(".htm"):
+            print("convert md to html")
+            page_map = _parse_html(filename)
 
+    print(f"number of page = {len(page_map)}")
     return page_map
 
 
 def _parse_pdf(filename: str) -> list:
+    """_summary_
+    convert pdf file to page_map
+    Args:
+        filename (str): ./date/*.pdf
+
+    Returns:
+        page_map (list) : [(page_num, offset, page_text)]
+    """
     offset = 0
     page_map = []
     if args.localpdfparser:
@@ -156,7 +171,7 @@ def _parse_pdf(filename: str) -> list:
             print(f"Extracting text from '{filename}' using Azure Form Recognizer")
         form_recognizer_client = DocumentAnalysisClient(endpoint=f"https://{args.formrecognizerservice}.cognitiveservices.azure.com/", credential=formrecognizer_creds, headers={"x-ms-useragent": "azure-search-chat-demo/1.0.0"})
         with open(filename, "rb") as f:
-            poller = form_recognizer_client.begin_analyze_document("prebuilt-layout", document=f)  # ここでエラー
+            poller = form_recognizer_client.begin_analyze_document("prebuilt-layout", document=f)
         form_recognizer_results = poller.result()
 
         for page_num, page in enumerate(form_recognizer_results.pages):
@@ -191,28 +206,83 @@ def _parse_pdf(filename: str) -> list:
 
 
 def _parse_txt(filename: str) -> list:
+    """_summary_
+    convert txt file to page_map
+    Args:
+        filename (str): ./date/*.txt
+
+    Returns:
+        page_map (list) : [(page_num, offset, page_text)]
+    """
     page_text = ""
     page_num = 0
     offset = 0
     page_map = []
     if args.verbose:
         print(f"Extracting text from '{filename}' using ")
-    # check file encoding format
-    with open(filename, 'rb') as f:
-        raw_data = f.read()
-        result = chardet.detect(raw_data)
-        encoding = result['encoding']
+    encoding = _check_file_encoding(filename)
+    # parse txt
     with open(filename, 'r', encoding=encoding) as f:
         pages = f.readlines()
         for i, line in enumerate(pages):
             page_text += line
-            # 20 lines are considered a page.
+            # NOTE: 1page = 20 lines
             if i % 20 == 0:
                 page_map.append((page_num, offset, page_text))
                 page_num += 1
                 offset += len(page_text)
                 page_text = ""
     return page_map
+
+
+def _parse_html(filename: str) -> list:
+    """_summary_
+    perse html file and create page_map
+    Args:
+        filename (str): ./date/*.html
+
+    Returns:
+        page_map (list) : [(page_num, offset, page_text)] offsetにはpage_numまでの文字数が格納されている。
+    """
+    page_text = ""
+    page_num = 0
+    offset = 0
+    page_map = []
+    if args.verbose:
+        print(f"Extracting text from '{filename}' using ")
+        encoding = _check_file_encoding(filename)
+    with open(filename, 'r', encoding=encoding) as f:
+        pages = f.readlines()
+        # if md, convert to html
+        if filename.endswith(".md"):
+            md = markdown.Markdown()
+            for i, line in enumerate(pages):
+                pages[i] = md.convert(line)
+        # perse html
+        for i, line in enumerate(pages):
+            page_text += line
+            # NOTE: 1page = 20 lines
+            if i % 20 == 0:
+                soup = BeautifulSoup(page_text, "html.parser")
+                page_text = soup.get_text()
+                page_map.append((page_num, offset, page_text))
+                page_num += 1
+                offset += len(page_text)
+                page_text = ""
+    return page_map
+
+
+def _check_file_encoding(filename: str) -> str:
+    """_summary_
+    Args:
+        filename (str): ./date/<file_name>
+
+    Returns:
+        encoding (str): file encoding
+    """
+    with open(filename, 'rb') as f:
+        raw_data = f.read()
+        return chardet.detect(raw_data)['encoding']
 
 
 def split_text(page_map):
