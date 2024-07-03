@@ -6,7 +6,7 @@ param tags object = {}
 @allowed(['Enabled', 'Disabled'])
 param publicNetworkAccess string
 
-resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2021-04-15' = {
+resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2024-05-15' = {
   name: name
   location: location
   tags: tags

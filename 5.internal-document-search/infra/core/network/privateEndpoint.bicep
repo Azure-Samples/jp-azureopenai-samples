@@ -25,7 +25,7 @@ resource virtualNetworkLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLi
 }
 
 // https://github.com/MicrosoftDocs/azure-docs/blob/main/articles/private-link/private-endpoint-overview.md
-resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-02-01' = if (isPrivateNetworkEnabled) {
+resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-11-01' = if (isPrivateNetworkEnabled) {
   name: '${name}-endpoint'
   location: location
   properties: {
@@ -44,7 +44,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-02-01' = if (i
   }
 }
 
-resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2023-04-01' = if (isPrivateNetworkEnabled) {
+resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2023-11-01' = if (isPrivateNetworkEnabled) {
   parent: privateEndpoint
   name: privateDnsZone.name
   properties: {
