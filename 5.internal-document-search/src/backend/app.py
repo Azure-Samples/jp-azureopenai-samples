@@ -143,7 +143,7 @@ def ensure_openai_token():
     global openai_token
     if openai_token.expires_on < int(time.time()) - 60:
         openai_token = azure_credential.get_token("https://cognitiveservices.azure.com/.default")
-        for openai_client in list(openai_clients.keys()):
+        for openai_client in list(openai_clients.values()):
             openai_client.api_key = openai_token.token
 
 if __name__ == "__main__":
