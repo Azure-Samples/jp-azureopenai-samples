@@ -36,13 +36,17 @@ AZURE_OPENAI_API_VERSION = os.environ.get("AZURE_OPENAI_API_VERSION")
 # keys for each service
 # If you encounter a blocking error during a DefaultAzureCredntial resolution, you can exclude the problematic credential by using a parameter (ex. exclude_shared_token_cache_credential=True)
 azure_credential = DefaultAzureCredential()
-openai_token = azure_credential.get_token("https://cognitiveservices.azure.com/.default")
 
-openai_client = AzureOpenAI(
-    azure_endpoint = f"https://{AZURE_OPENAI_SERVICE}.openai.azure.com",
-    api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
-    api_key = openai_token.token
-)
+# Used by the OpenAI SDK
+openai.api_type = "azure"
+openai.api_base = f"https://{AZURE_OPENAI_SERVICE}.openai.azure.com"
+openai.api_version = AZURE_OPENAI_API_VERSION
+
+# Comment these two lines out if using keys, set your API key in the OPENAI_API_KEY environment variable instead
+openai.api_type = "azure_ad"
+openai_token = azure_credential.get_token("https://cognitiveservices.azure.com/.default")
+openai.api_key = openai_token.token
+# openai.api_key = os.environ.get("AZURE_OPENAI_KEY")
 
 # Set up clients for Cognitive Search and Storage
 search_client = SearchClient(
