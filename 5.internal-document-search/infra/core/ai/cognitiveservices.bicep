@@ -3,13 +3,80 @@ param location string = resourceGroup().location
 param tags object = {}
 
 param customSubDomainName string = name
-param deployments array = []
 param kind string = 'OpenAI'
 @allowed(['Enabled', 'Disabled'])
 param publicNetworkAccess string = 'Enabled'
 param sku object = {
   name: 'S0'
 }
+
+param useOpenAiGpt4 bool = true
+param openAiGpt35TurboDeploymentName string = ''
+param openAiGpt35Turbo16kDeploymentName string = ''
+param openAiGpt4DeploymentName string = ''
+param openAiGpt432kDeploymentName string = ''
+
+param openAiGpt35TurboDeployObj object = {
+  name: openAiGpt35TurboDeploymentName
+  model: {
+    format: 'OpenAI'
+    name: 'gpt-35-turbo'
+    version: '0613'
+  }
+  sku: {
+    name: 'Standard'
+    capacity: 120
+  }
+}
+
+param openAiGpt35Turbo16kDeployObj object = {
+  name: openAiGpt35Turbo16kDeploymentName
+  model: {
+    format: 'OpenAI'
+    name: 'gpt-35-turbo-16k'
+    version: '0613'
+  }
+  sku: {
+    name: 'Standard'
+    capacity: 120
+  }
+}
+
+param openAiGpt4DeployObj object = {
+  name: openAiGpt4DeploymentName
+  model: {
+    format: 'OpenAI'
+    name: 'gpt-4'
+    version: '0613'
+  }
+  sku: {
+    name: 'Standard'
+    capacity: 40
+  }
+}
+
+param openAiGpt432kDeployObj object = {
+  name: openAiGpt432kDeploymentName
+  model: {
+    format: 'OpenAI'
+    name: 'gpt-4-32k'
+    version: '0613'
+  }
+  sku: {
+    name: 'Standard'
+    capacity: 40
+  }
+}
+
+param deployments array = useOpenAiGpt4? [
+  openAiGpt35TurboDeployObj
+  openAiGpt35Turbo16kDeployObj
+  openAiGpt4DeployObj
+  openAiGpt432kDeployObj
+]: [
+  openAiGpt35TurboDeployObj
+  openAiGpt35Turbo16kDeployObj
+]
 
 resource account 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
   name: name

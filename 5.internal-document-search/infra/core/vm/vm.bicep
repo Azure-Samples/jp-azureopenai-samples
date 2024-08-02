@@ -15,7 +15,7 @@ param imageReference object = {
   version: 'latest'
 }
 
-resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-04-01' = if (isPrivateNetworkEnabled) {
+resource virtualMachine 'Microsoft.Compute/virtualMachines@2023-09-01' = if (isPrivateNetworkEnabled) {
   name: name
   location: location
   properties: {

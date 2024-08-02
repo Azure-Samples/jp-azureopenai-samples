@@ -142,24 +142,12 @@ azd env new AnotherEnvName
 azd up --environment AnotherEnvName
 ```
 
-### GPT-4モデルの利用
-2023年6月現在、GPT-4 モデルは申請することで利用可能な状態です。このサンプルは GPT-4 モデルのデプロイに対応していますが、GPT-4 モデルを利用する場合には、[こちら](https://learn.microsoft.com/ja-jp/azure/cognitive-services/openai/how-to/create-resource?pivots=web-portal#deploy-a-model)を参考に、GPT-4 モデルをデプロイしてください。また、GPT-4 モデルの利用申請は[こちらのフォーム](https://aka.ms/oai/get-gpt4)から可能です。
-
-GPT-4 モデルのデプロイ後、以下の操作を実行してください。
-
-1. このサンプルをデプロイした際に、プロジェクトのディレクトリに `./${環境名}/.env` ファイルが作成されています。このファイルを任意のエディタで開きます。
-1. 以下の行を探して、デプロイした GPT-4 モデルのデプロイ名を指定してください。
-```
-AZURE_OPENAI_GPT_4_DEPLOYMENT="" # GPT-4モデルのデプロイ名
-AZURE_OPENAI_GPT_4_32K_DEPLOYMENT="" # GPT-4-32Kモデルのデプロイ名
-```
-1. `azd up` を実行します。
-
-GPT-4 モデルは、チャット機能、文書検索機能のオプションで利用することができます。
-
 ### Easy Authの設定（オプション）
 必要に応じて、Azure AD に対応した Easy Auth を設定します。Easy Auth を設定した場合、UI の右上にログインユーザのアカウント名が表示され、チャットの履歴ログにもアカウント名が記録されます。
 Easy Auth の設定は、[こちら](https://learn.microsoft.com/ja-jp/azure/app-service/scenario-secure-app-authentication-app-service)を参考にしてください。
+
+### API Management の利用 (オプション)
+必要に応じて、[リファレンスアーキテクチャ 6 章](https://github.com/Azure-Samples/jp-azureopenai-samples/tree/main/6.azureopenai-landing-zone-accelerator) で紹介されている Azure OpenAI API の保護をするように設定します。具体的な設定方法については [こちら](deploy_with_api_management.md) を確認して下さい。
 
 ## 本番稼働を視野にいれる場合の考慮事項
 本番稼働（や本番に近い検証環境等）を視野にいれる場合、様々な考慮事項があります。考えられる考慮事項は[Cloud Adoption Framework](https://learn.microsoft.com/azure/cloud-adoption-framework/overview)や[Well-Architected Framework](https://learn.microsoft.com/azure/well-architected/)にまとめられていますが、考慮事項は多岐にわたるので、状況に応じて重要度や緊急度等をもとにした優先順位付けが必要になります。例えば、社内データと連携する場合にはプライベートネットワークを考慮した設計や企業のAzure基盤との連携が重要になること多くなるとことが推測されます。
