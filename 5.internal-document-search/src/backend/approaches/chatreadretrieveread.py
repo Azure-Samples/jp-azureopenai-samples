@@ -93,8 +93,6 @@ source quesion: {user_question}
             r = self.search_client.search(query_text,
                                           filter=filter,
                                           query_type=QueryType.SEMANTIC,
-                                          query_language="en-us",
-                                          query_speller="lexicon",
                                           semantic_configuration_name="default",
                                           top=top,
                                           query_caption="extractive|highlight-false" if use_semantic_captions else None
