@@ -123,7 +123,7 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
         }
         sku: {
           name: 'Standard'
-          capacity: 1
+          capacity: 20
         }
         scaleSettings: {
           scaleType: 'Standard'
@@ -138,7 +138,7 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
         }
         sku: {
           name: 'Standard'
-          capacity: 1
+          capacity: 20
         }
         scaleSettings: {
           scaleType: 'Standard'
