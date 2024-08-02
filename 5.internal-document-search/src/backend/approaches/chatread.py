@@ -34,7 +34,7 @@ class ChatReadApproach(Approach):
         chat_completion = openai.ChatCompletion.create(
             engine=chat_deployment, 
             messages=messages,
-            temperature=temaperature,
+            temperature=temaperature, 
             max_tokens=max_tokens,
             n=1)
 

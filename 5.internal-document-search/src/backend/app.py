@@ -125,7 +125,7 @@ def chat():
         impl = chat_approaches.get(approach)
         if not impl:
             return jsonify({"error": "unknown approach"}), 400
-        r = impl.run(openai_client, user_name, request.json["history"], overrides)
+        r = impl.run(user_name, request.json["history"], overrides)
         return jsonify(r)
     except Exception as e:
         write_error("chat", user_name, str(e))
@@ -143,7 +143,7 @@ def docsearch():
         impl = chat_approaches.get(approach)
         if not impl:
             return jsonify({"error": "unknown approach"}), 400
-        r = impl.run(openai_client, user_name, request.json["history"], overrides)
+        r = impl.run(user_name, request.json["history"], overrides)
         return jsonify(r)
     except Exception as e:
         write_error("docsearch", user_name, str(e))
@@ -153,7 +153,8 @@ def ensure_openai_token():
     global openai_token
     if openai_token.expires_on < int(time.time()) - 60:
         openai_token = azure_credential.get_token("https://cognitiveservices.azure.com/.default")
-        openai_client.api_key = openai_token
+        openai.api_key = openai_token.token
+    # openai.api_key = os.environ.get("AZURE_OPENAI_KEY")
    
 if __name__ == "__main__":
     app.run(port=5000, host='0.0.0.0')

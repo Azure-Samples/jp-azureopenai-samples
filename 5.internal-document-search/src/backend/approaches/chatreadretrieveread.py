@@ -72,8 +72,7 @@ source quesion: {user_question}
             messages=messages,
             temperature=0.0,
             max_tokens=max_tokens,
-            n=1
-        )
+            n=1)
 
         query_text = chat_completion.choices[0].message.content
         if query_text.strip() == "0":
@@ -132,7 +131,7 @@ source quesion: {user_question}
         response = openai.ChatCompletion.create(
             engine=completion_deployment, 
             messages=messages,
-            temperature=temaperature,
+            temperature=temaperature, 
             max_tokens=1024,
             n=1)
 
