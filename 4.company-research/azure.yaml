@@ -1,6 +1,5 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
 
-name: azure-openai-demo-retail-company-research
+name: azure-openai-demo-retail
 metadata:
-  template: azure-openai-demo-retail-company-research@0.0.1-beta
-
+  template: azure-openai-demo-retail@0.0.1-beta
