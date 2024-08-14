@@ -1,7 +1,7 @@
 # Chat+社内文書検索
 
 ## 概要
-このデモは、ChatGPT ライクなインターフェースを使用して企業の社内文書を検索するアプリケーションの実装パターンです。デモアプリを利用するためには、Azure Open AI の ChatGPT(gpt-35-turbo) モデルと、Azure AI Search、他にいくつかのリソースの作成が必要です。
+このデモは、ChatGPT ライクなインターフェースを使用して企業の社内文書を検索するアプリケーションの実装パターンです。デモアプリを利用するためには、Azure OpenAI の ChatGPT(gpt-35-turbo) モデルと、Azure AI Search、他にいくつかのリソースの作成が必要です。
 
 このリポジトリでは、サンプルデータに[厚生労働省のモデル就業規則](https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudoukijun/zigyonushi/model/index.html)を使用しています。
 
@@ -31,7 +31,7 @@
 ## セットアップガイド
 ### 事前準備
 **重要:** このサンプルをデプロイするには、
-- **Azureサブスクリプション**: Azure Open AI サービスが有効になっているサブスクリプションが必要です。Azure Open AI サービスへのアクセス申請は[こちら](https://aka.ms/oaiapply)から行ってください。
+- **Azureサブスクリプション**: Azure OpenAI サービスが有効になっているサブスクリプションが必要です。Azure OpenAI サービスへのアクセス申請は[こちら](https://aka.ms/oaiapply)から行ってください。
 - **Azure権限**: 
   - Microsoft.Authorization/roleAssignments/write 権限が必要です。例えば、[Role Based Access Control Administrator](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#role-based-access-control-administrator-preview)、 [User Access Administrator](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#user-access-administrator)、 または [Owner](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#owner)のような権限が必要です。
   - Azure アカウントにはサブスクリプションレベルで Microsoft.Resources/deployments/write 権限も必要です。例えば、[Contributor](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#contributor)、または [Owner](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#owner)のような権限が必要です。
@@ -80,7 +80,7 @@
 1. `azd up` を実行します。
     - `? Select an Azure Subscription to use:` というメッセージが表示されたら、上記で設定したサブスクリプションを選択してください。
     - `? Select an Azure location to use:` というメッセージが表示されたら、デプロイしたい Azure リージョンを選択してください。
-        - 現在、このサンプルに必要な Azure Open AI のモデルは該当モデルをサポートしている**東日本**リージョンにデプロイすることが可能です。最新の情報は[こちら](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/concepts/models)を参考にしてください。
+        - 現在、このサンプルに必要な Azure OpenAI のモデルは該当モデルをサポートしている**東日本**リージョンにデプロイすることが可能です。最新の情報は[こちら](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/concepts/models)を参考にしてください。
     - その後 Azure 上に必要なリソースをデプロイし、アプリケーションのビルドとデプロイが実行されます。また、`./data`配下の PDF を利用して Search Index を作成します。
     - Linux 環境で実行している場合は、`chmod +x scripts/prepdocs.sh`
     - しばらくすると `Enter a value for the 'vmLoginPassword' infrastructure parameter:` というメッセージが表示され仮想マシンのパスワードを求められますが、この手順では仮想マシンを利用しないためパスワードは入力せずに Enter を押してください。
