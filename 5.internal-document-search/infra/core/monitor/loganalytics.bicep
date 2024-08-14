@@ -2,11 +2,12 @@ param workspaceName string = ''
 param location string = resourceGroup().location
 param tags object = {}
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-03-01-preview' = {
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   name: workspaceName
   location: location
   tags: tags
 }
 
 
-output wokspaceId string = logAnalyticsWorkspace.id
+output workspaceId string = logAnalyticsWorkspace.id
+output workspaceName string = logAnalyticsWorkspace.name

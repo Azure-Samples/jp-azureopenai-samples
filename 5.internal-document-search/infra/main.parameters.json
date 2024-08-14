@@ -55,6 +55,27 @@
     },
     "principalType": {
       "value": "${AZURE_PRINCIPAL_TYPE}"
+    },
+    "corsOriginUrl": {
+      "value": "*"
+    },
+    "audienceClientAppId": {
+      "value": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    },
+    "audienceWebAppId": {
+      "value": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    },
+    "scopeName": {
+      "value": "chat"
+    },
+    "tenantId": {
+      "value": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    },
+    "aoaiCapacity": {
+      "value": 30
+    },
+    "useApiManagement": {
+      "value": false
     }
   }
 }

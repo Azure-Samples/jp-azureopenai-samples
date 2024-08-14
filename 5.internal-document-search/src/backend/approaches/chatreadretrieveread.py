@@ -1,5 +1,4 @@
 from text import nonewlines
-
 from openai import AzureOpenAI
 
 from azure.search.documents import SearchClient
@@ -50,10 +49,12 @@ source quesion: {user_question}
         self.sourcepage_field = sourcepage_field
         self.content_field = content_field
     
-    def run(self, openai_client: AzureOpenAI, user_name: str, history: list[dict], overrides: dict) -> any:
+    def run(self, openai_clients: AzureOpenAI, user_name: str, history: list[dict], overrides: dict) -> any:
         chat_model = overrides.get("gptModel")
         chat_gpt_model = get_gpt_model(chat_model)
         chat_deployment = chat_gpt_model.get("deployment")
+
+        openai_client = openai_clients.get(chat_model)
 
         # STEP 1: Generate an optimized keyword search query based on the chat history and the last question
         user_q = 'Generate search query for: ' + history[-1]["user"]
@@ -65,7 +66,7 @@ source quesion: {user_question}
             self.query_prompt_few_shots
             )
 
-        max_tokens =  get_max_token_from_messages(messages, chat_model)
+        max_tokens = get_max_token_from_messages(messages, chat_model)
 
         # Change create type ChatCompletion.create → ChatCompletion.acreate when enabling asynchronous support.
         chat_completion = openai_client.chat.completions.create(
@@ -93,8 +94,6 @@ source quesion: {user_question}
             r = self.search_client.search(query_text,
                                           filter=filter,
                                           query_type=QueryType.SEMANTIC,
-                                          query_language="en-us",
-                                          query_speller="lexicon",
                                           semantic_configuration_name="default",
                                           top=top,
                                           query_caption="extractive|highlight-false" if use_semantic_captions else None
@@ -128,14 +127,14 @@ source quesion: {user_question}
             history[-1]["user"]+ "\n\nSources:\n" + content[:1024], # Model does not handle lengthy system messages well. Moving sources to latest user conversation to solve follow up questions prompt.
             )
 
-        temaperature = float(overrides.get("temperature"))
+        temperature = float(overrides.get("temperature"))
         max_tokens = get_max_token_from_messages(messages, completion_model)
 
         # Change create type ChatCompletion.create → ChatCompletion.acreate when enabling asynchronous support.
         response = openai_client.chat.completions.create(
             model=completion_deployment,
             messages=messages,
-            temperature=temaperature,
+            temperature=temperature,
             max_tokens=1024,
             n=1
         )

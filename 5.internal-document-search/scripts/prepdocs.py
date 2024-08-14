@@ -250,11 +250,11 @@ def create_search_index():
                 SimpleField(name="sourcepage", type="Edm.String", filterable=True, facetable=True),
                 SimpleField(name="sourcefile", type="Edm.String", filterable=True, facetable=True)
             ],
-            semantic_settings=SemanticSettings(
+            semantic_search=SemanticSearch(
                 configurations=[SemanticConfiguration(
                     name='default',
-                    prioritized_fields=PrioritizedFields(
-                        title_field=None, prioritized_content_fields=[SemanticField(field_name='content')]))])
+                    prioritized_fields=SemanticPrioritizedFields(
+                        title_field=None, content_fields=[SemanticField(field_name='content')]))])
         )
         if args.verbose: print(f"Creating {args.index} search index")
         index_client.create_index(index)
