@@ -30,6 +30,8 @@ REDIS_INDEX_NAME = os.environ.get("REDIS_INDEX_NAME")
 REDIS_CATEGORY_COMMON = os.environ.get("REDIS_CATEGORY_COMMON")
 REDIS_CATEGORY_TOPICS = os.environ.get("REDIS_CATEGORY_TOPICS")
 
+AZURE_TENANT_ID = os.environ.get("AZURE_TENANT_ID")
+
 redis_client = StrictRedis(host=REDIS_NAME, port=10000, password=REDIS_KEY, ssl=True, ssl_cert_reqs=None, decode_responses=True)
 
 # Use the current user identity to authenticate with Azure OpenAI, Cognitive Search and Blob Storage (no secrets needed, 
@@ -45,7 +47,7 @@ openai.api_version = AZURE_OPENAI_API_VERSION
 
 # Comment these two lines out if using keys, set your API key in the OPENAI_API_KEY environment variable instead
 openai.api_type = "azure_ad"
-openai_token = azure_credential.get_token("https://cognitiveservices.azure.com/.default")
+openai_token = azure_credential.get_token("https://cognitiveservices.azure.com/.default", tenant_id = AZURE_TENANT_ID)
 openai.api_key = openai_token.token
 
 # Redis Index Name
@@ -185,7 +187,7 @@ def ensure_openai_token():
     print(f"I'm in function: {inspect.currentframe().f_code.co_name}")
     global openai_token
     if openai_token or openai_token.expires_on < int(time.time()) - 60:
-        openai_token = azure_credential.get_token("https://cognitiveservices.azure.com/.default")
+        openai_token = azure_credential.get_token("https://cognitiveservices.azure.com/.default", tenant_id = AZURE_TENANT_ID)
         openai.api_key = openai_token.token
     
 if __name__ == "__main__":

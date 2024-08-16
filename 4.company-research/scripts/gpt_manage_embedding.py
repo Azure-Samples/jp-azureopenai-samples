@@ -31,7 +31,7 @@ AZURE_OPENAI_EMBEDDING_DEPLOYMENT = os.environ.get("AZURE_OPENAI_EMBEDDING_DEPLO
 
 
 openai.api_type = "azure_ad"
-openai.api_base = AZURE_OPENAI_SERVICE
+openai.api_base = f"https://{AZURE_OPENAI_SERVICE}.openai.azure.com"
 openai.api_version = AZURE_OPENAI_VERSION
 azure_credential = DefaultAzureCredential()
 openai_token = azure_credential.get_token("https://cognitiveservices.azure.com/.default")
