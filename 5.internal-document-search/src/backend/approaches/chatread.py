@@ -1,6 +1,7 @@
 from typing import Any
 
-import openai
+from openai import AzureOpenAI
+
 # To uncomment when enabling asynchronous support.
 # from azure.cosmos.aio import ContainerProxy
 from approaches.approach import Approach
@@ -12,13 +13,15 @@ from core.modelhelper import get_gpt_model, get_max_token_from_messages
 # (answer) with that prompt.
 class ChatReadApproach(Approach):
 
-    def run(self, user_name: str, history: list[dict[str, str]], overrides: dict[str, Any]) -> Any:
+    def run(self, openai_clients: AzureOpenAI, user_name: str, history: list[dict[str, str]], overrides: dict[str, Any]) -> Any:
         chat_model = overrides.get("gptModel")
         chat_gpt_model = get_gpt_model(chat_model)
         chat_deployment = chat_gpt_model.get("deployment")
 
+        openai_client = openai_clients.get(chat_model)
+
         systemPrompt =  overrides.get("systemPrompt")
-        temaperature = float(overrides.get("temperature"))
+        temperature = float(overrides.get("temperature"))
 
         user_q = history[-1]["user"]
         message_builder = MessageBuilder(systemPrompt)
@@ -29,16 +32,15 @@ class ChatReadApproach(Approach):
 
         max_tokens = get_max_token_from_messages(messages, chat_model)
 
-        # Generate a contextual and content specific answer using chat history
-        # Change create type ChatCompletion.create → ChatCompletion.acreate when enabling asynchronous support.
-        chat_completion = openai.ChatCompletion.create(
-            engine=chat_deployment, 
+        chat_completion = openai_client.chat.completions.create(
+            model=chat_deployment,
             messages=messages,
-            temperature=temaperature, 
+            temperature=temperature,
             max_tokens=max_tokens,
-            n=1)
+            n=1
+        )
 
-        response_text = chat_completion.choices[0]["message"]["content"]
+        response_text = chat_completion.choices[0].message.content
         total_tokens = chat_completion.usage.total_tokens
 
         # logging

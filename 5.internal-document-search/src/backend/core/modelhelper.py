@@ -85,6 +85,9 @@ gpt_models = {
 def get_gpt_model(model_name: str) -> dict:
     return gpt_models.get(model_name)
 
+def get_gpt_models() -> dict:
+    return gpt_models
+
 def get_max_token_from_messages(messages: dict[str, str], model: str) -> int:
     gpt_model = get_gpt_model(model)
     encoding = gpt_model.get("encoding")
