@@ -5,7 +5,7 @@ param publicIPId string
 param nsgId string
 param isPrivateNetworkEnabled bool
 
-resource networkInterface 'Microsoft.Network/networkInterfaces@2021-02-01' = if (isPrivateNetworkEnabled) {
+resource networkInterface 'Microsoft.Network/networkInterfaces@2023-11-01' = if (isPrivateNetworkEnabled) {
   name: name
   location: location
   properties: {

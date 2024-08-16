@@ -35,16 +35,32 @@ param storageContainerName string = 'content'
 
 param openAiServiceName string = ''
 param openAiResourceGroupName string = ''
-param openAiResourceGroupLocation string = location
+
+@allowed([
+  '1.  australiaeast    (You can deploy GPT-4 and GPT-3 models)'
+  '2.  canadaeast       (You can deploy GPT-4 and GPT-3 models)'
+  '3.  swedencentral    (You can deploy GPT-4 and GPT-3 models)'
+  '4.  switzerlandnorth (You can deploy GPT-4 and GPT-3 models)'
+  '5.  eastus           (You can deploy only GPT-3 models)'
+  '6.  eastus2          (You can deploy only GPT-3 models)'
+  '7.  francecentral    (You can deploy only GPT-3 models)'
+  '8.  japaneast        (You can deploy only GPT-3 models)'
+  '9.  northcentralus   (You can deploy only GPT-3 models)'
+  '10. uksouth          (You can deploy only GPT-3 models)'
+])
+param AzureOpenAIServiceRegion string
+
+param delimiters array = ['.', '(']
+param aoaiRegionWithBlankSpace string = split(AzureOpenAIServiceRegion, delimiters)[1]
+param openAiResourceGroupLocation string = trim(aoaiRegionWithBlankSpace)
+param useOpenAiGpt4 bool = contains(AzureOpenAIServiceRegion, 'GPT-4')
 
 param openAiSkuName string = 'S0'
-
 param openAiGpt35TurboDeploymentName string = 'gpt-35-turbo-deploy'
 param openAiGpt35Turbo16kDeploymentName string = 'gpt-35-turbo-16k-deploy'
 param openAiGpt4DeploymentName string = 'gpt-4-deploy'
 param openAiGpt432kDeploymentName string = 'gpt-4-32k-deploy'
 param openAiApiVersion string = '2023-05-15'
-
 
 param formRecognizerServiceName string = ''
 param formRecognizerResourceGroupName string = ''
@@ -102,29 +118,29 @@ var resourceToken = toLower(uniqueString(subscription().id, environmentName, loc
 var tags = { 'azd-env-name': environmentName }
 
 // Organize resources in a resource group
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   name: !empty(resourceGroupName) ? resourceGroupName : '${abbrs.resourcesResourceGroups}${environmentName}'
   location: location
   tags: tags
 }
 
-resource openAiResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(openAiResourceGroupName)) {
+resource openAiResourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' existing = if (!empty(openAiResourceGroupName)) {
   name: !empty(openAiResourceGroupName) ? openAiResourceGroupName : resourceGroup.name
 }
 
-resource formRecognizerResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(formRecognizerResourceGroupName)) {
+resource formRecognizerResourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' existing = if (!empty(formRecognizerResourceGroupName)) {
   name: !empty(formRecognizerResourceGroupName) ? formRecognizerResourceGroupName : resourceGroup.name
 }
 
-resource searchServiceResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(searchServiceResourceGroupName)) {
+resource searchServiceResourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' existing = if (!empty(searchServiceResourceGroupName)) {
   name: !empty(searchServiceResourceGroupName) ? searchServiceResourceGroupName : resourceGroup.name
 }
 
-resource storageResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(storageResourceGroupName)) {
+resource storageResourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' existing = if (!empty(storageResourceGroupName)) {
   name: !empty(storageResourceGroupName) ? storageResourceGroupName : resourceGroup.name
 }
 
-resource apiManagementResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(apiManagementResourceGroupName)) {
+resource apiManagementResourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' existing = if (!empty(apiManagementResourceGroupName)) {
   name: !empty(apiManagementResourceGroupName) ? apiManagementResourceGroupName : resourceGroup.name
 }
 
@@ -217,56 +233,11 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
     sku: {
       name: openAiSkuName
     }
-    deployments: [
-      {
-        name: openAiGpt35TurboDeploymentName
-        model: {
-          format: 'OpenAI'
-          name: 'gpt-35-turbo'
-          version: '0613'
-        }
-        sku: {
-          name: 'Standard'
-          capacity: 120
-        }
-      }
-      {
-        name: openAiGpt35Turbo16kDeploymentName
-        model: {
-          format: 'OpenAI'
-          name: 'gpt-35-turbo-16k'
-          version: '0613'
-        }
-        sku: {
-          name: 'Standard'
-          capacity: 120
-        }
-      }
-      {
-        name: openAiGpt4DeploymentName
-        model: {
-          format: 'OpenAI'
-          name: 'gpt-4'
-          version: '0613'
-        }
-        sku: {
-          name: 'Standard'
-          capacity: 120
-        }
-      }
-      {
-        name: openAiGpt432kDeploymentName
-        model: {
-          format: 'OpenAI'
-          name: 'gpt-4-32k'
-          version: '0613'
-        }
-        sku: {
-          name: 'Standard'
-          capacity: 120
-        }
-      }
-    ]
+    useOpenAiGpt4: useOpenAiGpt4
+    openAiGpt35TurboDeploymentName: openAiGpt35TurboDeploymentName
+    openAiGpt35Turbo16kDeploymentName: openAiGpt35Turbo16kDeploymentName
+    openAiGpt4DeploymentName: openAiGpt4DeploymentName
+    openAiGpt432kDeploymentName: openAiGpt432kDeploymentName
     publicNetworkAccess: isPrivateNetworkEnabled ? 'Disabled' : 'Enabled'
   }
 }
@@ -282,6 +253,7 @@ module formRecognizer 'core/ai/cognitiveservices.bicep' = {
     sku: {
       name: formRecognizerSkuName
     }
+    deployments: []
   }
 }
 
@@ -736,6 +708,8 @@ output AZURE_OPENAI_GPT_35_TURBO_16K_DEPLOYMENT string = openAiGpt35Turbo16kDepl
 output AZURE_OPENAI_GPT_4_DEPLOYMENT string = openAiGpt4DeploymentName
 output AZURE_OPENAI_GPT_4_32K_DEPLOYMENT string = openAiGpt432kDeploymentName
 output AZURE_OPENAI_API_VERSION string = openAiApiVersion
+output AZURE_OPENAI_RESOURCE_GROUP_LOCATION string = openAiResourceGroupLocation
+output USE_OPENAI_GPT4 bool = useOpenAiGpt4
 
 output AZURE_FORMRECOGNIZER_SERVICE string = formRecognizer.outputs.name
 output AZURE_FORMRECOGNIZER_RESOURCE_GROUP string = formRecognizerResourceGroup.name

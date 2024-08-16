@@ -2,7 +2,7 @@ param name string
 param location string
 param isPrivateNetworkEnabled bool
 
-resource nsg 'Microsoft.Network/networkSecurityGroups@2021-02-01' = if (isPrivateNetworkEnabled) {
+resource nsg 'Microsoft.Network/networkSecurityGroups@2023-11-01' = if (isPrivateNetworkEnabled) {
   name: name
   location: location
   properties: {
