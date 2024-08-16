@@ -123,7 +123,7 @@
 1. `azd up` を実行します。
     - `? Select an Azure Subscription to use:` というメッセージが表示されたら、上記で設定したサブスクリプションを選択してください。
     - `? Select an Azure location to use:` というメッセージが表示されたら、デプロイしたい Azure リージョンを選択してください。
-        - 現在、このサンプルに必要な Azure Open AI のモデルは該当モデルをサポートしている**東日本**リージョンにデプロイすることが可能です。最新の情報は[こちら](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/concepts/models)を参考にしてください。
+        - 現在、このサンプルに必要な Azure OpenAI のモデルは該当モデルをサポートしている**東日本**リージョンにデプロイすることが可能です。最新の情報は[こちら](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/concepts/models)を参考にしてください。
     - その後 Azure 上に必要なリソースをデプロイし、アプリケーションのビルドとデプロイが実行されます。また、`./data`配下の PDF を利用して Search Index を作成します。
     - Linux 環境で実行している場合は、`chmod +x scripts/prepdocs.sh`
     - しばらくすると `Enter a value for the 'vmLoginPassword' infrastructure parameter:` というメッセージが表示され仮想マシンのパスワードを求められますが、この手順では仮想マシンを利用しないためパスワードは入力せずに Enter を押してください。
