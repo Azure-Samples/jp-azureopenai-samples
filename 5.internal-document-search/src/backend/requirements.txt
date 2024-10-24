@@ -7,4 +7,4 @@ azure-cosmos==4.5.1
 azure-monitor-opentelemetry==1.2.0
 opencensus-ext-azure==1.1.13
 tiktoken==0.6.0
-opentelemetry-instrumentation-flask==0.44b0
+opentelemetry-instrumentation-flask==0.48b0
