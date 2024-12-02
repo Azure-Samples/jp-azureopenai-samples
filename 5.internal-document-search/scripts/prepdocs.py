@@ -167,8 +167,8 @@ def get_document_text(filename):
     return page_map
 
 def split_text(page_map):
-    SENTENCE_ENDINGS = [".", "!", "?"]
-    WORDS_BREAKS = [",", ";", ":", " ", "(", ")", "[", "]", "{", "}", "\t", "\n"]
+    SENTENCE_ENDINGS = [".", "!", "?", "。"]
+    WORDS_BREAKS = [",", ";", ":", " ", "(", ")", "[", "]", "{", "}", "\t", "\n", "、", "　"]
     if args.verbose: print(f"Splitting '{filename}' into sections")
 
     def find_page(offset):
