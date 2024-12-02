@@ -1,4 +1,4 @@
-azure-identity==1.13.0b3
+azure-identity==1.16.1
 numpy==1.24.3
 pandas==2.0.2
 Flask==2.2.5
