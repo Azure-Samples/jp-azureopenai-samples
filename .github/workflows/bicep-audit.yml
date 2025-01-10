@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Microsoft Security DevOps Analysis
-        uses: microsoft/security-devops-action@preview
+        uses: microsoft/security-devops-action@latest
         id: msdo
         continue-on-error: true
         with:
