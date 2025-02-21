@@ -41,7 +41,7 @@ IaCとして追加・更新したファイルは以下の通りです。
 |Private Endpoint||App Service, Cognitive Service, Azure OpenAI Service, Form Recognizer, Storage Account用の5つ|
 |NNetwork Interface||Private Endpoint用の5つ|
 |Azure App Service|S1||
-|Azure OpenAI Service|S0|gpt-3.5-turbo gpt-3.5-turbo-16k|
+|Azure OpenAI Service|S0|gpt-3.5-turbo|
 |Azure AI Search|S1||
 |Azure Cosmos DB|プロビジョニング済みスループット||
 |Azure Form Recognizer|S0||

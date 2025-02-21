@@ -39,9 +39,8 @@ const DocSearch = () => {
 
     const gpt_models: IDropdownOption[] = [
         { key: "gpt-3.5-turbo", text: "gpt-3.5-turbo" },
-        { key: "gpt-3.5-turbo-16k", text: "gpt-3.5-turbo-16k" },
         { key: "gpt-4", text: "gpt-4" },
-        { key: "gpt-4-32k", text: "gpt-4-32k" }
+        { key: "gpt-4o", text: "gpt-4o" }
     ];
 
     const temperatures: IDropdownOption[] = Array.from({ length: 11 }, (_, i) => ({ key: (i / 10).toFixed(1), text: (i / 10).toFixed(1) }));

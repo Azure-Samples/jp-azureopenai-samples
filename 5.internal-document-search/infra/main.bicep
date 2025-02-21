@@ -57,9 +57,8 @@ param useOpenAiGpt4 bool = contains(AzureOpenAIServiceRegion, 'GPT-4')
 
 param openAiSkuName string = 'S0'
 param openAiGpt35TurboDeploymentName string = 'gpt-35-turbo-deploy'
-param openAiGpt35Turbo16kDeploymentName string = 'gpt-35-turbo-16k-deploy'
 param openAiGpt4DeploymentName string = 'gpt-4-deploy'
-param openAiGpt432kDeploymentName string = 'gpt-4-32k-deploy'
+param openAiGpt4oDeploymentName string = 'gpt-4o-deploy'
 param openAiApiVersion string = '2023-05-15'
 
 param formRecognizerServiceName string = ''
@@ -209,9 +208,8 @@ module backend 'core/host/appservice.bicep' = {
       AZURE_SEARCH_INDEX: searchIndexName
       AZURE_SEARCH_SERVICE: searchService.outputs.name
       AZURE_OPENAI_GPT_35_TURBO_DEPLOYMENT: openAiGpt35TurboDeploymentName
-      AZURE_OPENAI_GPT_35_TURBO_16K_DEPLOYMENT: openAiGpt35Turbo16kDeploymentName
       AZURE_OPENAI_GPT_4_DEPLOYMENT: openAiGpt4DeploymentName
-      AZURE_OPENAI_GPT_4_32K_DEPLOYMENT: openAiGpt432kDeploymentName
+      AZURE_OPENAI_GPT_4O_DEPLOYMENT: openAiGpt4oDeploymentName
       AZURE_OPENAI_API_VERSION: '2023-05-15'
       AZURE_COSMOSDB_CONTAINER: cosmosDbContainerName
       AZURE_COSMOSDB_DATABASE: cosmosDbDatabaseName
@@ -235,9 +233,8 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
     }
     useOpenAiGpt4: useOpenAiGpt4
     openAiGpt35TurboDeploymentName: openAiGpt35TurboDeploymentName
-    openAiGpt35Turbo16kDeploymentName: openAiGpt35Turbo16kDeploymentName
     openAiGpt4DeploymentName: openAiGpt4DeploymentName
-    openAiGpt432kDeploymentName: openAiGpt432kDeploymentName
+    openAiGpt4oDeploymentName: openAiGpt4oDeploymentName
     publicNetworkAccess: isPrivateNetworkEnabled ? 'Disabled' : 'Enabled'
   }
 }
@@ -704,9 +701,8 @@ output AZURE_RESOURCE_GROUP string = resourceGroup.name
 output AZURE_OPENAI_SERVICE string = openAi.outputs.name
 output AZURE_OPENAI_RESOURCE_GROUP string = openAiResourceGroup.name
 output AZURE_OPENAI_GPT_35_TURBO_DEPLOYMENT string = openAiGpt35TurboDeploymentName
-output AZURE_OPENAI_GPT_35_TURBO_16K_DEPLOYMENT string = openAiGpt35Turbo16kDeploymentName
 output AZURE_OPENAI_GPT_4_DEPLOYMENT string = openAiGpt4DeploymentName
-output AZURE_OPENAI_GPT_4_32K_DEPLOYMENT string = openAiGpt432kDeploymentName
+output AZURE_OPENAI_GPT_4O_DEPLOYMENT string = openAiGpt4oDeploymentName
 output AZURE_OPENAI_API_VERSION string = openAiApiVersion
 output AZURE_OPENAI_RESOURCE_GROUP_LOCATION string = openAiResourceGroupLocation
 output USE_OPENAI_GPT4 bool = useOpenAiGpt4
