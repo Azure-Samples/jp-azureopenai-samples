@@ -1,7 +1,7 @@
 azure-identity==1.16.1
 python-dotenv
 redis
-openai==0.27.8
+openai==1.55.3
 tiktoken==0.4.0
 azure-cognitiveservices-search-websearch==2.0.0
 numpy

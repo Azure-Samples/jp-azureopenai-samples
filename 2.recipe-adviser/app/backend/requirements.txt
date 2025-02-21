@@ -2,7 +2,7 @@ azure-identity==1.13.0b3
 numpy==1.24.3
 pandas==2.0.2
 Flask==2.2.5
-openai==0.27.7
+openai==1.55.3
 redis==4.5.4
 opencensus-ext-azure==1.1.9
 python-dotenv==1.0.0
