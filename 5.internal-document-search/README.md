@@ -49,7 +49,7 @@
 | サービス名 | SKU | Note |
 | --- | --- | --- |
 |Azure App Service|S1||
-|Azure OpenAI Service|S0|gpt-3.5-turbo gpt-3.5-turbo-16k gpt-4 gpt-4-32k|
+|Azure OpenAI Service|S0|gpt-3.5-turbo gpt-4 gpt-4o|
 |Azure AI Search|S1||
 |Azure Cosmos DB|プロビジョニング済みスループット||
 |Azure Form Recognizer|S0||
