@@ -1,6 +1,6 @@
 name: bicep what-if
 
-on: push
+on: workflow_dispatch
 
 jobs:
   deploy:
