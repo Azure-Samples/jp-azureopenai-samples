@@ -37,28 +37,42 @@ param openAiServiceName string = ''
 param openAiResourceGroupName string = ''
 
 @allowed([
-  '1.  australiaeast    (You can deploy GPT-4 and GPT-3 models)'
-  '2.  canadaeast       (You can deploy GPT-4 and GPT-3 models)'
-  '3.  swedencentral    (You can deploy GPT-4 and GPT-3 models)'
-  '4.  switzerlandnorth (You can deploy GPT-4 and GPT-3 models)'
-  '5.  eastus           (You can deploy only GPT-3 models)'
-  '6.  eastus2          (You can deploy only GPT-3 models)'
-  '7.  francecentral    (You can deploy only GPT-3 models)'
-  '8.  japaneast        (You can deploy only GPT-3 models)'
-  '9.  northcentralus   (You can deploy only GPT-3 models)'
-  '10. uksouth          (You can deploy only GPT-3 models)'
+  '1. |  japaneast      |  Standard         |  gpt-4o (2024-1120): ✓  |  gpt-4 (turbo-2024-04-09):    |  gpt-35-turbo (0125): ✓  |'
+  '2. |  japaneast      |  Global Standard  |  gpt-4o (2024-1120): ✓  |  gpt-4 (turbo-2024-04-09): ✓  |  gpt-35-turbo (0125):    |'
+  '3. |  australiaeast  |  Standard         |  gpt-4o (2024-1120):    |  gpt-4 (turbo-2024-04-09):    |  gpt-35-turbo (0125): ✓  |'
+  '4. |  australiaeast  |  Global Standard  |  gpt-4o (2024-1120): ✓  |  gpt-4 (turbo-2024-04-09): ✓  |  gpt-35-turbo (0125):    |'
+  '5. |  swedencentral  |  Standard         |  gpt-4o (2024-1120): ✓  |  gpt-4 (turbo-2024-04-09): ✓  |  gpt-35-turbo (0125): ✓  |'
+  '6. |  swedencentral  |  Global Standard  |  gpt-4o (2024-1120): ✓  |  gpt-4 (turbo-2024-04-09): ✓  |  gpt-35-turbo (0125):    |'
+  '7. |  eastus         |  Standard         |  gpt-4o (2024-1120): ✓  |  gpt-4 (turbo-2024-04-09): ✓  |  gpt-35-turbo (0125): ✓  |'
+  '8. |  eastus         |  Global Standard  |  gpt-4o (2024-1120): ✓  |  gpt-4 (turbo-2024-04-09): ✓  |  gpt-35-turbo (0125):    |'
+  '9. |  eastus2        |  Standard         |  gpt-4o (2024-1120): ✓  |  gpt-4 (turbo-2024-04-09): ✓  |  gpt-35-turbo (0125): ✓  |'
+  '10.|  eastus2        |  Global Standard  |  gpt-4o (2024-1120): ✓  |  gpt-4 (turbo-2024-04-09): ✓  |  gpt-35-turbo (0125):    |'
 ])
 param AzureOpenAIServiceRegion string
 
-param delimiters array = ['.', '(']
-param aoaiRegionWithBlankSpace string = split(AzureOpenAIServiceRegion, delimiters)[1]
-param openAiResourceGroupLocation string = trim(aoaiRegionWithBlankSpace)
-param useOpenAiGpt4 bool = contains(AzureOpenAIServiceRegion, 'GPT-4')
+param delimiters array = ['|']
+
+param aoaiResourceGroupLocationWithBlankSpace string = split(AzureOpenAIServiceRegion, delimiters)[1]
+param aoaiResourceGroupLocation string = trim(aoaiResourceGroupLocationWithBlankSpace)
+
+param aoaiDeployOptionWithBlankSpace string = split(AzureOpenAIServiceRegion, delimiters)[2]
+param useGlobalStandard bool = contains(aoaiDeployOptionWithBlankSpace, 'Global')
+
+param aoaiGpt35TurboDeployWithBlankSpace string = split(AzureOpenAIServiceRegion, delimiters)[5]
+param useAoaiGpt35Turbo bool = contains(aoaiGpt35TurboDeployWithBlankSpace, '✓')
+
+param aoaiGpt4DeployWithBlankSpace string = split(AzureOpenAIServiceRegion, delimiters)[4]
+param useAoaiGpt4 bool = contains(aoaiGpt4DeployWithBlankSpace, '✓')
+
+param aoaiGpt4oDeployWithBlankSpace string = split(AzureOpenAIServiceRegion, delimiters)[3]
+param useAoaiGpt4o bool = contains(aoaiGpt4oDeployWithBlankSpace, '✓')
 
 param openAiSkuName string = 'S0'
 param openAiGpt35TurboDeploymentName string = 'gpt-35-turbo-deploy'
 param openAiGpt4DeploymentName string = 'gpt-4-deploy'
+param openAiGpt4GlobalDeploymentName string = 'gpt-4-global-deploy'
 param openAiGpt4oDeploymentName string = 'gpt-4o-deploy'
+param openAiGpt4oGlobalDeploymentName string = 'gpt-4o-global-deploy'
 param openAiApiVersion string = '2023-05-15'
 
 param formRecognizerServiceName string = ''
@@ -209,7 +223,9 @@ module backend 'core/host/appservice.bicep' = {
       AZURE_SEARCH_SERVICE: searchService.outputs.name
       AZURE_OPENAI_GPT_35_TURBO_DEPLOYMENT: openAiGpt35TurboDeploymentName
       AZURE_OPENAI_GPT_4_DEPLOYMENT: openAiGpt4DeploymentName
+      AZURE_OPENAI_GPT_4_GLOBAL_DEPLOYMENT: openAiGpt4GlobalDeploymentName
       AZURE_OPENAI_GPT_4O_DEPLOYMENT: openAiGpt4oDeploymentName
+      AZURE_OPENAI_GPT_4O_GLOBAL_DEPLOYMENT: openAiGpt4oGlobalDeploymentName
       AZURE_OPENAI_API_VERSION: '2023-05-15'
       AZURE_COSMOSDB_CONTAINER: cosmosDbContainerName
       AZURE_COSMOSDB_DATABASE: cosmosDbDatabaseName
@@ -217,6 +233,10 @@ module backend 'core/host/appservice.bicep' = {
       API_MANAGEMENT_ENDPOINT: useApiManagement ? apimApi.outputs.apiManagementEndpoint : ''
       ENTRA_CLIENT_ID: audienceClientAppId
       USE_API_MANAGEMENT: useApiManagement
+      USE_GLOBAL_STANDARD: useGlobalStandard
+      USE_AOAI_GPT_35_TURBO: useAoaiGpt35Turbo
+      USE_AOAI_GPT_4: useAoaiGpt4
+      USE_AOAI_GPT_4O: useAoaiGpt4o
     }
   }
 }
@@ -226,15 +246,20 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
   scope: openAiResourceGroup
   params: {
     name: !empty(openAiServiceName) ? openAiServiceName : '${abbrs.cognitiveServicesAccounts}${resourceToken}'
-    location: openAiResourceGroupLocation
+    location: aoaiResourceGroupLocation
     tags: tags
     sku: {
       name: openAiSkuName
     }
-    useOpenAiGpt4: useOpenAiGpt4
+    useGlobalStandard: useGlobalStandard
+    useAoaiGpt35Turbo: useAoaiGpt35Turbo
+    useAoaiGpt4: useAoaiGpt4
+    useAoaiGpt4o: useAoaiGpt4o 
     openAiGpt35TurboDeploymentName: openAiGpt35TurboDeploymentName
     openAiGpt4DeploymentName: openAiGpt4DeploymentName
+    openAiGpt4GlobalDeploymentName: openAiGpt4GlobalDeploymentName
     openAiGpt4oDeploymentName: openAiGpt4oDeploymentName
+    openAiGpt4oGlobalDeploymentName: openAiGpt4oGlobalDeploymentName
     publicNetworkAccess: isPrivateNetworkEnabled ? 'Disabled' : 'Enabled'
   }
 }
@@ -250,7 +275,6 @@ module formRecognizer 'core/ai/cognitiveservices.bicep' = {
     sku: {
       name: formRecognizerSkuName
     }
-    deployments: []
   }
 }
 
@@ -702,10 +726,15 @@ output AZURE_OPENAI_SERVICE string = openAi.outputs.name
 output AZURE_OPENAI_RESOURCE_GROUP string = openAiResourceGroup.name
 output AZURE_OPENAI_GPT_35_TURBO_DEPLOYMENT string = openAiGpt35TurboDeploymentName
 output AZURE_OPENAI_GPT_4_DEPLOYMENT string = openAiGpt4DeploymentName
+output AZURE_OPENAI_GPT_4_GLOBAL_DEPLOYMENT string = openAiGpt4GlobalDeploymentName
 output AZURE_OPENAI_GPT_4O_DEPLOYMENT string = openAiGpt4oDeploymentName
+output AZURE_OPENAI_GPT_4O_GLOBAL_DEPLOYMENT string = openAiGpt4oGlobalDeploymentName
 output AZURE_OPENAI_API_VERSION string = openAiApiVersion
-output AZURE_OPENAI_RESOURCE_GROUP_LOCATION string = openAiResourceGroupLocation
-output USE_OPENAI_GPT4 bool = useOpenAiGpt4
+output AZURE_OPENAI_RESOURCE_GROUP_LOCATION string = aoaiResourceGroupLocation
+output USE_GLOBAL_STANDARD bool = useGlobalStandard
+output USE_AOAI_GPT35_TURBO bool = useAoaiGpt35Turbo
+output USE_AOAI_GPT_4 bool = useAoaiGpt4
+output USE_AOAI_GPT_4O bool = useAoaiGpt4o
 
 output AZURE_FORMRECOGNIZER_SERVICE string = formRecognizer.outputs.name
 output AZURE_FORMRECOGNIZER_RESOURCE_GROUP string = formRecognizerResourceGroup.name

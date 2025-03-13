@@ -1,13 +1,16 @@
 import os
 from azure.identity import DefaultAzureCredential
 from openai import AzureOpenAI
-from core.modelhelper import get_gpt_model, get_gpt_models
+from core.modelhelper import get_use_aoai_models, get_gpt_model, get_gpt_models
 
 AZURE_OPENAI_SERVICE = os.environ.get("AZURE_OPENAI_SERVICE")
 AZURE_OPENAI_API_VERSION = os.environ.get("AZURE_OPENAI_API_VERSION")
 API_MANAGEMENT_ENDPOINT = os.environ.get("API_MANAGEMENT_ENDPOINT")
 ENTRA_CLIENT_ID = os.environ.get("ENTRA_CLIENT_ID")
 USE_API_MANAGEMENT = True if os.environ.get("USE_API_MANAGEMENT").lower() == "true" else False
+
+def get_available_aoai_models() -> dict:
+    return get_use_aoai_models()
 
 def get_openai_clients(api_key: str, azure_credential: DefaultAzureCredential) -> dict:
     openai_clients = {}

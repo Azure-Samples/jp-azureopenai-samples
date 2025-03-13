@@ -17,6 +17,7 @@ const Chat = () => {
     const [gptModel, setGptModel] = useState<string>("gpt-3.5-turbo");
     const [systemPrompt, setSystemPrompt] = useState<string>("");
     const [temperature, setTemperature] = useState<string>("0.0");
+    const [availableModels, setAvailableModels] = useState<Record<string, any>>({});
 
     const lastQuestionRef = useRef<string>("");
     const chatMessageStreamEnd = useRef<HTMLDivElement | null>(null);
@@ -27,11 +28,32 @@ const Chat = () => {
     const [selectedAnswer, setSelectedAnswer] = useState<number>(0);
     const [answers, setAnswers] = useState<[user: string, response: ChatResponse][]>([]);
 
+    useEffect(() => {
+        fetch("/available_models")
+            .then((response) => response.json())
+            .then((data) => {
+                const parsedData = Object.fromEntries(
+                    Object.entries(data).map(([key, value]) => [key, value === true])
+                );
+                setAvailableModels(parsedData);
+            })
+            .catch((err) => {
+                console.error("Error fetching models:", err);
+            });
+    }, []);
+    
     const gpt_models: IDropdownOption[] = [
         { key: "gpt-3.5-turbo", text: "gpt-3.5-turbo" },
         { key: "gpt-4", text: "gpt-4" },
-        { key: "gpt-4o", text: "gpt-4o" }
+        { key: "gpt-4-global", text: "gpt-4-global" },
+        { key: "gpt-4o", text: "gpt-4o" },
+        { key: "gpt-4o-global", text: "gpt-4o-global" }
     ];
+
+    const filteredGptModels: IDropdownOption[] =
+    (availableModels && Object.keys(availableModels).length > 0)
+        ? gpt_models.filter(option => availableModels[option.key])
+        : gpt_models;
 
     const temperatures: IDropdownOption[] = Array.from({ length: 11 }, (_, i) => ({ key: (i / 10).toFixed(1), text: (i / 10).toFixed(1) }));
 
@@ -144,7 +166,7 @@ const Chat = () => {
                         defaultSelectedKeys={[gptModel]}
                         selectedKey={gptModel}
                         label="GPT Model:"
-                        options={gpt_models}
+                        options={filteredGptModels}
                         onChange={onGptModelChange}
                     />
                     <TextField
