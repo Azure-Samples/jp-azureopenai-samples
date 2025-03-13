@@ -1,0 +1,11 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/5.internal-document-search/"
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: "npm"
+    directory: "/5.internal-document-search/"
+    schedule:
+      interval: weekly
