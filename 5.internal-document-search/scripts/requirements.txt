@@ -1,4 +1,4 @@
-azure-identity==1.15.0
+azure-identity==1.21.0
 azure-search-documents==11.4.0
 azure-ai-formrecognizer==3.3.2
 azure-storage-blob==12.19.0
