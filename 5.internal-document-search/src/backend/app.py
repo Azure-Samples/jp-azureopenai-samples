@@ -10,7 +10,7 @@ from azure.storage.blob import BlobServiceClient
 from approaches.chatlogging import get_user_name, write_error
 from approaches.chatreadretrieveread import ChatReadRetrieveReadApproach
 from approaches.chatread import ChatReadApproach
-from core.openaiclienthelper import get_openai_clients
+from core.openaiclienthelper import get_available_aoai_models, get_openai_clients
 
 from azure.monitor.opentelemetry import configure_azure_monitor
 from opentelemetry.instrumentation.flask import FlaskInstrumentor
@@ -36,6 +36,7 @@ AZURE_OPENAI_SERVICE = os.environ.get("AZURE_OPENAI_SERVICE")
 azure_credential = DefaultAzureCredential()
 openai_token = azure_credential.get_token("https://cognitiveservices.azure.com/.default")
 
+available_aoai_models = get_available_aoai_models()
 openai_clients = get_openai_clients(openai_token.token, azure_credential)
 
 # Set up clients for Cognitive Search and Storage
@@ -66,6 +67,10 @@ FlaskInstrumentor().instrument_app(app)
 @app.route("/<path:path>")
 def static_file(path):
     return app.send_static_file(path)
+
+@app.route("/available_models")
+def available_models():
+    return jsonify(available_aoai_models)
 
 # Serve content files from blob storage from within the app to keep the example self-contained. 
 # *** NOTE *** this assumes that the content files are public, or at least that all users of the app

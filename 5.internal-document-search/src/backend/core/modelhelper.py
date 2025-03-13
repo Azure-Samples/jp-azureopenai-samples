@@ -4,9 +4,23 @@ import os
 import json
 import tiktoken
 
+USE_GLOBAL_STANDARD = os.environ.get("USE_GLOBAL_STANDARD", "").lower() == "true"
+USE_AOAI_GPT_35_TURBO = os.environ.get("USE_AOAI_GPT_35_TURBO", "").lower() == "true"
+USE_AOAI_GPT_4 = os.environ.get("USE_AOAI_GPT_4", "").lower() == "true"
+USE_AOAI_GPT_4O = os.environ.get("USE_AOAI_GPT_4O", "").lower() == "true"
 AZURE_OPENAI_GPT_35_TURBO_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_35_TURBO_DEPLOYMENT")
 AZURE_OPENAI_GPT_4_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_4_DEPLOYMENT")
+AZURE_OPENAI_GPT_4_GLOBAL_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_4_GLOBAL_DEPLOYMENT")
 AZURE_OPENAI_GPT_4O_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_4O_DEPLOYMENT")
+AZURE_OPENAI_GPT_4O_GLOBAL_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_4O_GLOBAL_DEPLOYMENT")
+
+use_aoai_models = {
+    "gpt-3.5-turbo": USE_AOAI_GPT_35_TURBO and not USE_GLOBAL_STANDARD,
+    "gpt-4": USE_AOAI_GPT_4 and not USE_GLOBAL_STANDARD,
+    "gpt-4-global": USE_AOAI_GPT_4 and USE_GLOBAL_STANDARD,
+    "gpt-4o": USE_AOAI_GPT_4O and not USE_GLOBAL_STANDARD,
+    "gpt-4o-global": USE_AOAI_GPT_4O and USE_GLOBAL_STANDARD
+}
 
 gpt_models = {
     "gpt-3.5-turbo": {
@@ -19,8 +33,18 @@ gpt_models = {
         "max_tokens": 4096,
         "encoding": tiktoken.encoding_for_model("gpt-4")
     },
+    "gpt-4-global": {
+        "deployment": AZURE_OPENAI_GPT_4_GLOBAL_DEPLOYMENT,
+        "max_tokens": 4096,
+        "encoding": tiktoken.encoding_for_model("gpt-4")
+    },
     "gpt-4o": {
         "deployment": AZURE_OPENAI_GPT_4O_DEPLOYMENT,
+        "max_tokens": 16384,
+        "encoding": tiktoken.encoding_for_model("gpt-4o")
+    },
+    "gpt-4o-global": {
+        "deployment": AZURE_OPENAI_GPT_4O_GLOBAL_DEPLOYMENT,
         "max_tokens": 16384,
         "encoding": tiktoken.encoding_for_model("gpt-4o")
     }
@@ -75,6 +99,9 @@ gpt_models = {
 #     if aoaimodel not in AOAI_2_OAI and aoaimodel not in MODELS_2_TOKEN_LIMITS:
 #         raise ValueError(message)
 #     return AOAI_2_OAI.get(aoaimodel) or aoaimodel
+
+def get_use_aoai_models() -> dict:
+    return use_aoai_models
 
 def get_gpt_model(model_name: str) -> dict:
     return gpt_models.get(model_name)
