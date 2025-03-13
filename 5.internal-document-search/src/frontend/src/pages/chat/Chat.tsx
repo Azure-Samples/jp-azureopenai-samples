@@ -35,7 +35,6 @@ const Chat = () => {
                 const parsedData = Object.fromEntries(
                     Object.entries(data).map(([key, value]) => [key, value === true])
                 );
-                console.log("Fetched models:", parsedData);
                 setAvailableModels(parsedData);
             })
             .catch((err) => {
