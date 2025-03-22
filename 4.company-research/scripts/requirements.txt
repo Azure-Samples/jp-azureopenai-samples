@@ -1,4 +1,4 @@
-azure-identity==1.13.0
+azure-identity==1.16.1
 python-dotenv
 redis
 openai==0.27.8

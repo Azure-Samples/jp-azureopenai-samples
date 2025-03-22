@@ -35,16 +35,45 @@ param storageContainerName string = 'content'
 
 param openAiServiceName string = ''
 param openAiResourceGroupName string = ''
-param openAiResourceGroupLocation string = location
+
+@allowed([
+  '1. |  japaneast      |  Standard         |  gpt-4o (2024-1120): ✓  |  gpt-4 (turbo-2024-04-09):    |  gpt-35-turbo (0125): ✓  |'
+  '2. |  japaneast      |  Global Standard  |  gpt-4o (2024-1120): ✓  |  gpt-4 (turbo-2024-04-09): ✓  |  gpt-35-turbo (0125):    |'
+  '3. |  australiaeast  |  Standard         |  gpt-4o (2024-1120):    |  gpt-4 (turbo-2024-04-09):    |  gpt-35-turbo (0125): ✓  |'
+  '4. |  australiaeast  |  Global Standard  |  gpt-4o (2024-1120): ✓  |  gpt-4 (turbo-2024-04-09): ✓  |  gpt-35-turbo (0125):    |'
+  '5. |  swedencentral  |  Standard         |  gpt-4o (2024-1120): ✓  |  gpt-4 (turbo-2024-04-09): ✓  |  gpt-35-turbo (0125): ✓  |'
+  '6. |  swedencentral  |  Global Standard  |  gpt-4o (2024-1120): ✓  |  gpt-4 (turbo-2024-04-09): ✓  |  gpt-35-turbo (0125):    |'
+  '7. |  eastus         |  Standard         |  gpt-4o (2024-1120): ✓  |  gpt-4 (turbo-2024-04-09): ✓  |  gpt-35-turbo (0125): ✓  |'
+  '8. |  eastus         |  Global Standard  |  gpt-4o (2024-1120): ✓  |  gpt-4 (turbo-2024-04-09): ✓  |  gpt-35-turbo (0125):    |'
+  '9. |  eastus2        |  Standard         |  gpt-4o (2024-1120): ✓  |  gpt-4 (turbo-2024-04-09): ✓  |  gpt-35-turbo (0125): ✓  |'
+  '10.|  eastus2        |  Global Standard  |  gpt-4o (2024-1120): ✓  |  gpt-4 (turbo-2024-04-09): ✓  |  gpt-35-turbo (0125):    |'
+])
+param AzureOpenAIServiceRegion string
+
+param delimiters array = ['|']
+
+param aoaiResourceGroupLocationWithBlankSpace string = split(AzureOpenAIServiceRegion, delimiters)[1]
+param aoaiResourceGroupLocation string = trim(aoaiResourceGroupLocationWithBlankSpace)
+
+param aoaiDeployOptionWithBlankSpace string = split(AzureOpenAIServiceRegion, delimiters)[2]
+param useGlobalStandard bool = contains(aoaiDeployOptionWithBlankSpace, 'Global')
+
+param aoaiGpt35TurboDeployWithBlankSpace string = split(AzureOpenAIServiceRegion, delimiters)[5]
+param useAoaiGpt35Turbo bool = contains(aoaiGpt35TurboDeployWithBlankSpace, '✓')
+
+param aoaiGpt4DeployWithBlankSpace string = split(AzureOpenAIServiceRegion, delimiters)[4]
+param useAoaiGpt4 bool = contains(aoaiGpt4DeployWithBlankSpace, '✓')
+
+param aoaiGpt4oDeployWithBlankSpace string = split(AzureOpenAIServiceRegion, delimiters)[3]
+param useAoaiGpt4o bool = contains(aoaiGpt4oDeployWithBlankSpace, '✓')
 
 param openAiSkuName string = 'S0'
-
 param openAiGpt35TurboDeploymentName string = 'gpt-35-turbo-deploy'
-param openAiGpt35Turbo16kDeploymentName string = 'gpt-35-turbo-16k-deploy'
-param openAiGpt4DeploymentName string = ''
-param openAiGpt432kDeploymentName string = ''
+param openAiGpt4DeploymentName string = 'gpt-4-deploy'
+param openAiGpt4GlobalDeploymentName string = 'gpt-4-global-deploy'
+param openAiGpt4oDeploymentName string = 'gpt-4o-deploy'
+param openAiGpt4oGlobalDeploymentName string = 'gpt-4o-global-deploy'
 param openAiApiVersion string = '2023-05-15'
-
 
 param formRecognizerServiceName string = ''
 param formRecognizerResourceGroupName string = ''
@@ -56,7 +85,7 @@ param cosmosDBAccountName string = ''
 param cosmosDbDatabaseName string = 'ChatHistory'
 param cosmosDbContainerName string = 'Prompts'
 
-
+param apiManagementResourceGroupName string = ''
 
 param vnetLocation string = location
 param vnetAddressPrefix string = '10.0.0.0/16'
@@ -78,31 +107,54 @@ param principalId string = ''
 @description('Use Application Insights for monitoring and performance tracing')
 param useApplicationInsights bool = true
 
+@description('Use API Management for protect Azure OpenAI service API endpoints')
+param useApiManagement bool
+
+param apimServiceName string = ''
+
+// params for api policy settings
+@description('Specify the domains allowed as CORS origins')
+param corsOriginUrl string = '*'
+
+@description('Provide the ID of the registered app in the Azure AD that is authorized')
+param audienceClientAppId string = ''
+param audienceWebAppId string = ''
+
+@description('Specify the scope name of the registered app in Azure AD that is authorized')
+param scopeName string = 'chat'
+
+@description('Provide the Tenant ID of the Azure AD for authentication purposes')
+param tenantId string = ''
+
 var abbrs = loadJsonContent('abbreviations.json')
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
 var tags = { 'azd-env-name': environmentName }
 
 // Organize resources in a resource group
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   name: !empty(resourceGroupName) ? resourceGroupName : '${abbrs.resourcesResourceGroups}${environmentName}'
   location: location
   tags: tags
 }
 
-resource openAiResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(openAiResourceGroupName)) {
+resource openAiResourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' existing = if (!empty(openAiResourceGroupName)) {
   name: !empty(openAiResourceGroupName) ? openAiResourceGroupName : resourceGroup.name
 }
 
-resource formRecognizerResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(formRecognizerResourceGroupName)) {
+resource formRecognizerResourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' existing = if (!empty(formRecognizerResourceGroupName)) {
   name: !empty(formRecognizerResourceGroupName) ? formRecognizerResourceGroupName : resourceGroup.name
 }
 
-resource searchServiceResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(searchServiceResourceGroupName)) {
+resource searchServiceResourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' existing = if (!empty(searchServiceResourceGroupName)) {
   name: !empty(searchServiceResourceGroupName) ? searchServiceResourceGroupName : resourceGroup.name
 }
 
-resource storageResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(storageResourceGroupName)) {
+resource storageResourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' existing = if (!empty(storageResourceGroupName)) {
   name: !empty(storageResourceGroupName) ? storageResourceGroupName : resourceGroup.name
+}
+
+resource apiManagementResourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' existing = if (!empty(apiManagementResourceGroupName)) {
+  name: !empty(apiManagementResourceGroupName) ? apiManagementResourceGroupName : resourceGroup.name
 }
 
 module cosmosDb 'core/db/cosmosdb.bicep' = {
@@ -163,19 +215,28 @@ module backend 'core/host/appservice.bicep' = {
     virtualNetworkSubnetId: isPrivateNetworkEnabled ? appServiceSubnet.outputs.id : ''
     appSettings: {
       APPLICATIONINSIGHTS_CONNECTION_STRING: useApplicationInsights ? monitoring.outputs.applicationInsightsConnectionString : ''
+      AZURE_APP_SERVICE_ENDPOINT: !empty(backendServiceName) ? backendServiceName : '${abbrs.webSitesAppService}backend-${resourceToken}'
       AZURE_STORAGE_ACCOUNT: storage.outputs.name
       AZURE_STORAGE_CONTAINER: storageContainerName
       AZURE_OPENAI_SERVICE: openAi.outputs.name
       AZURE_SEARCH_INDEX: searchIndexName
       AZURE_SEARCH_SERVICE: searchService.outputs.name
       AZURE_OPENAI_GPT_35_TURBO_DEPLOYMENT: openAiGpt35TurboDeploymentName
-      AZURE_OPENAI_GPT_35_TURBO_16K_DEPLOYMENT: openAiGpt35Turbo16kDeploymentName
-      AZURE_OPENAI_GPT_4_DEPLOYMENT: ''
-      AZURE_OPENAI_GPT_4_32K_DEPLOYMENT: ''
+      AZURE_OPENAI_GPT_4_DEPLOYMENT: openAiGpt4DeploymentName
+      AZURE_OPENAI_GPT_4_GLOBAL_DEPLOYMENT: openAiGpt4GlobalDeploymentName
+      AZURE_OPENAI_GPT_4O_DEPLOYMENT: openAiGpt4oDeploymentName
+      AZURE_OPENAI_GPT_4O_GLOBAL_DEPLOYMENT: openAiGpt4oGlobalDeploymentName
       AZURE_OPENAI_API_VERSION: '2023-05-15'
       AZURE_COSMOSDB_CONTAINER: cosmosDbContainerName
       AZURE_COSMOSDB_DATABASE: cosmosDbDatabaseName
       AZURE_COSMOSDB_ENDPOINT: cosmosDb.outputs.endpoint
+      API_MANAGEMENT_ENDPOINT: useApiManagement ? apimApi.outputs.apiManagementEndpoint : ''
+      ENTRA_CLIENT_ID: audienceClientAppId
+      USE_API_MANAGEMENT: useApiManagement
+      USE_GLOBAL_STANDARD: useGlobalStandard
+      USE_AOAI_GPT_35_TURBO: useAoaiGpt35Turbo
+      USE_AOAI_GPT_4: useAoaiGpt4
+      USE_AOAI_GPT_4O: useAoaiGpt4o
     }
   }
 }
@@ -185,37 +246,20 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
   scope: openAiResourceGroup
   params: {
     name: !empty(openAiServiceName) ? openAiServiceName : '${abbrs.cognitiveServicesAccounts}${resourceToken}'
-    location: openAiResourceGroupLocation
+    location: aoaiResourceGroupLocation
     tags: tags
     sku: {
       name: openAiSkuName
     }
-    deployments: [
-      {
-        name: openAiGpt35TurboDeploymentName
-        model: {
-          format: 'OpenAI'
-          name: 'gpt-35-turbo'
-          version: '0613'
-        }
-        sku: {
-          name: 'Standard'
-          capacity: 120
-        }
-      }
-      {
-        name: openAiGpt35Turbo16kDeploymentName
-        model: {
-          format: 'OpenAI'
-          name: 'gpt-35-turbo-16k'
-          version: '0613'
-        }
-        sku: {
-          name: 'Standard'
-          capacity: 120
-        }
-      }
-    ]
+    useGlobalStandard: useGlobalStandard
+    useAoaiGpt35Turbo: useAoaiGpt35Turbo
+    useAoaiGpt4: useAoaiGpt4
+    useAoaiGpt4o: useAoaiGpt4o 
+    openAiGpt35TurboDeploymentName: openAiGpt35TurboDeploymentName
+    openAiGpt4DeploymentName: openAiGpt4DeploymentName
+    openAiGpt4GlobalDeploymentName: openAiGpt4GlobalDeploymentName
+    openAiGpt4oDeploymentName: openAiGpt4oDeploymentName
+    openAiGpt4oGlobalDeploymentName: openAiGpt4oGlobalDeploymentName
     publicNetworkAccess: isPrivateNetworkEnabled ? 'Disabled' : 'Enabled'
   }
 }
@@ -274,6 +318,50 @@ module storage 'core/storage/storage-account.bicep' = {
       }
     ]
     publicNetworkAccess: 'Enabled'
+  }
+}
+
+// ================================================================================================
+// API Management
+// ================================================================================================
+module apim './core/gateway/apim.bicep' = {
+  name: 'apim'
+  scope: apiManagementResourceGroup
+  params: {
+    name: !empty(apimServiceName) ? apimServiceName : '${abbrs.apiManagementService}${resourceToken}'
+    location: location
+    tags: tags
+    useApiManagement: useApiManagement
+    sku: 'Standard'
+    skuCount: 1
+    applicationInsightsName: monitoring.outputs.applicationInsightsName
+    workspaceId: monitoring.outputs.logAnalyticsWorkspaceId
+    storageAccountId: storage.outputs.id
+  }
+}
+
+// Configures the API in the Azure API Management (APIM) service
+module apimApi './app/apim-api.bicep' = {
+  name: 'apimapi'
+  scope: apiManagementResourceGroup
+  dependsOn: [
+    apim
+  ]
+  params: {
+    name: !empty(apimServiceName) ? apimServiceName : '${abbrs.apiManagementService}${resourceToken}'
+    useApiManagement: useApiManagement
+    apiName: 'azure-openai-api'
+    apiDisplayName: 'Azure OpenAI API'
+    apiDescription: 'This is proxy endpoints for Azure OpenAI API'
+    apiPath: 'api'
+
+    //API Policy parameters
+    corsOriginUrl: corsOriginUrl
+    audienceClientAppId: audienceClientAppId
+    audienceWebAppId: audienceWebAppId
+    scopeName: scopeName
+    apiBackendUrl: 'https://${openAi.outputs.name}.openai.azure.com/openai'
+    tenantId: tenantId
   }
 }
 
@@ -600,6 +688,16 @@ module openAiRoleBackend 'core/security/role.bicep' = {
   }
 }
 
+module openAiRoleApiManagement 'core/security/role.bicep' = if (useApiManagement) {
+  scope: apiManagementResourceGroup
+  name: 'openai-role-api-management'
+  params: {
+    principalId: apim.outputs.identityPrincipalId
+    roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
+    principalType: 'ServicePrincipal'
+  }
+}
+
 module storageRoleBackend 'core/security/role.bicep' = {
   scope: storageResourceGroup
   name: 'storage-role-backend'
@@ -627,10 +725,16 @@ output AZURE_RESOURCE_GROUP string = resourceGroup.name
 output AZURE_OPENAI_SERVICE string = openAi.outputs.name
 output AZURE_OPENAI_RESOURCE_GROUP string = openAiResourceGroup.name
 output AZURE_OPENAI_GPT_35_TURBO_DEPLOYMENT string = openAiGpt35TurboDeploymentName
-output AZURE_OPENAI_GPT_35_TURBO_16K_DEPLOYMENT string = openAiGpt35Turbo16kDeploymentName
 output AZURE_OPENAI_GPT_4_DEPLOYMENT string = openAiGpt4DeploymentName
-output AZURE_OPENAI_GPT_4_32K_DEPLOYMENT string = openAiGpt432kDeploymentName
+output AZURE_OPENAI_GPT_4_GLOBAL_DEPLOYMENT string = openAiGpt4GlobalDeploymentName
+output AZURE_OPENAI_GPT_4O_DEPLOYMENT string = openAiGpt4oDeploymentName
+output AZURE_OPENAI_GPT_4O_GLOBAL_DEPLOYMENT string = openAiGpt4oGlobalDeploymentName
 output AZURE_OPENAI_API_VERSION string = openAiApiVersion
+output AZURE_OPENAI_RESOURCE_GROUP_LOCATION string = aoaiResourceGroupLocation
+output USE_GLOBAL_STANDARD bool = useGlobalStandard
+output USE_AOAI_GPT35_TURBO bool = useAoaiGpt35Turbo
+output USE_AOAI_GPT_4 bool = useAoaiGpt4
+output USE_AOAI_GPT_4O bool = useAoaiGpt4o
 
 output AZURE_FORMRECOGNIZER_SERVICE string = formRecognizer.outputs.name
 output AZURE_FORMRECOGNIZER_RESOURCE_GROUP string = formRecognizerResourceGroup.name
@@ -653,3 +757,4 @@ output AZURE_COSMOSDB_RESOURCE_GROUP string = resourceGroup.name
 output BACKEND_IDENTITY_PRINCIPAL_ID string = backend.outputs.identityPrincipalId
 output BACKEND_URI string = backend.outputs.uri
 output APPLICATIONINSIGHTS_CONNECTION_STRING string = useApplicationInsights ? monitoring.outputs.applicationInsightsConnectionString : ''
+output API_MANAGEMENT_ENDPOINT string =  useApiManagement ? apimApi.outputs.apiManagementEndpoint : ''

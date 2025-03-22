@@ -26,6 +26,7 @@ param kind string = 'app,linux'
 param allowedOrigins array = []
 param alwaysOn bool = true
 param appCommandLine string = ''
+@secure()
 param appSettings object = {}
 param clientAffinityEnabled bool = false
 param enableOryxBuild bool = contains(kind, 'linux')
@@ -39,7 +40,7 @@ param ftpsState string = 'FtpsOnly'
 param healthCheckPath string = ''
 param virtualNetworkSubnetId string
 
-resource appService 'Microsoft.Web/sites@2022-03-01' = {
+resource appService 'Microsoft.Web/sites@2022-09-01' = {
   name: name
   location: location
   tags: tags
@@ -94,7 +95,7 @@ resource appService 'Microsoft.Web/sites@2022-03-01' = {
   }
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!(empty(keyVaultName))) {
+resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!(empty(keyVaultName))) {
   name: keyVaultName
 }
 
