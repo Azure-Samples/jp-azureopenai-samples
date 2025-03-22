@@ -2,7 +2,7 @@
 
 ## 概要
 
-このデモは、ChatGPT ライクなインターフェースを使用して企業の社内文書を検索するアプリケーションの実装パターンです。デモアプリを利用するためには、Azure Open AI の ChatGPT モデルと、Azure AI Search、他にいくつかのリソースの作成が必要です。
+このデモは、ChatGPT ライクなインターフェースを使用して企業の社内文書を検索するアプリケーションの実装パターンです。デモアプリを利用するためには、Azure OpenAI の ChatGPT モデルと、Azure AI Search、他にいくつかのリソースの作成が必要です。
 
 このリポジトリでは、サンプルデータに[厚生労働省のモデル就業規則](https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudoukijun/zigyonushi/model/index.html)を使用しています。
 
@@ -65,8 +65,8 @@
 **重要:** このサンプルをデプロイするには、以下の２つが必要になります。
 
 - **Azureサブスクリプション**
-    - Azure Open AI サービスが有効になっているサブスクリプションが必要です。
-    - Azure Open AI サービスへのアクセス申請は[こちら](https://aka.ms/oaiapply)から行ってください。
+    - Azure OpenAI サービスが有効になっているサブスクリプションが必要です。
+    - Azure OpenAI サービスへのアクセス申請は[こちら](https://aka.ms/oaiapply)から行ってください。
 - **Azure権限**:
   - Microsoft.Authorization/roleAssignments/write 権限が必要です。この権限は [Role Based Access Control Administrator](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#role-based-access-control-administrator-preview)、 [User Access Administrator](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#user-access-administrator)、または [Owner](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#owner) といったロールに含まれています。
   - Azure アカウントにはサブスクリプションレベルで Microsoft.Resources/deployments/write 権限も必要です。この権限は [Contributor](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#contributor)、または [Owner](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#owner) ロールなどに含まれています。
