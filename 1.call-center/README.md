@@ -75,7 +75,7 @@ az cognitiveservices account create --name $OPENAI_NAME --resource-group $RESOUR
  --kind OpenAI --sku S0 --location $REGION --custom-domain $OPENAI_NAME --yes
 ```
 
-上記コマンドの実行後、[Azure Open AI Studio](https://oai.azure.com/) を使用して、[gpt-35-turbo モデルをデプロイ](https://learn.microsoft.com/ja-jp/azure/cognitive-services/openai/how-to/create-resource?pivots=web-portal#deploy-a-model)してください。デプロイしたモデル名は、後の手順で環境変数の値として利用するので、手元に控えておいてください。
+上記コマンドの実行後、[Azure OpenAI Studio](https://oai.azure.com/) を使用して、[gpt-35-turbo モデルをデプロイ](https://learn.microsoft.com/ja-jp/azure/cognitive-services/openai/how-to/create-resource?pivots=web-portal#deploy-a-model)してください。デプロイしたモデル名は、後の手順で環境変数の値として利用するので、手元に控えておいてください。
 
 > Azure Text Analytics を一度もご利用戴いたことがない場合、上記の `az cognitive...` コマンドのうち、**LANGUAGE_SERVICE** の実行が失敗します。その場合は、Text Analytics のリソースを Azure Portal 上から作成してください。
 
