@@ -4,4 +4,3 @@ azure-ai-formrecognizer==3.3.3
 azure-storage-blob==12.25.1
 pypdf==5.4.0
 typing==3.7.4.3
-pycryptodome==3.20.0
