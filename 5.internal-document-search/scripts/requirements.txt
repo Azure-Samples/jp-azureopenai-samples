@@ -1,5 +1,5 @@
 azure-identity==1.25.0
-azure-search-documents==11.5.2
+azure-search-documents==11.5.3
 azure-ai-formrecognizer==3.3.3
 pypdf==6.0.0
 azure-storage-blob==12.26.0
