@@ -33,32 +33,6 @@ param openAiGpt35TurboDeployObj object = {
   }
 }
 
-param openAiGpt4DeployObj object = {
-  name: openAiGpt4DeploymentName
-  model: {
-    format: 'OpenAI'
-    name: 'gpt-4'
-    version: 'turbo-2024-04-09'
-  }
-  sku: {
-    name: 'Standard'
-    capacity: 40
-  }
-}
-
-param openAiGpt4GlobalDeployObj object = {
-  name: openAiGpt4GlobalDeploymentName
-  model: {
-    format: 'OpenAI'
-    name: 'gpt-4'
-    version: 'turbo-2024-04-09'
-  }
-  sku: {
-    name: 'GlobalStandard'
-    capacity: 40
-  }
-}
-
 param openAiGpt4oDeployObj object = {
   name: openAiGpt4oDeploymentName
   model: {
@@ -86,11 +60,9 @@ param openAiGpt4oGlobalDeployObj object = {
 }
 
 param deployments array = useGlobalStandard ? concat(
-  useAoaiGpt4 && !empty(openAiGpt4GlobalDeployObj.name) ? [ openAiGpt4GlobalDeployObj ] : [],
   useAoaiGpt4o && !empty(openAiGpt4oGlobalDeployObj.name) ? [ openAiGpt4oGlobalDeployObj ] : []
 ) : concat(
   useAoaiGpt35Turbo && !empty(openAiGpt35TurboDeployObj.name) ? [ openAiGpt35TurboDeployObj ] : [],
-  useAoaiGpt4 && !empty(openAiGpt4DeployObj.name) ? [ openAiGpt4DeployObj ] : [],
   useAoaiGpt4o && !empty(openAiGpt4oDeployObj.name) ? [ openAiGpt4oDeployObj ] : []
 )
 

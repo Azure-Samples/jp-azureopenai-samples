@@ -37,16 +37,16 @@ param openAiServiceName string = ''
 param openAiResourceGroupName string = ''
 
 @allowed([
-  '1. |  japaneast      |  Standard         |  gpt-4o (2024-1120): ✓  |  gpt-4 (turbo-2024-04-09):    |  gpt-35-turbo (0125): ✓  |'
-  '2. |  japaneast      |  Global Standard  |  gpt-4o (2024-1120): ✓  |  gpt-4 (turbo-2024-04-09): ✓  |  gpt-35-turbo (0125):    |'
-  '3. |  australiaeast  |  Standard         |  gpt-4o (2024-1120):    |  gpt-4 (turbo-2024-04-09):    |  gpt-35-turbo (0125): ✓  |'
-  '4. |  australiaeast  |  Global Standard  |  gpt-4o (2024-1120): ✓  |  gpt-4 (turbo-2024-04-09): ✓  |  gpt-35-turbo (0125):    |'
-  '5. |  swedencentral  |  Standard         |  gpt-4o (2024-1120): ✓  |  gpt-4 (turbo-2024-04-09): ✓  |  gpt-35-turbo (0125): ✓  |'
-  '6. |  swedencentral  |  Global Standard  |  gpt-4o (2024-1120): ✓  |  gpt-4 (turbo-2024-04-09): ✓  |  gpt-35-turbo (0125):    |'
-  '7. |  eastus         |  Standard         |  gpt-4o (2024-1120): ✓  |  gpt-4 (turbo-2024-04-09): ✓  |  gpt-35-turbo (0125): ✓  |'
-  '8. |  eastus         |  Global Standard  |  gpt-4o (2024-1120): ✓  |  gpt-4 (turbo-2024-04-09): ✓  |  gpt-35-turbo (0125):    |'
-  '9. |  eastus2        |  Standard         |  gpt-4o (2024-1120): ✓  |  gpt-4 (turbo-2024-04-09): ✓  |  gpt-35-turbo (0125): ✓  |'
-  '10.|  eastus2        |  Global Standard  |  gpt-4o (2024-1120): ✓  |  gpt-4 (turbo-2024-04-09): ✓  |  gpt-35-turbo (0125):    |'
+  '1. |  japaneast      |  Standard         |  gpt-4o (2024-1120): ✓  |  gpt-35-turbo (0125): ✓  |'
+  '2. |  japaneast      |  Global Standard  |  gpt-4o (2024-1120): ✓  |  gpt-35-turbo (0125):    |'
+  '3. |  australiaeast  |  Standard         |  gpt-4o (2024-1120):    |  gpt-35-turbo (0125): ✓  |'
+  '4. |  australiaeast  |  Global Standard  |  gpt-4o (2024-1120): ✓  |  gpt-35-turbo (0125):    |'
+  '5. |  swedencentral  |  Standard         |  gpt-4o (2024-1120): ✓  |  gpt-35-turbo (0125): ✓  |'
+  '6. |  swedencentral  |  Global Standard  |  gpt-4o (2024-1120): ✓  |  gpt-35-turbo (0125):    |'
+  '7. |  eastus         |  Standard         |  gpt-4o (2024-1120): ✓  |  gpt-35-turbo (0125): ✓  |'
+  '8. |  eastus         |  Global Standard  |  gpt-4o (2024-1120): ✓  |  gpt-35-turbo (0125):    |'
+  '9. |  eastus2        |  Standard         |  gpt-4o (2024-1120): ✓  |  gpt-35-turbo (0125): ✓  |'
+  '10.|  eastus2        |  Global Standard  |  gpt-4o (2024-1120): ✓  |  gpt-35-turbo (0125):    |'
 ])
 param AzureOpenAIServiceRegion string
 
