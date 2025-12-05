@@ -29,4 +29,4 @@ resource networkInterface 'Microsoft.Network/networkInterfaces@2023-11-01' = if 
   }
 }
 
-output nicId string = networkInterface.?id
+output nicId string = networkInterface.id ?? ''

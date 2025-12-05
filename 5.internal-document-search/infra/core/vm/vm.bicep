@@ -4,7 +4,7 @@ param adminUsername string
 @secure()
 param adminPasswordOrKey string
 param vmSize string = 'Standard_D2s_v3'
-param nicId string
+param nicId string = ''
 param osDiskType string = 'Standard_LRS'
 param isPrivateNetworkEnabled bool
 
