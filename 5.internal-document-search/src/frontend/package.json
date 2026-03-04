@@ -12,13 +12,13 @@
     "@fluentui/react": "^8.105.3",
     "@fluentui/react-icons": "^2.0.195",
     "@react-spring/web": "^9.7.1",
-    "dompurify": "^3.2.4",
+    "dompurify": "^3.3.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.8.1"
   },
   "devDependencies": {
-    "@types/dompurify": "^2.4.0",
+    "@types/dompurify": "^3.2.0",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
     "@vitejs/plugin-react": "^3.1.0",
