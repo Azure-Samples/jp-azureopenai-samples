@@ -12,11 +12,9 @@ param sku object = {
 
 param useAoaiGpt41Std bool = false
 param useAoaiGpt41Global bool = true
-param useAoaiGpt52Std bool = false
 param useAoaiGpt52Global bool = false
 param openAiGpt41DeploymentName string = ''
 param openAiGpt41GlobalDeploymentName string = ''
-param openAiGpt52DeploymentName string = ''
 param openAiGpt52GlobalDeploymentName string = ''
 
 param openAiGpt41DeployObj object = {
@@ -45,25 +43,12 @@ param openAiGpt41GlobalDeployObj object = {
   }
 }
 
-param openAiGpt52DeployObj object = {
-  name: openAiGpt52DeploymentName
-  model: {
-    format: 'OpenAI'
-    name: 'gpt-5.2'
-    version: '2025-09-01'
-  }
-  sku: {
-    name: 'Standard'
-    capacity: 20
-  }
-}
-
 param openAiGpt52GlobalDeployObj object = {
   name: openAiGpt52GlobalDeploymentName
   model: {
     format: 'OpenAI'
     name: 'gpt-5.2'
-    version: '2025-09-01'
+    version: '2025-12-11'
   }
   sku: {
     name: 'GlobalStandard'
@@ -74,7 +59,6 @@ param openAiGpt52GlobalDeployObj object = {
 param deployments array = concat(
   useAoaiGpt41Std && !empty(openAiGpt41DeployObj.name) ? [ openAiGpt41DeployObj ] : [],
   useAoaiGpt41Global && !empty(openAiGpt41GlobalDeployObj.name) ? [ openAiGpt41GlobalDeployObj ] : [],
-  useAoaiGpt52Std && !empty(openAiGpt52DeployObj.name) ? [ openAiGpt52DeployObj ] : [],
   useAoaiGpt52Global && !empty(openAiGpt52GlobalDeployObj.name) ? [ openAiGpt52GlobalDeployObj ] : []
 )
 

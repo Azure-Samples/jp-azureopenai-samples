@@ -45,7 +45,6 @@ const Chat = () => {
     const gpt_models: IDropdownOption[] = [
         { key: "gpt-4.1", text: "gpt-4.1 (standard)" },
         { key: "gpt-4.1-global", text: "gpt-4.1 (global standard)" },
-        { key: "gpt-5.2", text: "gpt-5.2 (standard)" },
         { key: "gpt-5.2-global", text: "gpt-5.2 (global standard)" }
     ];
 

@@ -125,14 +125,14 @@
     - `? Select an Azure location to use:` というメッセージが表示されたら、デプロイしたい Azure リージョンを選択してください。
         - Azure OpenAI モデルのリージョン別利用可否 (公式ドキュメント調査結果 2026-03 時点)は以下のとおりです。最新情報は[公式ドキュメント](https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/models-sold-directly-by-azure?tabs=global-standard-aoai%2Cglobal-standard&pivots=azure-openai#model-summary-table-and-region-availability)を必ず確認してください。
 
-          | リージョン | gpt-4.1 (Standard) | gpt-4.1 (Global Standard) | gpt-5.2 (Standard) | gpt-5.2 (Global Standard) |
-          | --- | --- | --- | --- | --- |
-          | japaneast (東日本) | ❌ | ✅ | ❌ | ❌ |
-          | swedencentral | ✅ | ✅ | ❌ | ✅ |
-          | eastus | ✅ | ✅ | ❌ | ❌ |
-          | eastus2 | ✅ | ✅ | ❌ | ✅ |
-          | uksouth | ❌ | ✅ | ❌ | ❌ |
-          | australiaeast | ❌ | ✅ | ❌ | ❌ |
+          | リージョン | gpt-4.1 (Standard) | gpt-4.1 (Global Standard) | gpt-5.2 (Global Standard) |
+          | --- | --- | --- | --- |
+          | japaneast (東日本) | ❌ | ✅ | ❌ |
+          | swedencentral | ✅ | ✅ | ✅ |
+          | eastus | ✅ | ✅ | ❌ |
+          | eastus2 | ✅ | ✅ | ✅ |
+          | uksouth | ❌ | ✅ | ❌ |
+          | australiaeast | ❌ | ✅ | ❌ |
           
     - その後 Azure 上に必要なリソースをデプロイし、アプリケーションのビルドとデプロイが実行されます。また、`./data`配下の PDF を利用して Search Index を作成します。
     - Linux 環境で実行している場合は、`chmod +x scripts/prepdocs.sh`

@@ -6,17 +6,14 @@ import tiktoken
 
 USE_AOAI_GPT_41_STD = os.environ.get("USE_AOAI_GPT_41_STD", "").lower() == "true"
 USE_AOAI_GPT_41_GLOBAL = os.environ.get("USE_AOAI_GPT_41_GLOBAL", "").lower() == "true"
-USE_AOAI_GPT_52_STD = os.environ.get("USE_AOAI_GPT_52_STD", "").lower() == "true"
 USE_AOAI_GPT_52_GLOBAL = os.environ.get("USE_AOAI_GPT_52_GLOBAL", "").lower() == "true"
 AZURE_OPENAI_GPT_41_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_41_DEPLOYMENT")
 AZURE_OPENAI_GPT_41_GLOBAL_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_41_GLOBAL_DEPLOYMENT")
-AZURE_OPENAI_GPT_52_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_52_DEPLOYMENT")
 AZURE_OPENAI_GPT_52_GLOBAL_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_52_GLOBAL_DEPLOYMENT")
 
 use_aoai_models = {
     "gpt-4.1": USE_AOAI_GPT_41_STD,
     "gpt-4.1-global": USE_AOAI_GPT_41_GLOBAL,
-    "gpt-5.2": USE_AOAI_GPT_52_STD,
     "gpt-5.2-global": USE_AOAI_GPT_52_GLOBAL,
 }
 
@@ -33,11 +30,6 @@ gpt_models = {
         "deployment": AZURE_OPENAI_GPT_41_GLOBAL_DEPLOYMENT,
         "max_tokens": 32768,
         "encoding": _encoding_gpt41
-    },
-    "gpt-5.2": {
-        "deployment": AZURE_OPENAI_GPT_52_DEPLOYMENT,
-        "max_tokens": 32768,
-        "encoding": _encoding_gpt52
     },
     "gpt-5.2-global": {
         "deployment": AZURE_OPENAI_GPT_52_GLOBAL_DEPLOYMENT,
