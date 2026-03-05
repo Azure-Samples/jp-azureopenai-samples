@@ -2,5 +2,5 @@ azure-identity==1.25.2
 azure-search-documents==11.5.3
 azure-ai-formrecognizer==3.3.3
 pypdf==6.7.5
-azure-storage-blob==12.26.0
+azure-storage-blob==12.28.0
 typing==3.7.4.3
