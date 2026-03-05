@@ -17,7 +17,8 @@ import { ClearChatButton } from "../../components/ClearChatButton";
 const DocSearch = () => {
     const [isConfigPanelOpen, setIsConfigPanelOpen] = useState(false);
 
-    const [gptModel, setGptModel] = useState<string>("gpt-3.5-turbo");
+    const [availableModels, setAvailableModels] = useState<{ [key: string]: boolean }>({});
+    const [gptModel, setGptModel] = useState<string>("gpt-4.1-global");
     const [temperature, setTemperature] = useState<string>("0.0");
 
     const [retrieveCount, setRetrieveCount] = useState<number>(5);
@@ -37,11 +38,30 @@ const DocSearch = () => {
     const [selectedAnswer, setSelectedAnswer] = useState<number>(0);
     const [answers, setAnswers] = useState<[user: string, response: AskResponse][]>([]);
 
+    useEffect(() => {
+        fetch("/available_models")
+            .then((response) => response.json())
+            .then((data) => {
+                const parsedData = Object.fromEntries(
+                    Object.entries(data).map(([key, value]) => [key, value === true])
+                );
+                setAvailableModels(parsedData);
+            })
+            .catch((err) => {
+                console.error("Error fetching models:", err);
+            });
+    }, []);
+
     const gpt_models: IDropdownOption[] = [
-        { key: "gpt-3.5-turbo", text: "gpt-3.5-turbo" },
-        { key: "gpt-4", text: "gpt-4" },
-        { key: "gpt-4o", text: "gpt-4o" }
+        { key: "gpt-4.1", text: "gpt-4.1 (standard)" },
+        { key: "gpt-4.1-global", text: "gpt-4.1 (global standard)" },
+        { key: "gpt-5.2-global", text: "gpt-5.2 (global standard)" }
     ];
+
+    const filteredGptModels: IDropdownOption[] =
+        (availableModels && Object.keys(availableModels).length > 0)
+            ? gpt_models.filter(option => availableModels[option.key])
+            : gpt_models;
 
     const temperatures: IDropdownOption[] = Array.from({ length: 11 }, (_, i) => ({ key: (i / 10).toFixed(1), text: (i / 10).toFixed(1) }));
 
@@ -228,7 +248,7 @@ const DocSearch = () => {
                         defaultSelectedKeys={[gptModel]}
                         selectedKey={gptModel}
                         label="GPT Model:"
-                        options={gpt_models}
+                        options={filteredGptModels}
                         onChange={onGptModelChange}
                     />
                     <Dropdown
