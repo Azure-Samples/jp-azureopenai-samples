@@ -5,49 +5,44 @@ import json
 import tiktoken
 
 USE_GLOBAL_STANDARD = os.environ.get("USE_GLOBAL_STANDARD", "").lower() == "true"
-USE_AOAI_GPT_35_TURBO = os.environ.get("USE_AOAI_GPT_35_TURBO", "").lower() == "true"
-USE_AOAI_GPT_4 = os.environ.get("USE_AOAI_GPT_4", "").lower() == "true"
-USE_AOAI_GPT_4O = os.environ.get("USE_AOAI_GPT_4O", "").lower() == "true"
-AZURE_OPENAI_GPT_35_TURBO_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_35_TURBO_DEPLOYMENT")
-AZURE_OPENAI_GPT_4_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_4_DEPLOYMENT")
-AZURE_OPENAI_GPT_4_GLOBAL_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_4_GLOBAL_DEPLOYMENT")
-AZURE_OPENAI_GPT_4O_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_4O_DEPLOYMENT")
-AZURE_OPENAI_GPT_4O_GLOBAL_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_4O_GLOBAL_DEPLOYMENT")
+USE_AOAI_GPT_41 = os.environ.get("USE_AOAI_GPT_41", "").lower() == "true"
+USE_AOAI_GPT_52 = os.environ.get("USE_AOAI_GPT_52", "").lower() == "true"
+AZURE_OPENAI_GPT_41_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_41_DEPLOYMENT")
+AZURE_OPENAI_GPT_41_GLOBAL_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_41_GLOBAL_DEPLOYMENT")
+AZURE_OPENAI_GPT_52_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_52_DEPLOYMENT")
+AZURE_OPENAI_GPT_52_GLOBAL_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_52_GLOBAL_DEPLOYMENT")
 
 use_aoai_models = {
-    "gpt-3.5-turbo": USE_AOAI_GPT_35_TURBO and not USE_GLOBAL_STANDARD,
-    "gpt-4": USE_AOAI_GPT_4 and not USE_GLOBAL_STANDARD,
-    "gpt-4-global": USE_AOAI_GPT_4 and USE_GLOBAL_STANDARD,
-    "gpt-4o": USE_AOAI_GPT_4O and not USE_GLOBAL_STANDARD,
-    "gpt-4o-global": USE_AOAI_GPT_4O and USE_GLOBAL_STANDARD
+    "gpt-4.1": USE_AOAI_GPT_41 and not USE_GLOBAL_STANDARD,
+    "gpt-4.1-global": USE_AOAI_GPT_41 and USE_GLOBAL_STANDARD,
+    "gpt-5.2": USE_AOAI_GPT_52 and not USE_GLOBAL_STANDARD,
+    "gpt-5.2-global": USE_AOAI_GPT_52 and USE_GLOBAL_STANDARD,
 }
 
+_encoding_gpt41 = tiktoken.get_encoding("cl100k_base")
+_encoding_gpt52 = tiktoken.get_encoding("cl100k_base")
+
 gpt_models = {
-    "gpt-3.5-turbo": {
-        "deployment": AZURE_OPENAI_GPT_35_TURBO_DEPLOYMENT,
-        "max_tokens": 4096,
-        "encoding": tiktoken.encoding_for_model("gpt-3.5-turbo")
+    "gpt-4.1": {
+        "deployment": AZURE_OPENAI_GPT_41_DEPLOYMENT,
+        "max_tokens": 32768,
+        "encoding": _encoding_gpt41
     },
-    "gpt-4": {
-        "deployment": AZURE_OPENAI_GPT_4_DEPLOYMENT,
-        "max_tokens": 4096,
-        "encoding": tiktoken.encoding_for_model("gpt-4")
+    "gpt-4.1-global": {
+        "deployment": AZURE_OPENAI_GPT_41_GLOBAL_DEPLOYMENT,
+        "max_tokens": 32768,
+        "encoding": _encoding_gpt41
     },
-    "gpt-4-global": {
-        "deployment": AZURE_OPENAI_GPT_4_GLOBAL_DEPLOYMENT,
-        "max_tokens": 4096,
-        "encoding": tiktoken.encoding_for_model("gpt-4")
+    "gpt-5.2": {
+        "deployment": AZURE_OPENAI_GPT_52_DEPLOYMENT,
+        "max_tokens": 32768,
+        "encoding": _encoding_gpt52
     },
-    "gpt-4o": {
-        "deployment": AZURE_OPENAI_GPT_4O_DEPLOYMENT,
-        "max_tokens": 16384,
-        "encoding": tiktoken.encoding_for_model("gpt-4o")
+    "gpt-5.2-global": {
+        "deployment": AZURE_OPENAI_GPT_52_GLOBAL_DEPLOYMENT,
+        "max_tokens": 32768,
+        "encoding": _encoding_gpt52
     },
-    "gpt-4o-global": {
-        "deployment": AZURE_OPENAI_GPT_4O_GLOBAL_DEPLOYMENT,
-        "max_tokens": 16384,
-        "encoding": tiktoken.encoding_for_model("gpt-4o")
-    }
 }
 
 # MODELS_2_TOKEN_LIMITS = {

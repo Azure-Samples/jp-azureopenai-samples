@@ -10,35 +10,21 @@ param sku object = {
   name: 'S0'
 }
 
+// モデル利用可否フラグ (main.bicep の @allowed 選択結果を引き継ぐ)
 param useGlobalStandard bool = true
-param useAoaiGpt35Turbo bool = true
-param useAoaiGpt4 bool = true
-param useAoaiGpt4o bool = true
-param openAiGpt35TurboDeploymentName string = ''
-param openAiGpt4DeploymentName string = ''
-param openAiGpt4GlobalDeploymentName string = ''
-param openAiGpt4oDeploymentName string = ''
-param openAiGpt4oGlobalDeploymentName string = ''
+param useAoaiGpt41 bool = true
+param useAoaiGpt52 bool = false
+param openAiGpt41DeploymentName string = ''
+param openAiGpt41GlobalDeploymentName string = ''
+param openAiGpt52DeploymentName string = ''
+param openAiGpt52GlobalDeploymentName string = ''
 
-param openAiGpt35TurboDeployObj object = {
-  name: openAiGpt35TurboDeploymentName
+param openAiGpt41DeployObj object = {
+  name: openAiGpt41DeploymentName
   model: {
     format: 'OpenAI'
-    name: 'gpt-35-turbo'
-    version: '0125'
-  }
-  sku: {
-    name: 'Standard'
-    capacity: 120
-  }
-}
-
-param openAiGpt4DeployObj object = {
-  name: openAiGpt4DeploymentName
-  model: {
-    format: 'OpenAI'
-    name: 'gpt-4'
-    version: 'turbo-2024-04-09'
+    name: 'gpt-4.1'
+    version: '2025-04-14'
   }
   sku: {
     name: 'Standard'
@@ -46,12 +32,12 @@ param openAiGpt4DeployObj object = {
   }
 }
 
-param openAiGpt4GlobalDeployObj object = {
-  name: openAiGpt4GlobalDeploymentName
+param openAiGpt41GlobalDeployObj object = {
+  name: openAiGpt41GlobalDeploymentName
   model: {
     format: 'OpenAI'
-    name: 'gpt-4'
-    version: 'turbo-2024-04-09'
+    name: 'gpt-4.1'
+    version: '2025-04-14'
   }
   sku: {
     name: 'GlobalStandard'
@@ -59,39 +45,38 @@ param openAiGpt4GlobalDeployObj object = {
   }
 }
 
-param openAiGpt4oDeployObj object = {
-  name: openAiGpt4oDeploymentName
+param openAiGpt52DeployObj object = {
+  name: openAiGpt52DeploymentName
   model: {
     format: 'OpenAI'
-    name: 'gpt-4o'
-    version: '2024-11-20'
+    name: 'gpt-5.2'
+    version: '2025-09-01'
   }
   sku: {
     name: 'Standard'
-    capacity: 40
+    capacity: 20
   }
 }
 
-param openAiGpt4oGlobalDeployObj object = {
-  name: openAiGpt4oGlobalDeploymentName
+param openAiGpt52GlobalDeployObj object = {
+  name: openAiGpt52GlobalDeploymentName
   model: {
     format: 'OpenAI'
-    name: 'gpt-4o'
-    version: '2024-11-20'
+    name: 'gpt-5.2'
+    version: '2025-09-01'
   }
   sku: {
     name: 'GlobalStandard'
-    capacity: 40
+    capacity: 20
   }
 }
 
 param deployments array = useGlobalStandard ? concat(
-  useAoaiGpt4 && !empty(openAiGpt4GlobalDeployObj.name) ? [ openAiGpt4GlobalDeployObj ] : [],
-  useAoaiGpt4o && !empty(openAiGpt4oGlobalDeployObj.name) ? [ openAiGpt4oGlobalDeployObj ] : []
+  useAoaiGpt41 && !empty(openAiGpt41GlobalDeployObj.name) ? [ openAiGpt41GlobalDeployObj ] : [],
+  useAoaiGpt52 && !empty(openAiGpt52GlobalDeployObj.name) ? [ openAiGpt52GlobalDeployObj ] : []
 ) : concat(
-  useAoaiGpt35Turbo && !empty(openAiGpt35TurboDeployObj.name) ? [ openAiGpt35TurboDeployObj ] : [],
-  useAoaiGpt4 && !empty(openAiGpt4DeployObj.name) ? [ openAiGpt4DeployObj ] : [],
-  useAoaiGpt4o && !empty(openAiGpt4oDeployObj.name) ? [ openAiGpt4oDeployObj ] : []
+  useAoaiGpt41 && !empty(openAiGpt41DeployObj.name) ? [ openAiGpt41DeployObj ] : [],
+  useAoaiGpt52 && !empty(openAiGpt52DeployObj.name) ? [ openAiGpt52DeployObj ] : []
 )
 
 resource account 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
