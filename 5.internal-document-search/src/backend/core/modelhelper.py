@@ -4,19 +4,20 @@ import os
 import json
 import tiktoken
 
-USE_GLOBAL_STANDARD = os.environ.get("USE_GLOBAL_STANDARD", "").lower() == "true"
-USE_AOAI_GPT_41 = os.environ.get("USE_AOAI_GPT_41", "").lower() == "true"
-USE_AOAI_GPT_52 = os.environ.get("USE_AOAI_GPT_52", "").lower() == "true"
+USE_AOAI_GPT_41_STD = os.environ.get("USE_AOAI_GPT_41_STD", "").lower() == "true"
+USE_AOAI_GPT_41_GLOBAL = os.environ.get("USE_AOAI_GPT_41_GLOBAL", "").lower() == "true"
+USE_AOAI_GPT_52_STD = os.environ.get("USE_AOAI_GPT_52_STD", "").lower() == "true"
+USE_AOAI_GPT_52_GLOBAL = os.environ.get("USE_AOAI_GPT_52_GLOBAL", "").lower() == "true"
 AZURE_OPENAI_GPT_41_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_41_DEPLOYMENT")
 AZURE_OPENAI_GPT_41_GLOBAL_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_41_GLOBAL_DEPLOYMENT")
 AZURE_OPENAI_GPT_52_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_52_DEPLOYMENT")
 AZURE_OPENAI_GPT_52_GLOBAL_DEPLOYMENT = os.environ.get("AZURE_OPENAI_GPT_52_GLOBAL_DEPLOYMENT")
 
 use_aoai_models = {
-    "gpt-4.1": USE_AOAI_GPT_41 and not USE_GLOBAL_STANDARD,
-    "gpt-4.1-global": USE_AOAI_GPT_41 and USE_GLOBAL_STANDARD,
-    "gpt-5.2": USE_AOAI_GPT_52 and not USE_GLOBAL_STANDARD,
-    "gpt-5.2-global": USE_AOAI_GPT_52 and USE_GLOBAL_STANDARD,
+    "gpt-4.1": USE_AOAI_GPT_41_STD,
+    "gpt-4.1-global": USE_AOAI_GPT_41_GLOBAL,
+    "gpt-5.2": USE_AOAI_GPT_52_STD,
+    "gpt-5.2-global": USE_AOAI_GPT_52_GLOBAL,
 }
 
 _encoding_gpt41 = tiktoken.get_encoding("cl100k_base")

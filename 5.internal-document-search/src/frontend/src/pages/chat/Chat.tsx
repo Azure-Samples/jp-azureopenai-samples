@@ -14,7 +14,7 @@ import { ClearChatButton } from "../../components/ClearChatButton";
 const Chat = () => {
     const [isConfigPanelOpen, setIsConfigPanelOpen] = useState(false);
 
-    const [gptModel, setGptModel] = useState<string>("gpt-3.5-turbo");
+    const [gptModel, setGptModel] = useState<string>("gpt-4.1-global");
     const [systemPrompt, setSystemPrompt] = useState<string>("");
     const [temperature, setTemperature] = useState<string>("0.0");
     const [availableModels, setAvailableModels] = useState<Record<string, any>>({});
@@ -43,11 +43,10 @@ const Chat = () => {
     }, []);
     
     const gpt_models: IDropdownOption[] = [
-        { key: "gpt-3.5-turbo", text: "gpt-3.5-turbo" },
-        { key: "gpt-4", text: "gpt-4" },
-        { key: "gpt-4-global", text: "gpt-4-global" },
-        { key: "gpt-4o", text: "gpt-4o" },
-        { key: "gpt-4o-global", text: "gpt-4o-global" }
+        { key: "gpt-4.1", text: "gpt-4.1 (standard)" },
+        { key: "gpt-4.1-global", text: "gpt-4.1 (global standard)" },
+        { key: "gpt-5.2", text: "gpt-5.2 (standard)" },
+        { key: "gpt-5.2-global", text: "gpt-5.2 (global standard)" }
     ];
 
     const filteredGptModels: IDropdownOption[] =

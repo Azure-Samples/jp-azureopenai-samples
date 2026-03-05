@@ -10,10 +10,10 @@ param sku object = {
   name: 'S0'
 }
 
-// モデル利用可否フラグ (main.bicep の @allowed 選択結果を引き継ぐ)
-param useGlobalStandard bool = true
-param useAoaiGpt41 bool = true
-param useAoaiGpt52 bool = false
+param useAoaiGpt41Std bool = false
+param useAoaiGpt41Global bool = true
+param useAoaiGpt52Std bool = false
+param useAoaiGpt52Global bool = false
 param openAiGpt41DeploymentName string = ''
 param openAiGpt41GlobalDeploymentName string = ''
 param openAiGpt52DeploymentName string = ''
@@ -71,12 +71,11 @@ param openAiGpt52GlobalDeployObj object = {
   }
 }
 
-param deployments array = useGlobalStandard ? concat(
-  useAoaiGpt41 && !empty(openAiGpt41GlobalDeployObj.name) ? [ openAiGpt41GlobalDeployObj ] : [],
-  useAoaiGpt52 && !empty(openAiGpt52GlobalDeployObj.name) ? [ openAiGpt52GlobalDeployObj ] : []
-) : concat(
-  useAoaiGpt41 && !empty(openAiGpt41DeployObj.name) ? [ openAiGpt41DeployObj ] : [],
-  useAoaiGpt52 && !empty(openAiGpt52DeployObj.name) ? [ openAiGpt52DeployObj ] : []
+param deployments array = concat(
+  useAoaiGpt41Std && !empty(openAiGpt41DeployObj.name) ? [ openAiGpt41DeployObj ] : [],
+  useAoaiGpt41Global && !empty(openAiGpt41GlobalDeployObj.name) ? [ openAiGpt41GlobalDeployObj ] : [],
+  useAoaiGpt52Std && !empty(openAiGpt52DeployObj.name) ? [ openAiGpt52DeployObj ] : [],
+  useAoaiGpt52Global && !empty(openAiGpt52GlobalDeployObj.name) ? [ openAiGpt52GlobalDeployObj ] : []
 )
 
 resource account 'Microsoft.CognitiveServices/accounts@2023-05-01' = {

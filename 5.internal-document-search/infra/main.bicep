@@ -37,18 +37,12 @@ param openAiServiceName string = ''
 param openAiResourceGroupName string = ''
 
 @allowed([
-  '1. |  japaneast      |  Standard         |  gpt-5.2:    |  gpt-4.1:    |'
-  '2. |  japaneast      |  Global Standard  |  gpt-5.2:    |  gpt-4.1: ✓  |'
-  '3. |  swedencentral  |  Standard         |  gpt-5.2:    |  gpt-4.1: ✓  |'
-  '4. |  swedencentral  |  Global Standard  |  gpt-5.2: ✓  |  gpt-4.1: ✓  |'
-  '5. |  eastus         |  Standard         |  gpt-5.2:    |  gpt-4.1: ✓  |'
-  '6. |  eastus         |  Global Standard  |  gpt-5.2:    |  gpt-4.1: ✓  |'
-  '7. |  eastus2        |  Standard         |  gpt-5.2:    |  gpt-4.1: ✓  |'
-  '8. |  eastus2        |  Global Standard  |  gpt-5.2: ✓  |  gpt-4.1: ✓  |'
-  '9. |  uksouth        |  Standard         |  gpt-5.2:    |  gpt-4.1:    |'
-  '10.|  uksouth        |  Global Standard  |  gpt-5.2:    |  gpt-4.1: ✓  |'
-  '11.|  australiaeast  |  Standard         |  gpt-5.2:    |  gpt-4.1:    |'
-  '12.|  australiaeast  |  Global Standard  |  gpt-5.2:    |  gpt-4.1: ✓  |'
+  '1. |  japaneast      |  gpt-4.1(std): ✗  |  gpt-4.1(gs): ✓  |  gpt-5.2(std): ✗  |  gpt-5.2(gs): ✗  |'
+  '2. |  swedencentral  |  gpt-4.1(std): ✓  |  gpt-4.1(gs): ✓  |  gpt-5.2(std): ✗  |  gpt-5.2(gs): ✓  |'
+  '3. |  eastus         |  gpt-4.1(std): ✓  |  gpt-4.1(gs): ✓  |  gpt-5.2(std): ✗  |  gpt-5.2(gs): ✗  |'
+  '4. |  eastus2        |  gpt-4.1(std): ✓  |  gpt-4.1(gs): ✓  |  gpt-5.2(std): ✗  |  gpt-5.2(gs): ✓  |'
+  '5. |  uksouth        |  gpt-4.1(std): ✗  |  gpt-4.1(gs): ✓  |  gpt-5.2(std): ✗  |  gpt-5.2(gs): ✗  |'
+  '6. |  australiaeast  |  gpt-4.1(std): ✗  |  gpt-4.1(gs): ✓  |  gpt-5.2(std): ✗  |  gpt-5.2(gs): ✗  |'
 ])
 param AzureOpenAIServiceRegion string
 
@@ -57,15 +51,17 @@ param delimiters array = ['|']
 param aoaiResourceGroupLocationWithBlankSpace string = split(AzureOpenAIServiceRegion, delimiters)[1]
 param aoaiResourceGroupLocation string = trim(aoaiResourceGroupLocationWithBlankSpace)
 
-param aoaiDeployOptionWithBlankSpace string = split(AzureOpenAIServiceRegion, delimiters)[2]
-param useGlobalStandard bool = contains(aoaiDeployOptionWithBlankSpace, 'Global')
+param aoaiGpt41StdWithBlankSpace string = split(AzureOpenAIServiceRegion, delimiters)[2]
+param useAoaiGpt41Std bool = contains(aoaiGpt41StdWithBlankSpace, '✓')
 
-// 列 [3] = gpt-5.2、列 [4] = gpt-4.1
-param aoaiGpt52DeployWithBlankSpace string = split(AzureOpenAIServiceRegion, delimiters)[3]
-param useAoaiGpt52 bool = contains(aoaiGpt52DeployWithBlankSpace, '✓')
+param aoaiGpt41GlobalWithBlankSpace string = split(AzureOpenAIServiceRegion, delimiters)[3]
+param useAoaiGpt41Global bool = contains(aoaiGpt41GlobalWithBlankSpace, '✓')
 
-param aoaiGpt41DeployWithBlankSpace string = split(AzureOpenAIServiceRegion, delimiters)[4]
-param useAoaiGpt41 bool = contains(aoaiGpt41DeployWithBlankSpace, '✓')
+param aoaiGpt52StdWithBlankSpace string = split(AzureOpenAIServiceRegion, delimiters)[4]
+param useAoaiGpt52Std bool = contains(aoaiGpt52StdWithBlankSpace, '✓')
+
+param aoaiGpt52GlobalWithBlankSpace string = split(AzureOpenAIServiceRegion, delimiters)[5]
+param useAoaiGpt52Global bool = contains(aoaiGpt52GlobalWithBlankSpace, '✓')
 
 param openAiSkuName string = 'S0'
 param openAiGpt41DeploymentName string = 'gpt-41-deploy'
@@ -231,9 +227,10 @@ module backend 'core/host/appservice.bicep' = {
       API_MANAGEMENT_ENDPOINT: useApiManagement ? apimApi.outputs.apiManagementEndpoint : ''
       ENTRA_CLIENT_ID: audienceClientAppId
       USE_API_MANAGEMENT: useApiManagement
-      USE_GLOBAL_STANDARD: useGlobalStandard
-      USE_AOAI_GPT_41: useAoaiGpt41
-      USE_AOAI_GPT_52: useAoaiGpt52
+      USE_AOAI_GPT_41_STD: useAoaiGpt41Std
+      USE_AOAI_GPT_41_GLOBAL: useAoaiGpt41Global
+      USE_AOAI_GPT_52_STD: useAoaiGpt52Std
+      USE_AOAI_GPT_52_GLOBAL: useAoaiGpt52Global
     }
   }
 }
@@ -248,9 +245,10 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
     sku: {
       name: openAiSkuName
     }
-    useGlobalStandard: useGlobalStandard
-    useAoaiGpt41: useAoaiGpt41
-    useAoaiGpt52: useAoaiGpt52
+    useAoaiGpt41Std: useAoaiGpt41Std
+    useAoaiGpt41Global: useAoaiGpt41Global
+    useAoaiGpt52Std: useAoaiGpt52Std
+    useAoaiGpt52Global: useAoaiGpt52Global
     openAiGpt41DeploymentName: openAiGpt41DeploymentName
     openAiGpt41GlobalDeploymentName: openAiGpt41GlobalDeploymentName
     openAiGpt52DeploymentName: openAiGpt52DeploymentName
@@ -725,9 +723,10 @@ output AZURE_OPENAI_GPT_52_DEPLOYMENT string = openAiGpt52DeploymentName
 output AZURE_OPENAI_GPT_52_GLOBAL_DEPLOYMENT string = openAiGpt52GlobalDeploymentName
 output AZURE_OPENAI_API_VERSION string = openAiApiVersion
 output AZURE_OPENAI_RESOURCE_GROUP_LOCATION string = aoaiResourceGroupLocation
-output USE_GLOBAL_STANDARD bool = useGlobalStandard
-output USE_AOAI_GPT_41 bool = useAoaiGpt41
-output USE_AOAI_GPT_52 bool = useAoaiGpt52
+output USE_AOAI_GPT_41_STD bool = useAoaiGpt41Std
+output USE_AOAI_GPT_41_GLOBAL bool = useAoaiGpt41Global
+output USE_AOAI_GPT_52_STD bool = useAoaiGpt52Std
+output USE_AOAI_GPT_52_GLOBAL bool = useAoaiGpt52Global
 
 output AZURE_FORMRECOGNIZER_SERVICE string = formRecognizer.outputs.name
 output AZURE_FORMRECOGNIZER_RESOURCE_GROUP string = formRecognizerResourceGroup.name
