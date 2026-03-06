@@ -64,7 +64,7 @@ param openAiSkuName string = 'S0'
 param openAiGpt41DeploymentName string = 'gpt-41-deploy'
 param openAiGpt41GlobalDeploymentName string = 'gpt-41-global-deploy'
 param openAiGpt52GlobalDeploymentName string = 'gpt-52-global-deploy'
-param openAiApiVersion string = '2025-05-01-preview'
+param openAiApiVersion string = '2025-01-01-preview'
 
 param formRecognizerServiceName string = ''
 param formRecognizerResourceGroupName string = ''
