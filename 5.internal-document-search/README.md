@@ -49,7 +49,7 @@
 | サービス名 | SKU | Note |
 | --- | --- | --- |
 |Azure App Service|S1||
-|Azure OpenAI Service|S0|gpt-3.5-turbo gpt-4 gpt-4o|
+|Azure OpenAI Service|S0|gpt-4.1 gpt-5.2|
 |Azure AI Search|S1||
 |Azure Cosmos DB|プロビジョニング済みスループット||
 |Azure Form Recognizer|S0||
@@ -123,7 +123,17 @@
 1. `azd up` を実行します。
     - `? Select an Azure Subscription to use:` というメッセージが表示されたら、上記で設定したサブスクリプションを選択してください。
     - `? Select an Azure location to use:` というメッセージが表示されたら、デプロイしたい Azure リージョンを選択してください。
-        - 現在、このサンプルに必要な Azure OpenAI のモデルは該当モデルをサポートしている**東日本**リージョンにデプロイすることが可能です。最新の情報は[こちら](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/concepts/models)を参考にしてください。
+        - Azure OpenAI モデルのリージョン別利用可否 (公式ドキュメント調査結果 2026-03 時点)は以下のとおりです。最新情報は[公式ドキュメント](https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/models-sold-directly-by-azure?tabs=global-standard-aoai%2Cglobal-standard&pivots=azure-openai#model-summary-table-and-region-availability)を必ず確認してください。
+
+          | リージョン | gpt-4.1 (Standard) | gpt-4.1 (Global Standard) | gpt-5.2 (Global Standard) |
+          | --- | --- | --- | --- |
+          | japaneast (東日本) | ❌ | ✅ | ❌ |
+          | swedencentral | ✅ | ✅ | ✅ |
+          | eastus | ✅ | ✅ | ❌ |
+          | eastus2 | ✅ | ✅ | ✅ |
+          | uksouth | ❌ | ✅ | ❌ |
+          | australiaeast | ❌ | ✅ | ❌ |
+          
     - その後 Azure 上に必要なリソースをデプロイし、アプリケーションのビルドとデプロイが実行されます。また、`./data`配下の PDF を利用して Search Index を作成します。
     - Linux 環境で実行している場合は、`chmod +x scripts/prepdocs.sh`
     - しばらくすると `Enter a value for the 'vmLoginPassword' infrastructure parameter:` というメッセージが表示され仮想マシンのパスワードを求められますが、この手順では仮想マシンを利用しないためパスワードは入力せずに Enter を押してください。
